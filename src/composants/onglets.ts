@@ -129,6 +129,15 @@ function initialiser(racine: HTMLElement) {
   // La pastille prend la place et la taille de l'onglet actif ; pendant un glissement, elle est entre deux onglets
   function placerIndicateur(progression = actuel) {
     if (!indicateur) return
+    // Hors carrousel, la pastille est masquée : ne pas garder une position mesurée sur la mise en page
+    // large, d'où elle glisserait (hors de l'écran) au retour sur téléphone
+    if (!enCarrousel()) {
+      indicateur.style.removeProperty('width')
+      indicateur.style.removeProperty('height')
+      indicateur.style.removeProperty('translate')
+      liste.classList.remove('bib-onglets__liste--pret')
+      return
+    }
     const a = onglets[Math.floor(progression)]
     const b = onglets[Math.min(Math.ceil(progression), onglets.length - 1)]
     if (!a.offsetWidth) return
