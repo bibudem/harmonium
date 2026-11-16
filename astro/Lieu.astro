@@ -1,0 +1,71 @@
+---
+/*
+ * <Lieu> : la fiche d'un studio, d'un local ou d'une salle réservable. Produit le HTML documenté dans
+ * src/composants/lieu.css et importe cette feuille.
+ *
+ *   <Lieu titre="Bibliothèque des lettres et sciences humaines" lien="/espaces/studio-video/" carte="https://maps.app.goo.gl/…">
+ *     <Fragment slot="adresse">Pavillon Samuel-Bronfman, 2<sup>e</sup> étage, local 2078</Fragment>
+ *     <p>Pour vérifier la disponibilité et pour réserver, écrivez à la technicienne.</p>
+ *     <Fragment slot="pied">
+ *       <Bouton href="https://calendrier.bib.umontreal.ca/space/27038">Réserver</Bouton>
+ *       <Bouton href="/guides/studio/" variant="outlined">Guide d’utilisation</Bouton>
+ *     </Fragment>
+ *   </Lieu>
+ *
+ * - `titre` : h3 par défaut (`niveau`) ; `lien` en fait un lien vers la page du lieu.
+ * - `carte` : lien « Localiser sur Google Maps » (nouvel onglet).
+ * - Slots : `adresse` (ligne à épingle), le corps (défaut), `pied` (boutons, toujours en bas).
+ * - `donnees` (facultatif) : données structurées schema.org ajoutées à la fiche (objet Place, par exemple).
+ */
+import '../src/composants/lieu.css'
+import { classes } from './styles.ts'
+
+interface Props {
+  titre: string
+  lien?: string
+  carte?: string
+  niveau?: 2 | 3 | 4 | 5 | 6
+  donnees?: Record<string, unknown>
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+const { titre, lien, carte, niveau = 3, donnees, class: classe, className } = Astro.props
+const Titre = `h${niveau}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+const EPINGLE = 'M128,16a88.1,88.1,0,0,0-88,88c0,75.3,80,132.17,83.41,134.55a8,8,0,0,0,9.18,0C136,236.17,216,179.3,216,104A88.1,88.1,0,0,0,128,16Zm0,56a32,32,0,1,1-32,32A32,32,0,0,1,128,72Z'
+const EXTERNE = 'M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z'
+// Données structurées : « < » échappé, pour qu'aucun texte ne ferme la balise <script>
+const jsonLd = donnees ? JSON.stringify(donnees).replace(/</g, '\\u003c') : undefined
+---
+
+<article class:list={['bib-lieu', classes(classe, className)]}>
+  {jsonLd && <script is:inline type="application/ld+json" set:html={jsonLd} />}
+  <Titre class="bib-lieu__titre">{lien ? <a href={lien}>{titre}</a> : titre}</Titre>
+  {
+    Astro.slots.has('adresse') && (
+      <p class="bib-lieu__adresse">
+        <svg viewBox="0 0 256 256" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><path d={EPINGLE} /></svg>
+        <span><slot name="adresse" /></span>
+      </p>
+    )
+  }
+  <div class="bib-lieu__corps">
+    {
+      carte && (
+        <a class="bib-lieu__carte" href={carte} target="_blank" rel="noopener">
+          <svg viewBox="0 0 256 256" width="16" height="16" fill="currentColor" aria-hidden="true" focusable="false"><path d={EXTERNE} /></svg>
+          <span>Localiser sur Google Maps<span class="bib-masque"> (nouvel onglet)</span></span>
+        </a>
+      )
+    }
+    <slot />
+  </div>
+  {
+    Astro.slots.has('pied') && (
+      <div class="bib-lieu__pied">
+        <slot name="pied" />
+      </div>
+    )
+  }
+</article>

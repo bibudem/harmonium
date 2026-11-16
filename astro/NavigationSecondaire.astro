@@ -1,0 +1,104 @@
+---
+/*
+ * <NavigationSecondaire> : la navigation de la section courante. Produit le HTML documenté dans
+ * src/composants/navigation-secondaire.css et importe cette feuille. Le site calcule l'arbre de la
+ * section (cela dépend de son contenu) et le passe en `racine` :
+ *
+ *   <NavigationSecondaire racine={{ titre: 'Études', url: '/etudes/', enfants: [{ titre: 'Chercher', url: '/etudes/chercher/', enfants: [] }] }} courante="/etudes/chercher/" />
+ *   <NavigationSecondaire racine={…} courante={url} variante="repliable" />
+ *
+ * - `variante` : « colonne » (colonne de gauche dès 1200 px) ou « repliable » (sous 1200 px, un
+ *   <details> « Dans cette section », fermé par défaut). Une seule des deux est affichée à une largeur
+ *   donnée : il n'y a jamais deux repères <nav> du même nom.
+ * - Une racine sans `url` a un titre qui n'est pas un lien. Quand ce titre est aussi le libellé du
+ *   repliable (`resume`), on ne le répète pas dans le volet.
+ * - Un lien vers un autre site (hors famille des bibliothèques) porte la flèche oblique.
+ * - `sommaire: true` sur la racine : sommaire « Sur cette page » (la section en cours de lecture porte
+ *   aria-current="true").
+ */
+import '../src/composants/navigation-secondaire.css'
+import { analyserLien, versAilleurs } from './liens.ts'
+import { idUnique } from './ids.ts'
+import { classes } from './styles.ts'
+
+interface Noeud {
+  titre: string
+  url: string
+  /** Langue du titre, s'il diffère de celle de la page */
+  lang?: string
+  enfants: Noeud[]
+}
+
+interface Racine {
+  titre: string
+  url?: string
+  lang?: string
+  sommaire?: boolean
+  enfants: Noeud[]
+}
+
+interface Props {
+  racine: Racine | null
+  /** Adresse de la page courante */
+  courante: string
+  variante?: 'colonne' | 'repliable'
+  /** Libellé du repliable */
+  resume?: string
+  /** Langue de la navigation (la remet en français sur une page étrangère) */
+  lang?: string
+  /** Id du titre, à donner quand la page a plusieurs navigations de même variante (sommaire) */
+  idTitre?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+const { racine, courante, variante = 'colonne', resume = 'Dans cette section', lang, class: classe, className } = Astro.props
+const contient = (n: Noeud): boolean => n.url === courante || n.enfants.some(contient)
+const repliable = variante === 'repliable'
+const titreDansResume = repliable && !racine?.url && racine?.titre === resume
+const estSommaire = racine?.sommaire === true
+const idTitre = Astro.props.idTitre ?? idUnique('titre-navigation-section')
+const Enveloppe = repliable ? 'details' : Fragment
+const attributsEnveloppe = repliable ? { class: classes('bib-navigation-secondaire-repliable', classe, className), lang } : {}
+const externe = (url: string) => versAilleurs(analyserLien(url, Astro.site?.origin ?? Astro.url.origin))
+---
+
+{
+  racine && (
+    <Enveloppe {...attributsEnveloppe}>
+      {repliable && (
+        <summary>
+          <span id={titreDansResume ? idTitre : undefined}>{resume}</span>
+          <span class="bib-navigation-secondaire__chevron" aria-hidden="true" />
+        </summary>
+      )}
+      <nav class:list={['bib-navigation-secondaire', { 'bib-navigation-secondaire--dans-repliable': repliable, 'bib-navigation-secondaire--sommaire': estSommaire }, !repliable && classes(classe, className)]} aria-labelledby={idTitre} lang={repliable ? undefined : lang}>
+        {racine.url ? (
+          <a id={idTitre} class="bib-navigation-secondaire__titre" href={racine.url} lang={racine.lang} aria-current={racine.url === courante ? 'page' : undefined}>
+            {racine.titre}
+          </a>
+        ) : (
+          !titreDansResume && (
+            <p id={idTitre} class="bib-navigation-secondaire__titre" lang={racine.lang}>
+              {racine.titre}
+            </p>
+          )
+        )}
+        <ul>
+          {racine.enfants.map(function rendre(n: Noeud) {
+            return (
+              <li>
+                <a href={n.url} lang={n.lang} aria-current={n.url === courante ? (estSommaire ? 'true' : 'page') : undefined}>
+                  {n.titre}
+                  {externe(n.url) && <span class="bib-navigation-secondaire__externe" aria-hidden="true" />}
+                </a>
+                {n.enfants.length > 0 && (estSommaire || contient(n)) && <ul>{n.enfants.map(rendre)}</ul>}
+              </li>
+            )
+          })}
+        </ul>
+      </nav>
+    </Enveloppe>
+  )
+}

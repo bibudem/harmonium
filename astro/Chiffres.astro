@@ -1,0 +1,109 @@
+---
+/*
+ * <Chiffres> : chiffres clés en barres ou en tuiles. Produit le HTML documenté dans
+ * src/composants/chiffres.css et importe cette feuille ; les totaux, les pourcentages et la légende
+ * commune se calculent à la construction.
+ *
+ *   <Chiffres forme="barres" groupes={[{ titre: 'Livres', elements: [{ valeur: 900000, libelle: 'imprimés' }] }]} />
+ *
+ * L'animation est facultative : ajouter bib-chiffres.min.js (voir la fiche).
+ */
+import '../src/composants/chiffres.css'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+type Element = { valeur: number; libelle: string }
+type Groupe = { titre?: string; elements: Element[] }
+
+interface Props {
+  forme?: 'barres' | 'tuiles'
+  groupes: Groupe[]
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const { forme = 'barres', groupes, class: classe, className, style } = Astro.props
+
+if (groupes.some((g) => g.elements.some((e) => !Number.isFinite(e.valeur) || (forme === 'barres' && e.valeur < 0)))) throw new Error('Chiffres : les valeurs doivent être finies et les parts de barres positives ou nulles.')
+
+const COULEURS = ['var(--bleu-principal)', 'var(--rouge-orange)', 'var(--violet-fonce)']
+const nombre = new Intl.NumberFormat('fr-CA')
+const pourcent = new Intl.NumberFormat('fr-CA', { style: 'percent', maximumFractionDigits: 0 })
+const majuscule = (texte: string) => texte.charAt(0).toLocaleUpperCase('fr-CA') + texte.slice(1)
+
+const total = (groupe: Groupe) => groupe.elements.reduce((somme, e) => somme + e.valeur, 0)
+// Mêmes parts partout (comparé sans casse) : une légende commune
+const libelles = (groupe: Groupe) => groupe.elements.map((e) => e.libelle.toLocaleLowerCase('fr-CA')).join('|')
+const legende = forme === 'barres' && groupes.length > 1 && groupes.every((g) => libelles(g) === libelles(groupes[0])) ? groupes[0].elements.map((e) => majuscule(e.libelle)) : null
+---
+
+{/* Nombre : la valeur pour tous, sa copie animée par-dessus (chiffres.ts) */}
+{
+  forme === 'barres' ? (
+    <div class:list={['bib-chiffres', 'bib-chiffres--barres', classes(classe, className)]} style={fusionnerStyles(style)} data-chiffres>
+      {legende && (
+        <ul class="bib-chiffres__legende" aria-hidden="true">
+          {legende.map((libelle, i) => (
+            <li>
+              <span class="bib-chiffres__pastille" style={`--couleur: ${COULEURS[i % COULEURS.length]}`} data-part={i} />
+              {libelle}
+            </li>
+          ))}
+        </ul>
+      )}
+      {groupes.map((groupe) => {
+        const somme = total(groupe)
+        return (
+          <figure class="bib-chiffres__groupe" data-chiffres-unite>
+            <figcaption class="bib-chiffres__entete">
+              <span class="bib-chiffres__titre">{groupe.titre}</span>
+              <span class="bib-chiffres__total bib-chiffres__nombre">
+                <span class="bib-chiffres__reserve">{nombre.format(somme)}</span>
+                <span class="bib-chiffres__compteur" aria-hidden="true" data-compteur={somme}>
+                  {nombre.format(somme)}
+                </span>
+              </span>
+            </figcaption>
+            <div class="bib-chiffres__barre" aria-hidden="true" data-chiffres-barre>
+              {groupe.elements.map((e, i) => (
+                <span class="bib-chiffres__part" style={`--couleur: ${COULEURS[i % COULEURS.length]}; flex-grow: ${e.valeur}`} data-part={i} />
+              ))}
+            </div>
+            <ul class="bib-chiffres__parts">
+              {groupe.elements.map((e, i) => (
+                <li>
+                  <span class="bib-chiffres__pastille" style={`--couleur: ${COULEURS[i % COULEURS.length]}`} data-part={i} aria-hidden="true" />
+                  <span class="bib-chiffres__libelle">{majuscule(e.libelle)}</span>
+                  <span class="bib-chiffres__valeur bib-chiffres__nombre">
+                    <span class="bib-chiffres__reserve">{nombre.format(e.valeur)}</span>
+                    <span class="bib-chiffres__compteur" aria-hidden="true" data-compteur={e.valeur}>
+                      {nombre.format(e.valeur)}
+                    </span>
+                  </span>
+                  <span class="bib-chiffres__proportion">{pourcent.format(somme > 0 ? e.valeur / somme : 0)}</span>
+                </li>
+              ))}
+            </ul>
+          </figure>
+        )
+      })}
+    </div>
+  ) : (
+    <ul class:list={['bib-chiffres', 'bib-chiffres--tuiles', classes(classe, className)]} style={fusionnerStyles(style)} data-chiffres>
+      {groupes
+        .flatMap((g) => g.elements)
+        .map((e) => (
+          <li class="bib-chiffres__tuile" data-chiffres-unite>
+            <span class="bib-chiffres__valeur bib-chiffres__nombre">
+              <span class="bib-chiffres__reserve">{nombre.format(e.valeur)}</span>
+              <span class="bib-chiffres__compteur" aria-hidden="true" data-compteur={e.valeur}>
+                {nombre.format(e.valeur)}
+              </span>
+            </span>
+            <span class="bib-chiffres__libelle">{majuscule(e.libelle)}</span>
+          </li>
+        ))}
+    </ul>
+  )
+}

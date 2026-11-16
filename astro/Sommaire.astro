@@ -1,0 +1,47 @@
+---
+/*
+ * <Sommaire> : la pastille « Aller à une section » et son panneau de liens. Produit le HTML documenté dans
+ * src/composants/sommaire.css et importe cette feuille ; bib-sommaire.min.js (facultatif) ajoute Échap et la
+ * fermeture au clic dehors. À placer dans la Bannière, sous le titre.
+ *
+ *   <Sommaire liens={[{ libelle: 'Aide informatique', id: 'aide-informatique' }, { libelle: 'Cycles supérieurs', id: 'cycles-superieurs' }]} />
+ *
+ * `id` est l’ancre du titre de la section visée. Rien n’est rendu avec moins de deux liens.
+ */
+import '../src/composants/sommaire.css'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Props {
+  liens: { libelle: string; id: string }[]
+  /** Nom du repère de navigation */
+  nom?: string
+  /** Libellé de la pastille */
+  libelle?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const { liens = [], nom = 'Sur cette page', libelle = 'Aller à une section', class: classe, className, style, ...reste } = Astro.props
+---
+
+{
+  liens.length >= 2 && (
+    <nav class:list={['bib-sommaire', 'theme-clair', classes(classe, className)]} style={fusionnerStyles(style)} aria-label={nom} data-sommaire {...reste}>
+      <details class="bib-sommaire__details">
+        <summary class="bib-sommaire__pastille">
+          {libelle}
+          <span class="bib-sommaire__chevron" aria-hidden="true" />
+        </summary>
+        <ul class="bib-sommaire__panneau">
+          {liens.map(({ libelle, id }) => (
+            <li>
+              <a class="bib-sommaire__lien" href={`#${id}`}>{libelle}</a>
+            </li>
+          ))}
+        </ul>
+      </details>
+    </nav>
+  )
+}

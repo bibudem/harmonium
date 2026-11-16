@@ -1,0 +1,51 @@
+/*
+ * Logos : une grille de logos, centrés, 200 px de haut au plus ; un par rangée, deux dès 600 px,
+ * quatre dès 1200 px. Chaque logo peut être un lien.
+ *
+ *   <div class="bib-logos">
+ *     <div class="bib-logo"><img src="partenaire.png" alt="Partenaire"></div>
+ *     <div class="bib-logo"><a class="bib-lien" href="https://…"><img src="autre.png" alt="Autre"></a></div>
+ *   </div>
+ */
+.bib-logos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--espace-grille);
+  margin-block: var(--espace-bloc);
+}
+
+@media (width >= 600px) {
+  .bib-logos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (width >= 1200px) {
+  .bib-logos {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.bib-logo {
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bib-logo > a {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.bib-logo picture { display: flex; justify-content: center; min-width: 0; max-width: 100%; }
+
+.bib-logo img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 200px;
+  object-fit: contain;
+}

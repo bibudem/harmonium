@@ -1,0 +1,78 @@
+/*
+ * Colonne « Quoi de neuf » : une colonne titrée (h3) d'une section d'actualités, avec sa liste qui occupe la
+ * hauteur libre, puis le bouton « Tous nos… » en bas. Dans la grille de quoi-de-neuf.css, les colonnes ont la
+ * même hauteur : les boutons tombent au même niveau.
+ *
+ *   <section class="bib-colonne-actualites" aria-labelledby="col-ev" data-colonne="col-ev">
+ *     <h3 class="bib-colonne-actualites__titre" id="col-ev">Événements</h3>
+ *     <div class="bib-colonne-actualites__corps"><ul class="bib-actualites">…</ul></div>
+ *     <div class="bib-colonne-actualites__plus"><a class="bib-bouton bib-bouton--texte" href="/evenements/"><span class="bib-bouton__libelle">Tous nos événements</span><span class="bib-bouton__fin" aria-hidden="true"></span></a></div>
+ *   </section>
+ *
+ * - __corps est un conteneur de requête (« quoi-de-neuf ») : les éléments (actualite.css) ne coupent leurs
+ *   titres que si la colonne est assez large en em, donc jamais avec le texte agrandi.
+ * - Le bouton « plus » est à droite dès 900 px, à gauche en dessous. --titre-masque : le h3 reste pour les
+ *   lecteurs d'écran seulement (le titre du bloc suffit à l'écran). --plus-centre : le bouton, centré sous la
+ *   liste, est un bouton plein (bib-bouton--plein).
+ * - Listes, messages d'attente, d'erreur et de vide passés dans __corps ont leurs marges retirées ; l'attribut
+ *   hidden l'emporte sur leur affichage.
+ */
+.bib-colonne-actualites {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espace-element);
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+}
+
+.bib-colonne-actualites__titre {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: var(--graisse-moyenne);
+  line-height: 1.2;
+}
+
+.bib-colonne-actualites--titre-masque > .bib-colonne-actualites__titre {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.bib-colonne-actualites__corps {
+  flex-grow: 1;
+  container: quoi-de-neuf / inline-size;
+}
+
+.bib-colonne-actualites__corps p {
+  margin: 0;
+}
+
+.bib-colonne-actualites__corps [hidden] {
+  display: none;
+}
+
+/* Bouton « Tous nos… » : fond de survol sans fondu, comme les titres des éléments */
+.bib-colonne-actualites__plus .bib-bouton {
+  transition: none;
+}
+
+.bib-colonne-actualites__plus {
+  display: flex;
+  justify-content: flex-start;
+}
+
+@media (width >= 900px) {
+  .bib-colonne-actualites__plus {
+    justify-content: flex-end;
+  }
+}
+
+.bib-colonne-actualites--plus-centre .bib-colonne-actualites__plus {
+  justify-content: center;
+  margin-top: var(--espace-bloc);
+}

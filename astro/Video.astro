@@ -1,0 +1,86 @@
+---
+/*
+ * <Video> : une vidéo YouTube, Loom, d'une autre plateforme (adresse d'intégration) ou un fichier du site, en
+ * 16:9. Produit le HTML documenté dans src/composants/video.css et importe cette feuille ;
+ * bib-video.min.js remplace la façade par le lecteur au clic.
+ *
+ *   <Video titre="Configurer le Proxy" youtube="IApth7W-yzw" />
+ *   <Video titre="Démonstration du prompteur" fichier="/videos/prompteur.mp4" />
+ *   <Video titre="Ouvrages d’exception" youtube="3cMdFZbivdg" image={photo.src} transcription="/transcriptions/ouvrages/" />
+ *
+ * Le titre est obligatoire : il nomme le lien et le lecteur (WCAG 4.1.2). Une seule source.
+ */
+import '../src/composants/video.css'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Props {
+  titre: string
+  youtube?: string
+  loom?: string
+  /** Fichier du site : <video controls> natif */
+  fichier?: string
+  /** Adresse d'intégration (iframe) d'une autre plateforme */
+  integration?: string
+  /** Photo décorative derrière le bouton de lecture, sous un voile bleu foncé (façade seulement) */
+  image?: string
+  /** Page de la transcription, liée sous la vidéo (WCAG 1.2) */
+  transcription?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const { titre, youtube, loom, fichier, integration, image, transcription, class: classe, className, style } = Astro.props
+if (!titre) throw new Error('Video : la propriété `titre` est obligatoire (elle nomme le lien et le lecteur).')
+if ([youtube, loom, fichier, integration].filter(Boolean).length !== 1) throw new Error(`Video « ${titre} » : une seule source parmi youtube, loom, fichier et integration.`)
+
+const PLATEFORMES = {
+  youtube: {
+    nom: 'YouTube',
+    page: (id: string) => `https://www.youtube.com/watch?v=${id}`,
+    lecteur: (id: string) => `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`,
+  },
+  loom: {
+    nom: 'Loom',
+    page: (id: string) => `https://www.loom.com/share/${id}`,
+    lecteur: (id: string) => `https://www.loom.com/embed/${id}?autoplay=1`,
+  },
+}
+const id = youtube ?? loom ?? ''
+const plateforme = youtube ? PLATEFORMES.youtube : loom ? PLATEFORMES.loom : null
+// Autre plateforme : le lien et le lecteur sont l'adresse d'intégration elle-même
+const source = plateforme
+  ? { nom: plateforme.nom, page: plateforme.page(id), lecteur: plateforme.lecteur(id) }
+  : integration
+    ? { nom: new URL(integration).hostname.replace(/^www\./, ''), page: integration, lecteur: integration }
+    : null
+const LECTURE = 'M240,128a15.74,15.74,0,0,1-7.6,13.51L88.32,229.65a16,16,0,0,1-16.2.3A15.86,15.86,0,0,1,64,216.13V39.87a15.86,15.86,0,0,1,8.12-13.82,16,16,0,0,1,16.2.3L232.4,114.49A15.74,15.74,0,0,1,240,128Z'
+---
+
+{
+  source ? (
+    <div class:list={['bib-video', { 'bib-video--photo': image, 'bib-video--avec-transcription': transcription }, classes(classe, className)]} style={fusionnerStyles(style)} data-video data-lecteur={source.lecteur} data-titre-video={titre}>
+      {image && <img class="bib-video__image" src={image} alt="" loading="lazy" decoding="async" />}
+      <a class="bib-video__lecture" href={source.page}>
+        <span class="bib-video__pastille" aria-hidden="true">
+          <svg viewBox="0 0 256 256" width="32" height="32" fill="currentColor" focusable="false"><path d={LECTURE} /></svg>
+        </span>
+        <span class="bib-video__texte">
+          <span class="bib-video__action">Lire la vidéo</span>
+          <span class="bib-video__titre">{titre}</span>
+          <span class="bib-video__plateforme">{source.nom}</span>
+        </span>
+      </a>
+    </div>
+  ) : (
+    <figure class:list={['bib-video', 'bib-video--fichier', { 'bib-video--avec-transcription': transcription }, classes(classe, className)]} style={fusionnerStyles(style)}>
+      <video class="bib-video__cadre" controls preload="metadata" aria-label={titre}>
+        <source src={fichier} />
+        <a href={fichier}>Télécharger la vidéo « {titre} »</a>
+      </video>
+      <figcaption class="bib-video__legende">{titre}</figcaption>
+    </figure>
+  )
+}
+{transcription && <p class="bib-video__transcription"><a href={transcription}>Lire la transcription de la vidéo</a></p>}

@@ -1,0 +1,149 @@
+/*
+ * Grille de 12 colonnes, sans JavaScript : place des blocs côte à côte et les empile sur téléphone. Un
+ * conteneur est une boîte flex qui passe à la ligne ; chaque bloc dit combien de colonnes il occupe, seuil par
+ * seuil (xs dès 0, sm 600 px, md 900 px, lg 1200 px, xl 1536 px, mobile d'abord : un seuil plus large
+ * l'emporte). La largeur est celle d'une grille à 12 colonnes, écarts compris :
+ * calc(100 % × n / 12 − (12 − n) × écart / 12).
+ *
+ *   <div class="bib-grille bib-grille--conteneur" style="--bib-grille-ecart-lig: 16px; --bib-grille-ecart-col: 16px">
+ *     <div class="bib-grille" data-taille-xs="n" data-taille-md="n" style="--bib-grille-taille-xs: 12; --bib-grille-taille-md: 6">…</div>
+ *     <div class="bib-grille" data-taille-xs="n" data-taille-md="n" style="--bib-grille-taille-xs: 12; --bib-grille-taille-md: 6">…</div>
+ *   </div>
+ *
+ * Par seuil, data-taille-<seuil> vaut « n » (le nombre de colonnes, de 0 à 12, dans
+ * --bib-grille-taille-<seuil>), « grow » (remplit la place restante) ou « auto » (largeur du contenu) ;
+ * data-decalage-<seuil> vaut « n » (colonnes de marge à gauche, dans --bib-grille-decalage-<seuil>) ou
+ * « auto » (pousse le bloc à droite). Les écarts viennent du conteneur : un bloc à la fois conteneur et
+ * dimensionné calcule sa largeur avec l'écart de son parent. Les colonnes commencent à la même hauteur : la
+ * marge haute du premier élément d'un bloc est retirée.
+ *
+ * Aucune règle sur le contenu : la grille ne change ni l'ordre de lecture ni le focus. Sous 600 px, sans
+ * data-taille-xs, les blocs gardent la largeur de leur contenu : en donner une (« n » 12) pour les empiler.
+ */
+.bib-grille {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.bib-grille--conteneur {
+  display: flex;
+  flex-flow: row wrap;
+  gap: var(--bib-grille-ecart-lig, 0px) var(--bib-grille-ecart-col, 0px);
+}
+
+.bib-grille--conteneur > .bib-grille > :first-child {
+  margin-block-start: 0;
+}
+
+[data-taille-xs='n'] {
+  flex: 0 0 auto;
+  width: calc(100% * var(--bib-grille-taille-xs) / 12 - (12 - var(--bib-grille-taille-xs)) * var(--bib-grille-ecart-col, 0px) / 12);
+}
+[data-taille-xs='grow'] {
+  flex: 1 1 0;
+  width: auto;
+  max-width: 100%;
+}
+[data-taille-xs='auto'] {
+  flex: 0 0 auto;
+  width: auto;
+  max-width: none;
+}
+[data-decalage-xs='n'] {
+  margin-left: calc(100% * var(--bib-grille-decalage-xs) / 12 + var(--bib-grille-ecart-col, 0px) * var(--bib-grille-decalage-xs) / 12);
+}
+[data-decalage-xs='auto'] {
+  margin-left: auto;
+}
+
+@media (min-width: 600px) {
+  [data-taille-sm='n'] {
+    flex: 0 0 auto;
+    width: calc(100% * var(--bib-grille-taille-sm) / 12 - (12 - var(--bib-grille-taille-sm)) * var(--bib-grille-ecart-col, 0px) / 12);
+  }
+  [data-taille-sm='grow'] {
+    flex: 1 1 0;
+    width: auto;
+    max-width: 100%;
+  }
+  [data-taille-sm='auto'] {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: none;
+  }
+  [data-decalage-sm='n'] {
+    margin-left: calc(100% * var(--bib-grille-decalage-sm) / 12 + var(--bib-grille-ecart-col, 0px) * var(--bib-grille-decalage-sm) / 12);
+  }
+  [data-decalage-sm='auto'] {
+    margin-left: auto;
+  }
+}
+
+@media (min-width: 900px) {
+  [data-taille-md='n'] {
+    flex: 0 0 auto;
+    width: calc(100% * var(--bib-grille-taille-md) / 12 - (12 - var(--bib-grille-taille-md)) * var(--bib-grille-ecart-col, 0px) / 12);
+  }
+  [data-taille-md='grow'] {
+    flex: 1 1 0;
+    width: auto;
+    max-width: 100%;
+  }
+  [data-taille-md='auto'] {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: none;
+  }
+  [data-decalage-md='n'] {
+    margin-left: calc(100% * var(--bib-grille-decalage-md) / 12 + var(--bib-grille-ecart-col, 0px) * var(--bib-grille-decalage-md) / 12);
+  }
+  [data-decalage-md='auto'] {
+    margin-left: auto;
+  }
+}
+
+@media (min-width: 1200px) {
+  [data-taille-lg='n'] {
+    flex: 0 0 auto;
+    width: calc(100% * var(--bib-grille-taille-lg) / 12 - (12 - var(--bib-grille-taille-lg)) * var(--bib-grille-ecart-col, 0px) / 12);
+  }
+  [data-taille-lg='grow'] {
+    flex: 1 1 0;
+    width: auto;
+    max-width: 100%;
+  }
+  [data-taille-lg='auto'] {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: none;
+  }
+  [data-decalage-lg='n'] {
+    margin-left: calc(100% * var(--bib-grille-decalage-lg) / 12 + var(--bib-grille-ecart-col, 0px) * var(--bib-grille-decalage-lg) / 12);
+  }
+  [data-decalage-lg='auto'] {
+    margin-left: auto;
+  }
+}
+
+@media (min-width: 1536px) {
+  [data-taille-xl='n'] {
+    flex: 0 0 auto;
+    width: calc(100% * var(--bib-grille-taille-xl) / 12 - (12 - var(--bib-grille-taille-xl)) * var(--bib-grille-ecart-col, 0px) / 12);
+  }
+  [data-taille-xl='grow'] {
+    flex: 1 1 0;
+    width: auto;
+    max-width: 100%;
+  }
+  [data-taille-xl='auto'] {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: none;
+  }
+  [data-decalage-xl='n'] {
+    margin-left: calc(100% * var(--bib-grille-decalage-xl) / 12 + var(--bib-grille-ecart-col, 0px) * var(--bib-grille-decalage-xl) / 12);
+  }
+  [data-decalage-xl='auto'] {
+    margin-left: auto;
+  }
+}

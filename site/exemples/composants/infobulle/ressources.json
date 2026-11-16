@@ -1,0 +1,9 @@
+{
+  "styles": [],
+  "scripts": [
+    {
+      "src": "@@dist/bib-infobulle.min.js",
+      "attributs": "type=\"module\""
+    }
+  ]
+}

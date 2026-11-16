@@ -1,0 +1,38 @@
+---
+/*
+ * <IconeCarree> : produit le HTML documenté dans src/composants/icone-carree.css et importe
+ * cette feuille. Aucun JavaScript. L'icône (SVG) passe dans le slot.
+ *
+ *   <IconeCarree color="var(--rose-500)"><svg viewBox="0 0 256 256">…</svg></IconeCarree>
+ *
+ * Fond foncé (icône éclaircie) reconnu pour --bleu-principal-fonce, --bleu-600 et
+ * --vert-fonce ; `fonce` le force pour une autre couleur.
+ */
+import '../src/composants/icone-carree.css'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Props {
+  /** Couleur du carré : valeur CSS ou jeton (défaut : transparent) */
+  color?: string
+  /** Force l'icône éclaircie (true) ou assombrie (false), au lieu de la détection */
+  fonce?: boolean
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+  /** Hérité de MUI, ignoré */
+  sx?: unknown
+  [attribut: string]: unknown
+}
+
+const { color = 'transparent', fonce, class: classe, className, style, sx: _sx, ...reste } = Astro.props
+
+if (!Astro.slots.has('default')) throw new Error('IconeCarree : l’icône passe dans le slot.')
+
+const FONDS_FONCES = ['var(--bleu-principal-fonce)', 'var(--bleu-600)', 'var(--vert-fonce)']
+const fondFonce = fonce ?? FONDS_FONCES.includes(color)
+---
+
+<div class:list={['bib-icone-carree', { 'bib-icone-carree--fonce': fondFonce }, classes(classe, className)]} style={fusionnerStyles({ '--bib-icone-carree-fond': color }, style)} {...reste}>
+  <div class="bib-icone-carree__icone" aria-hidden="true"><slot /></div>
+</div>

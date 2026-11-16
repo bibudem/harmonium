@@ -1,0 +1,24 @@
+/*
+ * Colonne décalée : bloc centré, avec des marges égales à gauche et à droite mesurées en
+ * colonnes d'une grille de 12. Largeur (12 − 2 × décalage) / 12, à tous les seuils.
+ *
+ *   <div class="bib-colonne-decalee" style="--bib-decalage: 1">
+ *     <div class="bib-colonne-decalee__colonne">…</div>
+ *   </div>
+ *
+ * --bib-decalage : de 0 à 6 (0,5 admis). Calculé en CSS : aucun saut de mise en page.
+ */
+.bib-colonne-decalee {
+  display: flex;
+  flex-flow: row wrap;
+  min-width: 0;
+}
+
+.bib-colonne-decalee__colonne {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: calc(100% * (12 - 2 * var(--bib-decalage, 0)) / 12);
+  min-width: 0;
+  margin-left: calc(100% * var(--bib-decalage, 0) / 12);
+}

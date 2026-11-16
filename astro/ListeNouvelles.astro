@@ -1,0 +1,147 @@
+---
+/*
+ * <ListeNouvelles> : la page « Nouvelles » (nos communications et la revue de presse), regroupée par année, avec
+ * le filtre par type, le filtre par sujet et le lien RSS. Produit le HTML documenté dans
+ * src/composants/liste-nouvelles.css et importe cette feuille (et celles des actualités) ; bib-liste-nouvelles.min.js
+ * (facultatif) rend les filtres actifs.
+ *
+ *   <ListeNouvelles
+ *     nouvelles={[{ type: 'presse', titre: 'Titre', url: 'https://…', date: '2026-10-13', source: 'Le Devoir', sujets: ['livres-rares'] }]}
+ *     sujets={[{ id: 'livres-rares', libelle: 'Livres rares et collections spéciales' }]}
+ *     rss="/nouvelles/rss.xml"
+ *   />
+ *
+ * Une nouvelle : `type` (`nouvelle` : nos communications, sur le site ; `presse` : un article paru dans un média,
+ * nouvel onglet), `titre`, `url`, `date` (AAAA-MM-JJ, lue en UTC), `source` (le média ; « Les bibliothèques »
+ * sinon, voir `sourceParDefaut`), `lang` (langue du titre) et `sujets` (identifiants). Les nouvelles sont triées
+ * de la plus récente à la plus ancienne ; à date égale, l'ordre donné est gardé. Seuls les sujets qui ont au
+ * moins une nouvelle ont leur bouton. `id` préfixe les identifiants (titres d'année, groupe des sujets).
+ */
+import '../src/composants/liste-nouvelles.css'
+import Actualite from './Actualite.astro'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Nouvelle {
+  type: 'nouvelle' | 'presse'
+  titre: string
+  url: string
+  date: string
+  source?: string
+  lang?: string
+  sujets?: string[]
+}
+
+interface Props {
+  nouvelles: Nouvelle[]
+  sujets?: { id: string; libelle: string }[]
+  /** Adresse du fil RSS ; sans elle, pas de lien */
+  rss?: string
+  sourceParDefaut?: string
+  vide?: string
+  id?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const {
+  nouvelles,
+  sujets = [],
+  rss,
+  sourceParDefaut = 'Les bibliothèques',
+  vide = 'Aucune nouvelle pour le moment.',
+  id = 'liste-nouvelles',
+  class: classe,
+  className,
+  style,
+} = Astro.props
+
+const FILTRES = [
+  { valeur: 'tout', libelle: 'Tout', type: '' },
+  { valeur: 'nouvelles', libelle: 'Nouvelles', type: 'nouvelle' },
+  { valeur: 'revue-de-presse', libelle: 'Revue de presse', type: 'presse' },
+]
+
+// Dates « AAAA-MM-JJ » à minuit UTC : affichées en UTC pour ne pas tomber la veille au Québec
+const formatDate = new Intl.DateTimeFormat('fr-CA', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+const triees = nouvelles
+  .map((n, rang) => ({ ...n, rang, jour: new Date(`${n.date}T00:00:00Z`) }))
+  .sort((a, b) => b.jour.getTime() - a.jour.getTime() || a.rang - b.rang)
+const compte = (type: string) => (type ? triees.filter((n) => n.type === type).length : triees.length)
+const sujetsUtiles = sujets.filter((s) => triees.some((n) => n.sujets?.includes(s.id)))
+
+// Déjà triées : on regroupe les années consécutives
+const groupes = triees.reduce<{ annee: number; items: typeof triees }[]>((acc, item) => {
+  const annee = item.jour.getUTCFullYear()
+  const dernier = acc.at(-1)
+  if (dernier?.annee === annee) dernier.items.push(item)
+  else acc.push({ annee, items: [item] })
+  return acc
+}, [])
+const annonce = (n: number) => `${n} ${n > 1 ? 'éléments affichés' : 'élément affiché'}`
+---
+
+<div id={id} class:list={['bib-liste-nouvelles', classes(classe, className)]} style={fusionnerStyles(style)} data-liste-nouvelles>
+  <div class="bib-liste-nouvelles__reglages">
+    <div class="bib-liste-nouvelles__filtres" role="group" aria-label="Filtrer les nouvelles">
+      {
+        FILTRES.map(({ valeur, libelle, type }) => (
+          <button type="button" class="bib-liste-nouvelles__filtre" aria-pressed={valeur === 'tout' ? 'true' : 'false'} data-filtre={valeur} data-type={type}>
+            {libelle}
+            <span class="bib-liste-nouvelles__compte" data-compte>{compte(type)}</span>
+          </button>
+        ))
+      }
+    </div>
+    {
+      sujetsUtiles.length > 0 && (
+        <div class="bib-liste-nouvelles__filtres bib-liste-nouvelles__filtres--sujet" role="group" aria-labelledby={`${id}-sujet`}>
+          <span class="bib-liste-nouvelles__etiquette" id={`${id}-sujet`}>
+            Sujet
+          </span>
+          {[{ id: '', libelle: 'Tous les sujets' }, ...sujetsUtiles].map((s) => (
+            <button type="button" class="bib-liste-nouvelles__sujet" aria-pressed={s.id === '' ? 'true' : 'false'} data-sujet={s.id}>
+              <span class="bib-liste-nouvelles__icone-sujet" aria-hidden="true" />
+              {s.libelle}
+            </button>
+          ))}
+        </div>
+      )
+    }
+    {
+      rss && (
+        <a class="bib-liste-nouvelles__rss" href={rss} type="application/rss+xml">
+          <span class="bib-liste-nouvelles__icone-rss" aria-hidden="true" />
+          S'abonner au fil RSS
+        </a>
+      )
+    }
+  </div>
+
+  <p class="bib-masque" role="status" data-annonce>{annonce(triees.length)}</p>
+
+  {
+    groupes.length ? (
+      groupes.map(({ annee, items }) => (
+        <section class="bib-liste-nouvelles__annee" aria-labelledby={`${id}-${annee}`} data-annee>
+          <h2 class="bib-liste-nouvelles__titre-annee" id={`${id}-${annee}`}>
+            {annee}
+          </h2>
+          <ul class="bib-actualites bib-liste-nouvelles__elements">
+            {items.map((item) => (
+              <Actualite href={item.url} externe={item.type === 'presse'} lang={item.lang} data-type={item.type} data-sujets={item.sujets?.length ? item.sujets.join(' ') : undefined}>
+                <span slot="ligne">
+                  <strong>{item.type === 'presse' && item.source ? item.source : sourceParDefaut}</strong>&nbsp;·&nbsp;<time datetime={item.date}>{formatDate.format(item.jour)}</time>
+                </span>
+                {item.titre}
+              </Actualite>
+            ))}
+          </ul>
+        </section>
+      ))
+    ) : (
+      <p>{vide}</p>
+    )
+  }
+</div>

@@ -1,0 +1,50 @@
+---
+/*
+ * <FichesEtat> : une grille de fiches d'état écrites dans le HTML (libellé, état, flèche). Produit le HTML
+ * documenté dans src/composants/fiches-etat.css et importe cette feuille. Pour des états lus dans une API :
+ * <Disponibilites> (exemplaires d'un document) et <PostesDisponibles> (postes de connexion à distance).
+ *
+ *   <FichesEtat fiches={[{ libelle: 'Musique', etat: '2 disponibles', lien: 'https://…', statut: 'disponible', nouvelOnglet: true }]} />
+ *
+ * `statut` : disponible (filet), indisponible, erreur. `min` : largeur minimale d'une fiche (14rem).
+ */
+import '../src/composants/fiches-etat.css'
+import { FLECHE_DIAGONALE } from './fiches-etat.ts'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Fiche {
+  libelle: string
+  etat?: string
+  lien: string
+  statut?: 'disponible' | 'indisponible' | 'erreur'
+  nouvelOnglet?: boolean
+}
+
+interface Props {
+  fiches: Fiche[]
+  min?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const { fiches, min, class: classe, className, style } = Astro.props
+---
+
+<div class:list={['bib-fiches-etat', classes(classe, className)]} style={fusionnerStyles(min ? { '--bib-fiches-etat-min': min } : undefined, style)}>
+  <ul class="bib-fiches-etat__liste">
+    {
+      fiches.map((f) => (
+        <li>
+          <a class="bib-fiches-etat__fiche" href={f.lien} data-statut={f.statut} target={f.nouvelOnglet ? '_blank' : undefined} rel={f.nouvelOnglet ? 'noopener' : undefined}>
+            <span class="bib-fiches-etat__libelle">{f.libelle}</span>
+            {f.etat && <span class="bib-fiches-etat__etat">{f.etat}</span>}
+            {f.nouvelOnglet && <span class="bib-masque"> (nouvel onglet)</span>}
+            <svg class="bib-fiches-etat__fleche" viewBox="0 0 256 256" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d={FLECHE_DIAGONALE} /></svg>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</div>

@@ -1,0 +1,18 @@
+<div class="demo-cadre">
+  <p class="etiquette">Tableau large : défile à l’horizontale sur un téléphone</p>
+  <div class="contenu">
+    <div class="bib-tableau-zone" role="region" aria-label="Conditions de prêt selon le statut" tabindex="0" data-tableau-defilant>
+      <table class="bib-tableau" aria-label="Conditions de prêt selon le statut" style="min-width: 650px">
+        <thead><tr class="bib-tableau__rangee"><th scope="col" class="bib-tableau__cellule">Statut</th><th scope="col" class="bib-tableau__cellule">Durée du prêt</th><th scope="col" class="bib-tableau__cellule">Documents</th><th scope="col" class="bib-tableau__cellule">Renouvellement</th><th scope="col" class="bib-tableau__cellule">Réserve de cours</th></tr></thead>
+        <tbody>
+          <tr class="bib-tableau__rangee"><th scope="row" class="bib-tableau__cellule">Étudiants de 1<sup>er</sup> cycle</th><td class="bib-tableau__cellule">30 jours</td><td class="bib-tableau__cellule">100</td><td class="bib-tableau__cellule">Oui</td><td class="bib-tableau__cellule">3 heures</td></tr>
+          <tr class="bib-tableau__rangee"><th scope="row" class="bib-tableau__cellule">Étudiants des cycles supérieurs</th><td class="bib-tableau__cellule">120 jours</td><td class="bib-tableau__cellule">200</td><td class="bib-tableau__cellule">Oui</td><td class="bib-tableau__cellule">3 heures</td></tr>
+          <tr class="bib-tableau__rangee"><th scope="row" class="bib-tableau__cellule">Professeurs et chargés de cours</th><td class="bib-tableau__cellule">1 an</td><td class="bib-tableau__cellule">500</td><td class="bib-tableau__cellule">Oui</td><td class="bib-tableau__cellule">1 semaine</td></tr>
+          <tr class="bib-tableau__rangee"><th scope="row" class="bib-tableau__cellule">Personnel de l’Université</th><td class="bib-tableau__cellule">60 jours</td><td class="bib-tableau__cellule">100</td><td class="bib-tableau__cellule">Oui</td><td class="bib-tableau__cellule">3 heures</td></tr>
+          <tr class="bib-tableau__rangee"><th scope="row" class="bib-tableau__cellule">Grand public (abonnement)</th><td class="bib-tableau__cellule">30 jours</td><td class="bib-tableau__cellule">100</td><td class="bib-tableau__cellule">Non</td><td class="bib-tableau__cellule">Sur place</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="legende">Dès trois colonnes, les tableaux des pages gardent 650 px de large : sous cette largeur, la zone défile (et devient alors un arrêt de tabulation, avec <code>bib-tableau.min.js</code>).</p>
+</div>

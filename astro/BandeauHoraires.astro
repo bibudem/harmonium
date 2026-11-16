@@ -1,0 +1,72 @@
+---
+/*
+ * <BandeauHoraires> : le bandeau « Horaires du jour ». Produit le HTML documenté dans
+ * src/composants/bandeau-horaires.css et importe cette feuille ; bib-bandeau-horaires.min.js (nécessaire
+ * pour la liste et le statut) lit l'API des horaires.
+ *
+ *   <BandeauHoraires bibliotheques={[{ code: 'ss', nom: 'Sciences de la santé' }, …]} defaut="ss" />
+ *
+ * `bibliotheques` : le code de l'API et le nom de chaque bibliothèque, dans l'ordre de la liste (le site les
+ * tire de ses données ; un nom court tient mieux sur mobile). `defaut` : le code choisi au premier
+ * affichage. `urlTous` : le lien « Tous les horaires » (/horaires/). `surBanniere` : pose le bandeau sur le
+ * haut d'une grande bannière dès 1200 px. `api` : une autre adresse de l'API. `sous` : sélecteur de
+ * l'en-tête collant sous lequel il s'estompe ([data-entete]).
+ */
+import '../src/composants/bandeau-horaires.css'
+import { idUnique } from './ids.ts'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Props {
+  bibliotheques: { code: string; nom: string }[]
+  defaut?: string
+  urlTous?: string
+  libelleTous?: string
+  surBanniere?: boolean
+  api?: string
+  sous?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const { bibliotheques, defaut, urlTous = '/horaires/', libelleTous = 'Tous les horaires', surBanniere = false, api, sous, class: classe, className, style, ...reste } = Astro.props
+
+if (!Array.isArray(bibliotheques) || bibliotheques.length === 0) throw new Error('BandeauHoraires : la propriété `bibliotheques` est obligatoire.')
+const choisie = defaut ?? bibliotheques[0].code
+const idTitre = idUnique('bandeau-horaires-titre')
+const idChoix = idUnique('bandeau-horaires-choix')
+---
+
+{/* Bloc ordinaire, sans position : sur une page à bannière, le bandeau y est en position absolue et garde
+    ainsi sa place, juste sous l'en-tête. */}
+<div>
+  <section
+    class:list={['bib-bandeau-horaires', 'theme-clair', { 'bib-bandeau-horaires--sur-banniere': surBanniere }, classes(classe, className)]}
+    style={fusionnerStyles(style)}
+    aria-labelledby={idTitre}
+    data-bandeau-horaires
+    data-defaut={choisie}
+    data-api={api}
+    data-sous={sous}
+    {...reste}
+  >
+    <div class="bib-bandeau-horaires__rangee">
+      <div class="bib-bandeau-horaires__choix">
+        <span class="bib-bandeau-horaires__horloge" aria-hidden="true"></span>
+        <label class="bib-bandeau-horaires__titre" id={idTitre} for={idChoix}>Horaires du jour</label>
+        <span class="bib-bandeau-horaires__selecteur">
+          <select class="bib-bandeau-horaires__liste" id={idChoix} data-choix>
+            {bibliotheques.map(({ code, nom }) => <option value={code} selected={code === choisie}>{nom}</option>)}
+          </select>
+          <span class="bib-bandeau-horaires__chevron" aria-hidden="true"></span>
+        </span>
+      </div>
+      <p class="bib-bandeau-horaires__statut" data-statut>
+        <span class="bib-bandeau-horaires__pastille" aria-hidden="true" data-pastille></span>
+        <span data-texte>Chargement des horaires…</span>
+      </p>
+      <a class="bib-bandeau-horaires__tous" href={urlTous}>{libelleTous}<span class="bib-bandeau-horaires__fleche" aria-hidden="true"></span></a>
+    </div>
+  </section>
+</div>

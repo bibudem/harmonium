@@ -1,0 +1,72 @@
+---
+/*
+ * <ListeFormations> : la liste des prochaines formations, lue dans l'API JSON des formations par
+ * bib-listes-dynamiques.min.js, dans le navigateur. Produit le HTML documenté dans src/composants/actualite.css,
+ * dans une <ColonneActualites>. Même gabarit que <ListeEvenements> : vignette, « date · début–fin », titre.
+ *
+ *   <ListeFormations limit={4} />
+ *   <ListeFormations limit={6} colonnes={2} titreMasque plusCentre />
+ *
+ * `service` : une autre adresse de l'API (qui reçoit ?limit=). `colonnes={2}` : les éléments se rangent en deux
+ * colonnes dès 900 px. `nouvelOnglet` : ouvre moreLink dans un nouvel onglet ; par défaut, seulement s'il mène
+ * hors du site.
+ */
+import Actualite from './Actualite.astro'
+import ColonneActualites from './ColonneActualites.astro'
+import EtatErreur from './EtatErreur.astro'
+import { analyserLien } from './liens.ts'
+import type { Style } from './styles.ts'
+
+interface Props {
+  title?: string
+  id?: string
+  service?: string
+  limit?: number
+  moreText?: string
+  moreLink?: string
+  colonnes?: 1 | 2
+  titreMasque?: boolean
+  plusCentre?: boolean
+  nouvelOnglet?: boolean
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const SERVICE_URL = 'https://api.bib.umontreal.ca/formations/'
+const MORE_LINK = 'https://calendrier.bib.umontreal.ca/calendar?cid=7690&t=m&d=0000-00-00&cal=7690&inc=0'
+
+const { title = 'Formations', id, service = SERVICE_URL, limit: limiteDemandee = 4, moreText = 'Toutes nos formations', moreLink = MORE_LINK, colonnes = 1, titreMasque, plusCentre, class: classe, className, style } = Astro.props
+const nouvelOnglet = Astro.props.nouvelOnglet ?? !analyserLien(moreLink, Astro.site?.origin ?? Astro.url.origin).interne
+const limite = typeof limiteDemandee === 'number' && limiteDemandee > 0 ? limiteDemandee : 4
+---
+
+<ColonneActualites title={title} id={id} moreText={moreText} moreLink={moreLink} externe={nouvelOnglet} titreMasque={titreMasque} plusCentre={plusCentre} class={classe} className={className} style={style}>
+  <div
+    class:list={['bib-actualites-dynamique', { 'bib-actualites-dynamique--deux-colonnes': colonnes === 2 }]}
+    style={`--bib-actualites-rangees: ${Math.ceil(limite / 2)}`}
+    data-liste-formations
+    data-service={`${service}?limit=${limite}`}
+    data-limite={limite}
+    aria-busy="true"
+  >
+    <ul class="bib-actualites" data-etat="chargement">
+      {Array.from({ length: limite }, () => <Actualite vignette compact squelette />)}
+    </ul>
+    <p class="bib-masque" data-etat="chargement">Chargement des formations…</p>
+    <ul class="bib-actualites" data-etat="pret" data-liste hidden></ul>
+    <EtatErreur message="Les formations ne sont pas disponibles pour le moment." />
+    <p data-etat="vide" hidden>Aucune formation à venir pour le moment.</p>
+    <p class="bib-actualites-dynamique__sans-js">
+      Les formations s'affichent avec JavaScript. Consultez-les dans le <a href={moreLink} target="_blank" rel="noopener noreferrer"
+        >calendrier des formations<span class="bib-masque"> (nouvel onglet)</span></a
+      >.
+    </p>
+    <template data-gabarit>
+      <Actualite href="#" externe vignette calendrier compact>
+        <span slot="ligne" data-champ="date"></span>
+      </Actualite>
+    </template>
+  </div>
+</ColonneActualites>

@@ -1,0 +1,66 @@
+/*
+ * Liste de liens : une liste sans puces d'éléments (element-liste-liens.css), décalée de 0,5 colonne de chaque
+ * côté (colonne-decalee.css). Variante --grille : sans retrait (au ras du titre de la page), les cartes côte à
+ * côte, autant de colonnes que la largeur en permet (14 rem au moins chacune : trois dans la colonne de
+ * contenu d'une page de niveau 2), puis empilées sur écran étroit ; texte en haut, pastille dans le coin en
+ * bas à droite ; les cartes d'une rangée prennent la hauteur de la plus haute.
+ *
+ *   <div class="bib-colonne-decalee" style="--bib-decalage: 0.5"><div class="bib-colonne-decalee__colonne">
+ *     <ul class="bib-liste-liens"> <li class="bib-element-liste-liens bib-carte-lien">…</li> </ul>
+ *   </div></div>
+ *   <ul class="bib-liste-liens bib-liste-liens--grille">…</ul>
+ */
+.bib-liste-liens {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bib-liste-liens--grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+  gap: 0.75rem;
+  margin-block: var(--espace-element);
+}
+
+/* La présentation d'ElementListeLiens suit la largeur de l'écran, pas
+   celle de la carte : en grille, chaque carte garde la présentation
+   étroite (texte sur toute la largeur, titre à la taille étroite). Classe doublée :
+   ces règles l’emportent sur celles, de même poids, de la carte. */
+.bib-liste-liens--grille.bib-liste-liens--grille > .bib-element-liste-liens.bib-element-liste-liens {
+  flex-direction: column;
+  align-items: stretch;
+  margin: 0;
+}
+
+/* Texte en haut sur toute la largeur, pastille sous le texte dans le coin
+   en bas à droite : alignées d'une carte à l'autre quelle que soit la
+   longueur du texte */
+.bib-liste-liens--grille.bib-liste-liens--grille .bib-element-liste-liens__pastille,
+.bib-liste-liens--grille.bib-liste-liens--grille .bib-element-liste-liens__bouton {
+  align-self: flex-end;
+  margin-top: auto;
+  margin-bottom: 0.25rem;
+}
+
+.bib-liste-liens--grille.bib-liste-liens--grille .bib-element-liste-liens__texte > * {
+  max-width: none;
+}
+
+.bib-liste-liens--grille.bib-liste-liens--grille .bib-element-liste-liens__titre {
+  font-size: var(--texte-grand);
+}
+
+/* Carte seule : elle prend toute la largeur ; la pastille passe à droite
+   du texte, centrée, plutôt que de laisser un grand vide au-dessus d'elle */
+.bib-liste-liens--grille.bib-liste-liens--grille > .bib-element-liste-liens.bib-element-liste-liens:only-child {
+  flex-direction: row;
+  align-items: center;
+}
+
+.bib-liste-liens--grille.bib-liste-liens--grille > .bib-element-liste-liens:only-child .bib-element-liste-liens__pastille,
+.bib-liste-liens--grille.bib-liste-liens--grille > .bib-element-liste-liens:only-child .bib-element-liste-liens__bouton {
+  align-self: center;
+  margin-block: 0;
+}

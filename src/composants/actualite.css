@@ -1,0 +1,317 @@
+/*
+ * Élément d'actualité : une ligne d'une liste « Quoi de neuf » (événements, nouvelles, formations) : vignette
+ * ou date en grand (facultatives), ligne orange (date, source), titre en lien, pastille fléchée. Construit sur
+ * le motif de carte-lien.css (à charger aussi).
+ *
+ *   <ul class="bib-actualites">
+ *     <li class="bib-actualite bib-carte-lien">
+ *       <span class="bib-actualite__vignette"><img src="photo.jpg" alt="" width="300" height="300" loading="lazy"></span>
+ *       <div class="bib-actualite__texte">
+ *         <p class="bib-actualite__ligne"><span class="bib-actualite__calendrier" aria-hidden="true"></span><strong>Les bibliothèques</strong> · <time datetime="2026-11-02">2 novembre 2026</time></p>
+ *         <a class="bib-actualite__titre bib-lien-etire" href="/nouvelles/titre/">Titre de l'actualité</a>
+ *       </div>
+ *       <span class="bib-actualite__coin"><span class="bib-pastille-fleche bib-pastille-fleche--petite" aria-hidden="true"><span class="bib-pastille-fleche__fleche"></span></span></span>
+ *     </li>
+ *   </ul>
+ *
+ * - Le lien est sur le titre et son ::after couvre tout l'élément : un seul arrêt de tabulation, nommé par le
+ *   titre. Un lien vers un autre site s'ouvre dans un nouvel onglet (target="_blank", texte masqué
+ *   « (nouvel onglet) », pastille --externe). Un titre dans une autre langue porte son lang.
+ * - Date en grand, à la place de la vignette : <time class="bib-actualite__vignette bib-actualite__vignette--date"
+ *   datetime="…"> avec __jour, __mois et __annee (bleu foncé sur bleu 100 : 15,7:1).
+ * - --compact (colonnes de l'accueil) : dès 900 px, hauteur minimale et titre coupé à trois lignes, pour que
+ *   les rangées tombent au même niveau d'une colonne à l'autre ; en dessous, hauteur naturelle et titre
+ *   entier. La coupe et la hauteur minimale ne valent que si la colonne (conteneur « quoi-de-neuf » de
+ *   colonne-quoi-de-neuf.css) fait au moins 17 em : avec le texte agrandi (200 %), le titre n'est jamais coupé
+ *   (WCAG 1.4.4).
+ * - --squelette : même gabarit, des barres (__barre) à la place des textes, pour que la liste chargée dans le
+ *   navigateur ne fasse pas sauter la page ; aria-hidden. Pulsation coupée au mouvement réduit.
+ *
+ * Liste chargée dans le navigateur (événements, formations) : un conteneur .bib-actualites-dynamique avec ses
+ * états (data-etat), son gabarit et le renvoi sans JavaScript ; bib-listes-dynamiques.min.js la remplit (voir
+ * la fiche). --deux-colonnes (bloc de formations d'une page) : les éléments se rangent en deux colonnes côte à
+ * côte dès 900 px, la moitié dans chacune (de haut en bas, puis à droite) ; --bib-actualites-rangees donne le
+ * nombre de rangées.
+ *
+ *   <div class="bib-actualites-dynamique" data-liste-evenements data-service="…rss" data-limite="3" data-repli-image="/images/repli.svg" aria-busy="true">
+ *     <ul class="bib-actualites" data-etat="chargement">…trois éléments --squelette…</ul>
+ *     <p class="bib-masque" data-etat="chargement">Chargement des événements…</p>
+ *     <ul class="bib-actualites" data-etat="pret" data-liste hidden></ul>
+ *     <div class="bib-etat-erreur" data-etat="erreur" hidden>…</div>
+ *     <p data-etat="vide" hidden>Aucun événement à afficher pour le moment</p>
+ *     <p class="bib-actualites-dynamique__sans-js">Les événements s'affichent avec JavaScript. Consultez-les dans le <a href="…">calendrier</a>.</p>
+ *     <template data-gabarit><li class="bib-actualite bib-carte-lien bib-actualite--compact">…<span data-champ="date"></span>…</li></template>
+ *   </div>
+ *
+ * Habillage : --bib-actualite-filet (le trait sous chaque élément), --bib-actualite-ligne (la ligne orange).
+ */
+.bib-actualites {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bib-actualite {
+  --rayon-lien-etire: 0;
+  position: relative;
+  display: flex;
+  gap: var(--espace-2);
+  margin: 0;
+  padding-block: 1.25rem;
+  list-style: none;
+  border-bottom: 1px solid var(--bib-actualite-filet, var(--bleu-200));
+}
+
+.bib-actualite--compact {
+  flex-shrink: 0;
+}
+
+/* Colonnes de Quoi de neuf : marges resserrées, à toutes les largeurs */
+@container quoi-de-neuf (min-width: 0) {
+  .bib-actualite--compact {
+    padding-block: var(--espace-element);
+  }
+}
+
+@media (width >= 900px) {
+  @container quoi-de-neuf (width >= 17em) {
+    /* Hauteur minimale, pas fixe : celle d'un élément à titre de deux lignes, pour que les rangées restent
+       alignées d'une colonne à l'autre ; avec l'espacement du texte agrandi (WCAG 1.4.12), l'élément grandit
+       au lieu de rogner son titre. */
+    .bib-actualite--compact {
+      min-height: 8.375rem;
+    }
+  }
+}
+
+/* Colonne étroite en em (texte agrandi) : la vignette passe au-dessus du texte, qui garde toute la largeur au
+   lieu d'une lettre par ligne */
+@container quoi-de-neuf (width <= 17em) {
+  .bib-actualite--compact {
+    flex-wrap: wrap;
+  }
+
+  .bib-actualite--compact .bib-actualite__texte {
+    flex-basis: 100%;
+  }
+}
+
+.bib-actualite__vignette {
+  flex-shrink: 0;
+  width: 5.5rem;
+  height: 5.5rem;
+  overflow: hidden;
+  border-radius: var(--rayon-moyen);
+}
+
+.bib-actualite__vignette > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Date en grand : même case que la vignette, les colonnes restent alignées */
+.bib-actualite__vignette--date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bleu-100);
+  color: var(--bleu-fonce);
+  line-height: 1;
+  text-align: center;
+}
+
+.bib-actualite__jour {
+  font-size: 1.75rem;
+  font-weight: var(--graisse-forte);
+}
+
+.bib-actualite__mois {
+  margin-top: 0.125rem;
+  font-size: var(--texte-reduit);
+  font-weight: var(--graisse-moyenne);
+}
+
+.bib-actualite__annee {
+  margin-top: 0.25rem;
+  color: var(--couleur-texte-secondaire);
+  font-size: var(--texte-minuscule);
+}
+
+.bib-actualite__texte {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: var(--espace-1);
+  min-width: 0;
+}
+
+.bib-actualite__ligne {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 0.5em;
+  min-height: 1.25rem;
+  margin: 0;
+  color: var(--bib-actualite-ligne, var(--rouge-orange-texte));
+  font-size: var(--texte-petit);
+  font-weight: var(--graisse-normale);
+  letter-spacing: 0.00875rem;
+  line-height: 1.2;
+}
+
+.bib-actualite__ligne strong {
+  font-weight: var(--graisse-forte);
+}
+
+/* Icône de calendrier (CalendarBlank de Phosphor) devant la date d'un événement */
+.bib-actualite__calendrier {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  background-color: var(--rouge-orange);
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20256%20256'%3E%3Cpath%20d='M208%2C32H184V24a8%2C8%2C0%2C0%2C0-16%2C0v8H88V24a8%2C8%2C0%2C0%2C0-16%2C0v8H48A16%2C16%2C0%2C0%2C0%2C32%2C48V208a16%2C16%2C0%2C0%2C0%2C16%2C16H208a16%2C16%2C0%2C0%2C0%2C16-16V48A16%2C16%2C0%2C0%2C0%2C208%2C32ZM72%2C48v8a8%2C8%2C0%2C0%2C0%2C16%2C0V48h80v8a8%2C8%2C0%2C0%2C0%2C16%2C0V48h24V80H48V48ZM208%2C208H48V96H208V208Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.bib-actualite__titre {
+  /* Laisse la place à la pastille, ancrée en bas à droite */
+  padding-right: 2.75rem;
+  color: var(--couleur-texte);
+  font-size: var(--texte-courant);
+  font-weight: var(--graisse-moyenne);
+  line-height: 1.5;
+  text-decoration: none;
+  overflow-wrap: break-word;
+  /* Pas de fondu : la couleur change d'un coup au survol */
+}
+
+@media (width >= 900px) {
+  @container quoi-de-neuf (width >= 17em) {
+    .bib-actualite--compact .bib-actualite__titre {
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
+    }
+  }
+}
+
+.bib-actualite:hover a.bib-actualite__titre,
+a.bib-actualite__titre:focus-visible {
+  color: var(--couleur-accent);
+}
+
+/* Le contour de focus suit l'élément entier, que le lien couvre */
+a.bib-actualite__titre:focus-visible {
+  outline: none;
+}
+
+a.bib-actualite__titre:focus-visible::after {
+  outline: 3px solid var(--couleur-focus);
+  outline-offset: 2px;
+  border-radius: var(--rayon-minuscule);
+}
+
+/* Pastille : disque de la couleur du coin à 10 %, qui ne change pas au survol ; la flèche avance d'un cran
+   (motif carte-lien) */
+.bib-actualite__coin {
+  --pastille-fond: color-mix(in srgb, currentColor 10%, transparent);
+  position: absolute;
+  right: 0;
+  bottom: 1rem;
+  display: flex;
+  color: var(--couleur-accent);
+  pointer-events: none;
+}
+
+/* ---- Squelette ---- */
+.bib-actualite--squelette .bib-actualite__vignette,
+.bib-actualite__barre {
+  background-color: color-mix(in srgb, var(--bleu-fonce) 11%, transparent);
+  animation: bib-actualite-pulsation var(--duree-pulsation) var(--courbe-standard) var(--duree-longue-2) infinite;
+}
+
+.bib-actualite__barre {
+  display: block;
+  width: 100%;
+  height: 1.25rem;
+  border-radius: var(--rayon-minuscule);
+}
+
+.bib-actualite__barre--courte {
+  width: 7rem;
+  height: 0.875rem;
+}
+
+@keyframes bib-actualite-pulsation {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bib-actualite--squelette .bib-actualite__vignette,
+  .bib-actualite__barre {
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .bib-actualite__barre,
+  .bib-actualite--squelette .bib-actualite__vignette {
+    border: 1px solid CanvasText;
+  }
+
+  .bib-actualite__calendrier {
+    background-color: CanvasText;
+  }
+}
+
+/* ---- Liste chargée dans le navigateur ---- */
+.bib-actualites-dynamique__sans-js {
+  display: none;
+}
+
+@media (scripting: none) {
+  .bib-actualites-dynamique__sans-js {
+    display: block;
+  }
+
+  .bib-actualites-dynamique [data-etat] {
+    display: none;
+  }
+}
+
+/* Deux colonnes : la moitié des éléments dans chacune, de haut en bas */
+@media (width >= 900px) {
+  .bib-actualites-dynamique--deux-colonnes > ul {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(var(--bib-actualites-rangees), auto);
+    /* Pas d'écart entre les rangées : le filet de chaque élément les sépare déjà */
+    gap: 0 var(--espace-6);
+  }
+
+  .bib-actualites-dynamique--deux-colonnes > ul[hidden] {
+    display: none;
+  }
+}
+
+/* En deux colonnes : rangées plus serrées. La hauteur minimale de l'élément compact sert à aligner les
+   colonnes de l'accueil ; ici elle laisserait un grand blanc sous chaque vignette. */
+.bib-actualites-dynamique--deux-colonnes .bib-actualite {
+  padding-block: var(--espace-element);
+}
+
+@media (width >= 900px) {
+  .bib-actualites-dynamique--deux-colonnes .bib-actualite--compact {
+    min-height: 0;
+  }
+}

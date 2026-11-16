@@ -1,0 +1,36 @@
+---
+/*
+ * <CarteDepliable> : une carte compacte qui se déplie. Produit le HTML documenté dans
+ * src/composants/carte-depliable.css et importe cette feuille.
+ *
+ *   <CarteDepliable titre="Titre" Icon={BooksIcon} couleur="vertFonce"><p>Texte…</p></CarteDepliable>
+ *
+ * Couleurs : bleuPrincipal (défaut), rose300, vertFonce. `niveauTitre` : 2 à 6 (3 par défaut).
+ */
+import '../src/composants/carte-depliable.css'
+import { classes } from './styles.ts'
+type Couleur = 'bleuPrincipal' | 'rose300' | 'vertFonce'
+
+interface Props {
+  titre: string
+  Icon?: any
+  couleur?: Couleur
+  niveauTitre?: 2 | 3 | 4 | 5 | 6
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+const { titre, Icon, couleur = 'bleuPrincipal', niveauTitre = 3, class: classe, className } = Astro.props
+const COULEUR_CSS: Record<Couleur, string> = { bleuPrincipal: 'bleu-principal', rose300: 'rose-300', vertFonce: 'vert-fonce' }
+const Titre = `h${niveauTitre}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+---
+
+<details class:list={['bib-carte-depliable', `bib-carte-depliable--${COULEUR_CSS[couleur]}`, { 'surface-claire': couleur === 'rose300' }, classes(classe, className)]}>
+  <summary class="bib-carte-depliable__sommaire">
+    <span class="bib-carte-depliable__icone">{Icon && <Icon size={32} aria-hidden="true" focusable="false" />}</span>
+    <Titre class="bib-carte-depliable__titre">{titre}</Titre>
+    <span class="bib-carte-depliable__pastille" aria-hidden="true"></span>
+  </summary>
+  <div class="bib-carte-depliable__contenu"><slot /></div>
+</details>

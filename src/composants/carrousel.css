@@ -1,0 +1,264 @@
+/*
+ * Carrousel : un carrousel de cartes à défilement natif (scroll-snap), sans bibliothèque. Souris, trackpad,
+ * toucher et clavier (Tab amène chaque carte à l'écran) fonctionnent sans JavaScript ; bib-carrousel.min.js
+ * (facultatif) ajoute les flèches, désactivées aux extrémités et masquées quand tout tient dans la largeur,
+ * l'annonce des cartes visibles, la barre de progression, et le fondu du bord droit tant qu'il reste des cartes
+ * (data-suite).
+ *
+ *   <div class="bib-carrousel" role="region" aria-roledescription="carrousel" aria-labelledby="car-titre" data-carrousel>
+ *     <div class="bib-carrousel__entete">
+ *       <div class="bib-carrousel__titre" id="car-titre"><h2>Nos services</h2></div>
+ *       <div class="bib-carrousel__rangee">
+ *         <div class="bib-carrousel__description">Un aperçu.</div>
+ *         <div class="bib-carrousel__commandes bib-carrousel__commandes-entete" hidden data-commandes>
+ *           <button type="button" class="bib-carrousel__commande" aria-controls="car-piste" aria-disabled="true" data-precedent><svg viewBox="0 0 50 50" width="50" height="50" aria-hidden="true">…</svg><span class="bib-masque">Cartes précédentes</span></button>
+ *           <button type="button" class="bib-carrousel__commande" aria-controls="car-piste" data-suivant><svg class="bib-carrousel__vers-droite" …>…</svg><span class="bib-masque">Cartes suivantes</span></button>
+ *           <span class="bib-masque" role="status" data-position></span>
+ *         </div>
+ *       </div>
+ *     </div>
+ *     <div class="bib-carrousel__piste" id="car-piste" data-piste>
+ *       <div class="bib-carrousel__diapositive" role="group" aria-roledescription="diapositive" aria-label="1 sur 3" data-diapositive>…une carte…</div>
+ *     </div>
+ *     <div class="bib-carrousel__progression bib-carrousel__progression-piste" aria-hidden="true" hidden data-progression><span class="bib-carrousel__curseur" data-curseur></span></div>
+ *     <div class="bib-carrousel__plus"><a class="bib-bouton …" href="/services/">Voir tout</a></div>
+ *   </div>
+ *
+ * Motif Carrousel de l'APG : région nommée par le titre, aria-roledescription « carrousel » ; chaque
+ * diapositive est un groupe « n sur N ». Pas de défilement automatique. La barre de progression est visuelle
+ * seulement (chaque diapositive s'annonce déjà « n sur N »). Une flèche avance d'une page : la première
+ * diapositive coupée à droite vient au début, ou l'inverse en reculant.
+ */
+/* Titre, description, cartes et bouton « voir tout » : --espace-bloc
+   entre les groupes (45 px dans la source), --espace-grille entre les
+   cartes (25 px, puis 40 px dès 600 px dans la source, par l'addition de
+   trois marges) */
+.bib-carrousel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espace-bloc);
+  min-width: 0;
+}
+
+.bib-carrousel__titre :is(h2, .bib-carrousel h3) {
+  margin-top: 0;
+}
+
+.bib-carrousel__description > :last-child {
+  margin-bottom: 0;
+}
+
+/* Le gap du carrousel fait l'écart ; sans la marge haute de Bouton */
+.bib-carrousel__plus > .bib-bouton {
+  margin-top: 0;
+}
+
+.bib-carrousel__rangee {
+  display: flex;
+  flex-direction: column;
+}
+
+.bib-carrousel__description {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* Flèches sous la description (mobile), à droite du titre dès 600 px */
+.bib-carrousel__commandes-entete {
+  justify-content: flex-end;
+  margin-top: var(--espace-1);
+}
+
+.bib-carrousel__piste {
+  display: flex;
+  gap: var(--espace-grille);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  /* Les cartes à révélation se règlent sur sa largeur (100cqi) */
+  container-type: inline-size;
+  /* Le contour de focus d'une carte ne doit pas être rogné */
+  padding-block: 4px;
+  margin-block: -4px;
+}
+
+/* Avec les boutons, la barre de défilement fait doublon (la source n'en
+   avait pas) ; sans JS, elle reste la seule commande visible */
+[data-pret] .bib-carrousel__piste {
+  scrollbar-width: none;
+}
+
+[data-pret] .bib-carrousel__piste::-webkit-scrollbar {
+  display: none;
+}
+
+/* Il reste des cartes à droite : le bord droit de la piste s'efface en
+   fondu, pour signaler la suite. Le masque ne joue que sur l'opacité (le
+   noir n'y est pas une couleur affichée). Au bout de la piste, plus de
+   fondu. Sans JS, pas d'attribut : la barre de défilement suffit. */
+.bib-carrousel__piste[data-suite] {
+  --fondu: clamp(1.5rem, 5vw, 3rem);
+
+  /* Discret : la dernière bande ne descend qu'à 40 % d'opacité */
+  mask-image: linear-gradient(to right, black calc(100% - var(--fondu)), rgb(0 0 0 / 40%));
+}
+
+/* Barre de progression : le gap du carrousel l'éloignerait trop des
+   cartes, on la rapproche */
+.bib-carrousel__progression-piste {
+  margin-top: calc(var(--espace-element) - var(--espace-bloc));
+}
+
+.bib-carrousel__diapositive {
+  display: flex;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+}
+
+@media (width >= 600px) {
+  .bib-carrousel__rangee {
+    flex-direction: row;
+  }
+
+  /* Sans description, les flèches se rangent à droite du titre : seules
+     sur leur ligne, elles creusaient 66 px de plus entre titre et cartes */
+  .bib-carrousel__entete--sans-description {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .bib-carrousel__entete--sans-description .bib-carrousel__titre {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .bib-carrousel__entete--sans-description .bib-carrousel__description {
+    display: none;
+  }
+
+  .bib-carrousel__commandes-entete {
+    align-items: flex-end;
+    margin-top: 0;
+    padding-left: var(--espace-4);
+    /* Pas de marge négative comme le edge="end" de MUI : hors d'une
+       Section (sans gouttière), elle faisait déborder la page de 12 px. */
+  }
+}
+
+.bib-carrousel__commandes {
+  display: flex;
+  gap: var(--espace-1);
+}
+
+.bib-carrousel__commandes[hidden] {
+  display: none;
+}
+
+.bib-carrousel__commande {
+  display: inline-flex;
+  padding: 8px;
+  border: 0;
+  border-radius: var(--rayon-plein);
+  background: transparent;
+  color: var(--couleur-lien);
+  cursor: pointer;
+  transition: background-color var(--duree-courte-3) var(--courbe-standard);
+}
+
+.bib-carrousel__commande:hover {
+  background-color: color-mix(in srgb, currentColor 8%, transparent);
+}
+
+.bib-carrousel__commande svg {
+  display: block;
+  width: 50px;
+  height: 50px;
+  fill: currentColor;
+}
+
+.bib-carrousel__vers-droite {
+  transform: scaleX(-1);
+}
+
+.bib-carrousel__commande[aria-disabled='true'] {
+  opacity: 0.38;
+  cursor: default;
+}
+
+.bib-carrousel__commande[aria-disabled='true']:hover {
+  background-color: transparent;
+}
+
+/* Couleurs forcées : un contour de bouton (la pastille à 10 % ne se voit
+   pas) ; désactivée, la commande garde un contour en pointillé et passe en
+   GrayText sans l'opacité de 0,38, qui la rendait presque invisible sur
+   fond noir. La marge interne compense le contour : même taille. */
+@media (forced-colors: active) {
+  .bib-carrousel__commande {
+    padding: 6px;
+    border: 2px solid ButtonText;
+  }
+
+  .bib-carrousel__commande[aria-disabled='true'] {
+    border-style: dashed;
+    border-color: GrayText;
+    color: GrayText;
+    opacity: 1;
+  }
+}
+
+/* Rail pâle, curseur bleu (3:1 au moins sur blanc et sur bleu pâle, WCAG 1.4.11) */
+.bib-carrousel__progression {
+  position: relative;
+  height: 4px;
+  overflow: hidden;
+  border-radius: var(--rayon-plein);
+  background-color: color-mix(in srgb, var(--couleur-texte) 15%, transparent);
+}
+
+.bib-carrousel__progression[hidden] {
+  display: none;
+}
+
+.bib-carrousel__curseur {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  border-radius: inherit;
+  background-color: var(--couleur-lien);
+  transition: transform var(--duree-courte-2) linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bib-carrousel__curseur {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .bib-carrousel__progression {
+    outline: 1px solid CanvasText;
+  }
+
+  .bib-carrousel__curseur {
+    background-color: CanvasText;
+  }
+}
+
+.bib-carrousel .bib-masque {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.bib-carrousel__piste:focus-visible {
+  outline: var(--focus-epaisseur) solid var(--couleur-focus);
+  outline-offset: calc(-1 * var(--focus-epaisseur));
+}

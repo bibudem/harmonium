@@ -1,0 +1,57 @@
+---
+/*
+ * <ColonneActualites> : une colonne titrée d'une section « Quoi de neuf ». Produit le HTML documenté dans
+ * src/composants/colonne-actualites.css et importe cette feuille.
+ *
+ *   <ColonneActualites title="Nouvelles" moreText="Toutes nos nouvelles" moreLink="/nouvelles/">
+ *     <ListeActualites items={…} />
+ *   </ColonneActualites>
+ *
+ * `titreMasque` : le h3 reste pour les lecteurs d'écran seulement. `plusCentre` : le bouton, centré sous la
+ * liste, est un bouton plein. `externe` : moreLink s'ouvre dans un nouvel onglet. `id` : celui du h3 (relié à
+ * l'onglet de <QuoiDeNeuf>) ; généré sinon.
+ */
+import '../src/composants/colonne-actualites.css'
+import Bouton from './Bouton.astro'
+import { idUnique } from './ids.ts'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Props {
+  title: string
+  niveauTitre?: 2 | 3 | 4 | 5 | 6
+  id?: string
+  moreText?: string
+  moreLink?: string
+  externe?: boolean
+  titreMasque?: boolean
+  plusCentre?: boolean
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const { title, niveauTitre = 3, id: idDonne, moreText, moreLink, externe = false, titreMasque = false, plusCentre = false, class: classe, className, style } = Astro.props
+if (moreLink && !moreText?.trim()) throw new Error('ColonneActualites : le lien de fin nécessite un libellé.')
+const Titre = `h${niveauTitre}` as 'h3'
+const id = idDonne ?? idUnique('colonne-actualites')
+---
+
+<section
+  class:list={['bib-colonne-actualites', { 'bib-colonne-actualites--titre-masque': titreMasque, 'bib-colonne-actualites--plus-centre': plusCentre }, classes(classe, className)]}
+  style={fusionnerStyles(style)}
+  aria-labelledby={id}
+  data-colonne={id}
+>
+  <Titre id={id} class="bib-colonne-actualites__titre">{title}</Titre>
+  <div class="bib-colonne-actualites__corps"><slot /></div>
+  {
+    moreLink && (
+      <div class="bib-colonne-actualites__plus">
+        <Bouton secondary={!plusCentre} primary={plusCentre} href={moreLink} {...(externe && { target: '_blank', rel: 'noopener noreferrer' })}>
+          {moreText}
+        </Bouton>
+      </div>
+    )
+  }
+</section>

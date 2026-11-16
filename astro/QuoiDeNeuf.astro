@@ -1,0 +1,44 @@
+---
+/*
+ * <QuoiDeNeuf> : la section d'actualités d'une page d'accueil. Produit le HTML documenté dans
+ * src/composants/quoi-de-neuf.css et importe cette feuille ; bib-quoi-de-neuf.min.js (facultatif) fait les
+ * onglets sous 900 px. Les colonnes (<ColonneActualites>, <ListeEvenements>, <ListeFormations>…) sont ses
+ * enfants.
+ *
+ *   <QuoiDeNeuf onglets={[{ id: 'evenements', label: 'Événements' }, { id: 'nouvelles', label: 'Nouvelles' }]}>
+ *     <ListeEvenements id="evenements" />
+ *     <ColonneActualites id="nouvelles" title="Nouvelles">…</ColonneActualites>
+ *   </QuoiDeNeuf>
+ *
+ * Un onglet par colonne, dans le même ordre ; `id` est celui du h3 de la colonne.
+ */
+import '../src/composants/quoi-de-neuf.css'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Props {
+  onglets: { id: string; label: string }[]
+  /** Nom de la liste d'onglets (sous 900 px) */
+  nom?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const { onglets, class: classe, className, style } = Astro.props
+if (!Array.isArray(onglets) || !onglets.length) throw new Error('QuoiDeNeuf : la propriété `onglets` est obligatoire.')
+---
+
+<div class:list={['bib-quoi-de-neuf', classes(classe, className)]} style={fusionnerStyles(style)} data-quoi-de-neuf>
+  <div class="bib-quoi-de-neuf__onglets" data-onglets>
+    <span class="bib-quoi-de-neuf__indicateur" aria-hidden="true" data-indicateur></span>
+    {
+      onglets.map(({ id, label }, i) => (
+        <button type="button" class="bib-quoi-de-neuf__onglet" id={`quoi-de-neuf-onglet-${id}`} data-cible={id} data-actif={i === 0 ? 'true' : 'false'}>
+          {label}
+        </button>
+      ))
+    }
+  </div>
+  <div class="bib-quoi-de-neuf__grille"><slot /></div>
+</div>

@@ -1,0 +1,13 @@
+{
+  "styles": [],
+  "scripts": [
+    {
+      "src": "@@dist/bib-avis.min.js",
+      "attributs": "type=\"module\""
+    },
+    {
+      "src": "@@/exemples/composants/avis/script-1.js",
+      "attributs": ""
+    }
+  ]
+}

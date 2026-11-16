@@ -1,0 +1,62 @@
+---
+/*
+ * <Integration> : le conteneur d’un service externe (formulaire LibWizard ou LibAnswers, clavardage LibChat,
+ * iframe). Produit le HTML documenté dans src/composants/integration.css et importe cette feuille ;
+ * bib-integration.min.js charge le script, masque le contenu jusqu’à ses styles et annonce un échec.
+ *
+ *   <Integration cibleId="s-la-widget-7159" src="https://unequestion.bib.umontreal.ca/1.0/widgets/7159"
+ *     hauteur="860px" hauteurLarge="650px" />
+ *   <Integration clavardage="9ee6ed73a6fb…" />
+ *   <Integration cibleId="formulaire-consentement" hauteur="150rem" />   (la page remplit la cible elle-même)
+ *
+ * `clavardage` : identifiant (hash) d’un widget LibChat ; donne la cible, le script, la variante
+ * --clavardage et ses messages. Sinon `cibleId` est obligatoire, et `src` facultatif.
+ */
+import '../src/composants/integration.css'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Props {
+  /** id de l’élément que le script tiers remplit */
+  cibleId?: string
+  /** Adresse du script tiers */
+  src?: string
+  /** Hash d’un widget LibChat (fenêtre de clavardage intégrée) */
+  clavardage?: string
+  /** Place réservée avant l’arrivée du contenu (longueur CSS : « 120rem », « 860px ») */
+  hauteur?: string
+  /** Place réservée dès 1200 px, si elle diffère */
+  hauteurLarge?: string
+  /** Message affiché pendant l’attente */
+  chargement?: string
+  /** Message annoncé si le script échoue */
+  erreur?: string
+  /** Message affiché sans JavaScript */
+  sansScript?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const { cibleId, src, clavardage, hauteur, hauteurLarge, chargement, erreur, sansScript, class: classe, className, style, ...reste } = Astro.props
+
+if (!clavardage && !cibleId) throw new Error('Integration : `cibleId` (ou `clavardage`) est obligatoire.')
+const id = clavardage ? `libchat_${clavardage}` : cibleId
+const adresse = clavardage ? `https://unequestion.bib.umontreal.ca/load_chat.php?hash=${encodeURIComponent(clavardage)}` : src
+const textes = clavardage
+  ? { chargement: 'Chargement du clavardage…', erreur: 'Le service de clavardage est temporairement indisponible.', sansScript: 'Le clavardage a besoin de JavaScript.' }
+  : { chargement: 'Chargement du formulaire…', erreur: 'Le formulaire n’a pas pu être chargé. Rechargez la page ou réessayez plus tard.', sansScript: 'Ce formulaire a besoin de JavaScript pour s’afficher.' }
+---
+
+<div
+  class:list={['bib-integration', clavardage && 'bib-integration--clavardage', classes(classe, className)]}
+  style={fusionnerStyles({ '--bib-integration-hauteur': hauteur, '--bib-integration-hauteur-large': hauteurLarge }, style)}
+  data-integration
+  data-src={adresse}
+  data-message-erreur={erreur ?? textes.erreur}
+  {...reste}>
+  <div id={id} class="bib-integration__cible"></div>
+  <p class="bib-integration__chargement">{chargement ?? textes.chargement}</p>
+  <p class="bib-integration__erreur" role="status"></p>
+  <noscript><p>{sansScript ?? textes.sansScript}</p></noscript>
+</div>

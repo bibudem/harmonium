@@ -1,0 +1,64 @@
+---
+/*
+ * <ElementListeLiens> : un élément de <ListeLiens>. Produit le HTML documenté dans
+ * src/composants/element-liste-liens.css et importe cette feuille (et carte-lien.css).
+ *
+ *   <ElementListeLiens title="Prêts" description="Durées et conditions." href="/prets/" linkText="Voir" />
+ *
+ * `linkText` : texte d'appel à droite (sinon une pastille fléchée). `color="vertFonce"` sur une section
+ * vert foncé. `niveauTitre` : 2 à 6 (3 par défaut).
+ */
+import '../src/composants/element-liste-liens.css'
+import '../src/composants/carte-lien.css'
+import PastilleFleche from './PastilleFleche.astro'
+import { lienCarte } from './liens.ts'
+import { idUnique } from './ids.ts'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Props {
+  title: string
+  description?: string
+  href: string
+  target?: string
+  rel?: string
+  linkText?: string | null
+  color?: 'default' | 'vertFonce'
+  niveauTitre?: 2 | 3 | 4 | 5 | 6
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const { title, description, href, target, rel, linkText = null, color = 'default', niveauTitre = 3, class: classe, className, style, ...reste } = Astro.props
+if (!href) throw new Error(`ElementListeLiens « ${title} » : la propriété \`href\` est requise.`)
+// Annonce « (PDF) » comme les autres cartes ; l'appel visible (linkText),
+// caché aux lecteurs d'écran dans la pastille, décrit le lien
+const { externe, afficherFleche, cible, rel: relFinal, annonce } = lienCarte(href, target, rel, Astro.site?.origin ?? Astro.url.origin)
+const idAppel = linkText ? idUnique('appel') : undefined
+// Typé comme balise de titre : une chaîne quelconque n'accepte pas `class` (ts 2322)
+const Titre = `h${niveauTitre}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+---
+
+<li class:list={['bib-element-liste-liens', 'bib-carte-lien', `${color === 'vertFonce' ? 'bib-element-liste-liens--vert-fonce' : ''}`, classes(classe, className)]} style={fusionnerStyles(style)} {...reste}>
+  <div class="bib-element-liste-liens__texte">
+    <Titre class="bib-element-liste-liens__titre">
+      <a class="bib-lien-etire bib-element-liste-liens__lien" href={href} target={cible} rel={relFinal} aria-describedby={idAppel}>
+        {title}
+        {annonce && <span class="bib-masque">{annonce}</span>}
+      </a>
+    </Titre>
+    {description && <div class="bib-element-liste-liens__description">{description}</div>}
+  </div>
+  {
+    linkText ? (
+      <span class:list={['bib-element-liste-liens__bouton', { 'bib-element-liste-liens__bouton--externe': externe }]} aria-hidden="true">
+        {/* aria-describedby lit un élément caché : l'appel n'est pas lu deux fois */}
+        <span id={idAppel}>{linkText}</span>
+        <span class="bib-element-liste-liens__fleche" aria-hidden="true" />
+      </span>
+    ) : afficherFleche && (
+      <PastilleFleche class="bib-element-liste-liens__pastille" externe={externe} petite />
+    )
+  }
+</li>

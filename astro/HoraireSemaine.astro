@@ -1,0 +1,58 @@
+---
+/*
+ * <HoraireSemaine> : l'horaire de la semaine d'un service d'une bibliothèque, jour par jour sur huit semaines,
+ * lu dans l'API des horaires par bib-horaire-semaine.min.js. Produit le HTML documenté dans
+ * src/composants/horaire-semaine.css et importe cette feuille, avec celle de l'état d'erreur.
+ *
+ *   <HoraireSemaine bibliotheque="ss" service="soutien-informatique">
+ *     Consultez les <a href="https://bib.umontreal.ca/horaires">heures d’ouverture des bibliothèques</a> ou écrivez-nous par clavardage.
+ *   </HoraireSemaine>
+ *
+ * Le slot est le texte de repli, affiché sans JavaScript ou si l'API ne répond pas. `titre` (« Horaire de la
+ * semaine ») est un h3 par défaut (`niveau`). `api` : une autre adresse de l'API (essais).
+ */
+import '../src/composants/horaire-semaine.css'
+import EtatErreur from './EtatErreur.astro'
+import { idUnique } from './ids.ts'
+import { classes } from './styles.ts'
+
+interface Props {
+  bibliotheque: string
+  service: string
+  titre?: string
+  niveau?: 2 | 3 | 4 | 5 | 6
+  api?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+const { bibliotheque, service, titre = 'Horaire de la semaine', niveau = 3, api, class: classe, className } = Astro.props
+const Titre = `h${niveau}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+const id = idUnique('horaire-semaine')
+const CHEVRON_GAUCHE = 'M168.49,199.51a12,12,0,0,1-17,17l-80-80a12,12,0,0,1,0-17l80-80a12,12,0,0,1,17,17L97,128Z'
+const CHEVRON_DROIT = 'M184.49,136.49l-80,80a12,12,0,0,1-17-17L159,128,87.51,56.49a12,12,0,1,1,17-17l80,80A12,12,0,0,1,184.49,136.49Z'
+---
+
+<section class:list={['bib-horaire-semaine', classes(classe, className)]} id={id} aria-labelledby={`${id}-titre`} data-horaire-semaine data-bibliotheque={bibliotheque} data-service={service} data-api={api}>
+  <div class="bib-horaire-semaine__entete">
+    <div>
+      <Titre class="bib-horaire-semaine__titre" id={`${id}-titre`}>{titre}</Titre>
+      <p class="bib-horaire-semaine__periode" data-periode aria-live="polite"></p>
+    </div>
+    <div class="bib-horaire-semaine__navigation" data-navigation hidden>
+      <button type="button" class="bib-horaire-semaine__semaine" data-precedente aria-label="Semaine précédente"><svg viewBox="0 0 256 256" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d={CHEVRON_GAUCHE} /></svg></button>
+      <button type="button" class="bib-horaire-semaine__semaine" data-suivante aria-label="Semaine suivante"><svg viewBox="0 0 256 256" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d={CHEVRON_DROIT} /></svg></button>
+    </div>
+  </div>
+  <p class="bib-horaire-semaine__repli" data-repli><slot>Consultez les <a href="https://bib.umontreal.ca/horaires">heures d’ouverture des bibliothèques</a>.</slot></p>
+  <p class="bib-horaire-semaine__repli" role="status" data-chargement hidden>Chargement de l’horaire…</p>
+  <EtatErreur message="L’horaire n’a pas pu être chargé." etat="" />
+  <div class="bib-horaire-semaine__vue" data-vue hidden>
+    <div class="bib-horaire-semaine__jours" role="tablist" aria-label="Jours de la semaine" data-onglets></div>
+    <div class="bib-horaire-semaine__panneau" role="tabpanel" id={`${id}-panneau`} data-panneau>
+      <p class="bib-horaire-semaine__date" data-date></p>
+      <p class="bib-horaire-semaine__valeur" data-valeur></p>
+    </div>
+  </div>
+</section>

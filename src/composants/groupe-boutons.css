@@ -1,0 +1,33 @@
+/*
+ * Groupe de boutons : des boutons côte à côte, qui passent à la ligne quand la place manque. Dans le
+ * contenu, deux directives ::bouton qui se suivent forment un groupe ; en pied d’un bloc, la rangée de
+ * boutons d’une bande (« Réserver une salle », « Voir les règles »).
+ *
+ *   <div class="bib-groupe-boutons">
+ *     <a class="bib-bouton bib-bouton--plein" href="/salles/"><span class="bib-bouton__libelle">Réserver une salle</span><span class="bib-bouton__fin" aria-hidden="true"></span></a>
+ *     <a class="bib-bouton bib-bouton--texte" href="/regles/"><span class="bib-bouton__libelle">Voir les règles</span><span class="bib-bouton__fin" aria-hidden="true"></span></a>
+ *   </div>
+ *
+ * Par défaut (dans un texte) : l’écart vertical vient de la marge haute de chaque bouton, un espace suit le
+ * groupe avant le paragraphe suivant. --pied : en fin de bloc, écart régulier entre les boutons, sans leur
+ * marge haute, et un espace de bloc avant la rangée. --centre : boutons centrés.
+ */
+.bib-groupe-boutons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--espace-element);
+  margin-block: 0 var(--espace-element);
+}
+
+.bib-groupe-boutons--centre {
+  justify-content: center;
+}
+
+.bib-groupe-boutons--pied {
+  gap: var(--espace-element);
+  margin-block: var(--espace-bloc) 0;
+}
+
+.bib-groupe-boutons--pied > .bib-bouton {
+  margin: 0;
+}

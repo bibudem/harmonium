@@ -1,0 +1,85 @@
+---
+/*
+ * <Telecommande> : le dessin d'un appareil à touches, puis une carte par touche. Produit le HTML documenté
+ * dans src/composants/telecommande.css et importe cette feuille.
+ *
+ *   <Telecommande titre="Prompteur" touches={[
+ *     { nom: 'Changer d’affichage', effet: 'Bascule entre l’affichage texte et l’affichage écran.', icone: '<svg …>…</svg>' },
+ *     { vide: true },
+ *     { nom: 'Défiler vers le haut', effet: 'Fait défiler le texte vers le haut.', icone: '<svg …>…</svg>' },
+ *   ]} />
+ *
+ * Les touches suivent l'ordre de la grille, rangée par rangée : trois touches ou moins tiennent sur une
+ * rangée, au-delà deux rangées. `icone` : le SVG de l'icône (décoratif ; rendu deux fois, dans le dessin et
+ * dans la carte). `nom` et `effet` acceptent du HTML en ligne. La description du dessin est calculée.
+ */
+import '../src/composants/telecommande.css'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+type Touche = { nom: string; effet: string; icone: string } | { vide: true }
+
+interface Props {
+  titre?: string
+  touches: Touche[]
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const { titre, touches, class: classe, className, style } = Astro.props
+if (!touches?.length) throw new Error('Telecommande : la propriété `touches` est obligatoire.')
+
+let numero = 0
+const grille = touches.map((t) => ('vide' in t ? { vide: true as const } : { vide: false as const, numero: ++numero, ...t }))
+const colonnes = touches.length <= 3 ? touches.length : Math.ceil(touches.length / 2)
+const rangees = Math.ceil(touches.length / colonnes)
+const texte = (html: string) => html.replace(/<[^>]*>/g, '').trim()
+const description = [
+  `${titre ? `Contrôleur « ${titre} »` : 'Contrôleur'} : ${touches.length} touches sur ${rangees} rangée${rangees > 1 ? 's' : ''}.`,
+  ...Array.from({ length: rangees }, (_, r) => {
+    const morceau = grille.slice(r * colonnes, (r + 1) * colonnes).map((t) => (t.vide ? 'une touche non utilisée' : `${t.numero} (${texte(t.nom)})`))
+    return `${r === 0 ? 'En haut' : r === rangees - 1 ? 'En bas' : `Rangée ${r + 1}`} : ${morceau.join(', ')}.`
+  }),
+].join(' ')
+// L'icône de la carte est plus petite que celle de la touche
+const taille = (svg: string, px: number) => svg.replace(/\swidth="[^"]*"/, '').replace(/\sheight="[^"]*"/, '').replace('<svg', `<svg width="${px}" height="${px}" aria-hidden="true" focusable="false"`)
+---
+
+<div class:list={['bib-telecommande', classes(classe, className)]} style={fusionnerStyles(style)}>
+  <div class="bib-telecommande__appareil" role="img" aria-label={description}>
+    {titre && <div class="bib-telecommande__etiquette">{titre}</div>}
+    <div class="bib-telecommande__grille" style={`--bib-telecommande-colonnes: ${colonnes}`}>
+      {
+        grille.map((t) =>
+          t.vide ? (
+            <span class="bib-telecommande__touche bib-telecommande__touche--vide" />
+          ) : (
+            <span class="bib-telecommande__touche">
+              <Fragment set:html={taille(t.icone, 34)} />
+              <span class="bib-telecommande__numero">{t.numero}</span>
+            </span>
+          ),
+        )
+      }
+    </div>
+  </div>
+  <ol class="bib-telecommande__cartes">
+    {
+      grille.map(
+        (t) =>
+          !t.vide && (
+            <li class="bib-telecommande__carte">
+              <p class="bib-telecommande__entete">
+                <span class="bib-telecommande__pastille" aria-hidden="true">{t.numero}</span>
+                <span class="bib-masque">Touche {t.numero} : </span>
+                <strong set:html={t.nom} />
+              </p>
+              <span class="bib-telecommande__icone" aria-hidden="true"><Fragment set:html={taille(t.icone, 28)} /></span>
+              <p class="bib-telecommande__effet" set:html={t.effet} />
+            </li>
+          ),
+      )
+    }
+  </ol>
+</div>

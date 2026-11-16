@@ -1,0 +1,29 @@
+---
+/*
+ * <Citation> : produit le HTML documenté dans src/composants/citation.css (une seule source
+ * pour les sites Astro et les autres) et importe cette feuille. Aucun JavaScript.
+ *
+ *   <Citation source="Dr Gilles Théorêt" cite="https://exemple.ca/archive"><p>…</p></Citation>
+ */
+import '../src/composants/citation.css'
+import { classes, fusionnerStyles } from './styles.ts'
+
+interface Props {
+  /** Adresse de la source, posée sur <blockquote cite> */
+  cite?: string
+  /** Attribution affichée sous la citation */
+  source?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: string | Record<string, string | number>
+  [attribut: string]: unknown
+}
+
+const { cite, source, class: classe, className, style, ...reste } = Astro.props
+---
+
+<figure class:list={['bib-citation', classes(classe, className)]} style={fusionnerStyles(style)}>
+  <blockquote class="bib-citation__texte" cite={cite} {...reste}><slot /></blockquote>
+  {source && <figcaption class="bib-citation__source">{source}</figcaption>}
+</figure>

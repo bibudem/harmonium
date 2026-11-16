@@ -1,0 +1,34 @@
+---
+/*
+ * <Separateur> : produit le HTML documenté dans src/composants/separateur.css et importe cette
+ * feuille. Aucun JavaScript.
+ *
+ *   <Separateur />
+ *   <Separateur orientation="vertical" />   (dans une rangée flex)
+ */
+import '../src/composants/separateur.css'
+import { classes, fusionnerStyles } from './styles.ts'
+
+interface Props {
+  orientation?: 'horizontal' | 'vertical'
+  /** Hérité de MUI : le filet vertical s'étire toujours sur la rangée */
+  flexItem?: boolean
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  /** Hérité de MUI, ignoré */
+  variant?: string
+  style?: string | Record<string, string | number>
+  [attribut: string]: unknown
+}
+
+const { orientation = 'horizontal', flexItem: _flexItem, class: classe, className, style, variant: _variant, ...reste } = Astro.props
+const vertical = orientation === 'vertical'
+---
+
+<hr
+  class:list={['bib-separateur', { 'bib-separateur--vertical': vertical }, classes(classe, className)]}
+  aria-orientation={vertical ? 'vertical' : undefined}
+  style={fusionnerStyles(style)}
+  {...reste}
+/>

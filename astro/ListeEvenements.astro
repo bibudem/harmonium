@@ -1,0 +1,72 @@
+---
+/*
+ * <ListeEvenements> : la liste des prochains événements, lue dans un flux RSS (celui du calendrier de
+ * l'Université par défaut) par bib-listes-dynamiques.min.js, dans le navigateur. Produit le HTML documenté dans
+ * src/composants/actualite.css, dans une <ColonneActualites>.
+ *
+ *   <ListeEvenements limit={3} moreLink="https://calendrier.umontreal.ca/activites?organisateurs=les-bibliotheques" repliImage="/images/evenement.svg" />
+ *
+ * `service` : l'adresse d'un autre flux RSS. `repliImage` : l'image décorative d'un événement sans vignette (ou
+ * dont la vignette ne se charge pas). Pendant le chargement, un squelette garde la place ; en cas d'échec, un
+ * message et « Réessayer » ; sans JavaScript, un renvoi vers le calendrier.
+ */
+import Actualite from './Actualite.astro'
+import ColonneActualites from './ColonneActualites.astro'
+import EtatErreur from './EtatErreur.astro'
+import type { Style } from './styles.ts'
+
+interface Props {
+  title?: string
+  id?: string
+  service?: string
+  limit?: number
+  moreText?: string
+  moreLink?: string
+  repliImage?: string
+  titreMasque?: boolean
+  plusCentre?: boolean
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const SERVICE_URL =
+  'https://calendrier.umontreal.ca/activites/export.rss?tx_solr[filter][0]=types:activites-culturelles&tx_solr[filter][1]=types:activites-de-reseautage&tx_solr[filter][2]=types:activites-dinformation&tx_solr[filter][3]=types:activites-philanthropiques&tx_solr[filter][4]=types:activites-sportives&tx_solr[filter][5]=types:ceremonies-officielles&tx_solr[filter][6]=types:concours&tx_solr[filter][7]=types:conferences-colloques&tx_solr[filter][8]=types:cours-seminaires&tx_solr[filter][9]=types:journees-thematiques&tx_solr[filter][10]=types:portes-ouvertes&tx_solr[filter][11]=types:soutenances-de-these&tx_solr[filter][12]=organisateurs:les-bibliotheques'
+const MORE_LINK = 'https://calendrier.umontreal.ca/activites?organisateurs=les-bibliotheques'
+
+function urlValide(valeur: unknown, defaut: string) {
+  try {
+    return typeof valeur === 'string' ? new URL(valeur).toString() : defaut
+  } catch {
+    return defaut
+  }
+}
+
+const { title = 'Événements', id, service, limit: limiteDemandee = 3, moreText = 'Tous nos événements', moreLink, repliImage, titreMasque, plusCentre, class: classe, className, style } = Astro.props
+const limite = typeof limiteDemandee === 'number' && limiteDemandee > 0 ? limiteDemandee : 3
+const urlService = urlValide(service, SERVICE_URL)
+const urlPlus = urlValide(moreLink, MORE_LINK)
+---
+
+<ColonneActualites title={title} id={id} moreText={moreText} moreLink={urlPlus} externe titreMasque={titreMasque} plusCentre={plusCentre} class={classe} className={className} style={style}>
+  <div class="bib-actualites-dynamique" data-liste-evenements data-service={urlService} data-limite={limite} data-repli-image={repliImage} aria-busy="true">
+    <ul class="bib-actualites" data-etat="chargement">
+      {Array.from({ length: limite }, () => <Actualite vignette compact squelette />)}
+    </ul>
+    <p class="bib-masque" data-etat="chargement">Chargement des événements…</p>
+    <ul class="bib-actualites" data-etat="pret" data-liste hidden></ul>
+    <EtatErreur message="Les événements ne sont pas disponibles pour le moment." />
+    <p data-etat="vide" hidden>Aucun événement à afficher pour le moment</p>
+    <p class="bib-actualites-dynamique__sans-js">
+      Les événements s'affichent avec JavaScript. Consultez-les dans le <a href={urlPlus} target="_blank" rel="noopener noreferrer"
+        >calendrier de l'Université<span class="bib-masque"> (nouvel onglet)</span></a
+      >.
+    </p>
+    <template data-gabarit>
+      <Actualite href="#" externe vignette calendrier compact>
+        <span slot="ligne" data-champ="date"></span>
+      </Actualite>
+    </template>
+  </div>
+</ColonneActualites>

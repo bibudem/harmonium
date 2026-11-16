@@ -1,0 +1,48 @@
+---
+/*
+ * <Accordeon> : un volet, en <details> natif. Produit le HTML documenté dans
+ * src/composants/accordeons.css et importe cette feuille.
+ *
+ *   <GroupeAccordeons>
+ *     <Accordeon>
+ *       <AccordeonTitre>Question</AccordeonTitre>
+ *       <AccordeonContenu>Réponse</AccordeonContenu>
+ *     </Accordeon>
+ *   </GroupeAccordeons>
+ *
+ * Dans un GroupeAccordeons, le volet reçoit le `name` du groupe (un seul ouvert à la fois) :
+ * un composant Astro ne peut pas passer de propriétés à ses enfants, alors chaque volet porte
+ * un marqueur (data-accordeon-groupe) que le groupe remplace par son `name`. Hors groupe, le
+ * marqueur reste, sans effet. Un `name` écrit à la main l'emporte.
+ */
+import '../src/composants/accordeons.css'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Props {
+  /** Ouvert au premier affichage ; dans un groupe, le premier l'emporte */
+  defaultExpanded?: boolean | string
+  /** Couleur propre à ce volet (celle du groupe par défaut) */
+  color?: 'bleuPrincipal' | 'neutre' | 'rose' | 'vertPale'
+  id?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+  [attribut: string]: unknown
+}
+
+const COULEURS: Record<string, string> = { neutre: 'bib-accordeon--neutre', rose: 'bib-accordeon--rose', vertPale: 'bib-accordeon--vert' }
+
+const { defaultExpanded = false, color, class: classe, className, style, sx: _sx, ...reste } = Astro.props
+const ouvert = defaultExpanded === true || defaultExpanded === '' || defaultExpanded === 'true'
+---
+
+<details
+  class:list={['bib-accordeon', color && COULEURS[color], classes(classe, className)]}
+  style={fusionnerStyles(style)}
+  open={ouvert || undefined}
+  data-accordeon-groupe=""
+  {...reste}
+>
+  <slot />
+</details>

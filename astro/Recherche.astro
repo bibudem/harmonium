@@ -1,0 +1,71 @@
+---
+/**
+ * <Recherche> : formulaire GET natif dans une capsule (étiquette visible en surtitre, champ, bouton loupe).
+ * Produit le HTML documenté dans src/composants/recherche.css et importe cette feuille.
+ *
+ *   <Recherche action="/recherche/" libelle="Rechercher dans le site" placeholder="Services, guides…" />
+ *
+ * Slots : `portee` (sélecteur de l'endroit où chercher, dans la capsule avant le champ) ; le slot par
+ * défaut suit la capsule (suggestions, liens de suite de parcours).
+ */
+import '../src/composants/recherche.css'
+import { idUnique } from './ids.ts'
+import { classes } from './styles.ts'
+interface Props {
+  /** Adresse du service de recherche */
+  action: string
+  /** Étiquette visible du champ */
+  libelle?: string
+  /** Nom du repère « search » ; l'étiquette par défaut (deux recherches dans une page doivent se distinguer) */
+  nom?: string
+  /** Nom du paramètre de la requête */
+  parametre?: string
+  valeur?: string
+  placeholder?: string
+  /** Consigne reliée au champ */
+  aide?: string
+  /** Champs cachés envoyés avec la requête */
+  caches?: [string, string][]
+  /** Nom du bouton */
+  libelleBouton?: string
+  /** Bouton à contour avec son libellé visible dès 600 px, la loupe dans le champ */
+  boutonTexte?: boolean
+  id?: string
+  class?: string
+  className?: string
+  [attribut: `data-${string}`]: string | undefined
+}
+const {
+  action,
+  libelle = 'Rechercher',
+  nom,
+  parametre = 'q',
+  valeur,
+  placeholder,
+  aide,
+  caches = [],
+  libelleBouton = 'Rechercher',
+  boutonTexte = false,
+  id = idUnique('recherche'),
+  class: classe,
+  className,
+  ...reste
+} = Astro.props
+if (!action?.trim() || !libelle.trim() || !parametre.trim()) throw new Error('Recherche : action, libellé et paramètre sont requis.')
+const loupe = '<path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/>'
+---
+<form class:list={['bib-recherche', { 'bib-recherche--bouton-texte': boutonTexte }, classes(classe, className)]} action={action} method="get" role="search" aria-label={nom ?? libelle} {...reste}>
+  {caches.map(([cle, v]) => <input type="hidden" name={cle} value={v} />)}
+  <label class="bib-recherche__etiquette" for={id}>{libelle}</label>
+  <div class="bib-recherche__champ">
+    <slot name="portee" />
+    {boutonTexte && <svg class="bib-recherche__loupe" viewBox="0 0 256 256" width="22" height="22" fill="currentColor" aria-hidden="true" focusable="false" set:html={loupe} />}
+    <input class="bib-recherche__saisie" type="search" id={id} name={parametre} value={valeur} placeholder={placeholder} aria-describedby={aide ? `${id}-aide` : undefined} autocomplete="off" enterkeyhint="search" required />
+    <button type="submit" class="bib-recherche__bouton">
+      <svg viewBox="0 0 256 256" width="22" height="22" fill="currentColor" stroke="currentColor" stroke-width="8" aria-hidden="true" focusable="false" set:html={loupe} />
+      <span class="bib-recherche__libelle-bouton">{libelleBouton}</span>
+    </button>
+  </div>
+  {aide && <p class="bib-recherche__aide" id={`${id}-aide`}>{aide}</p>}
+  <slot />
+</form>

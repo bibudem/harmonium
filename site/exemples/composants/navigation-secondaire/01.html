@@ -1,0 +1,20 @@
+<div class="demo-cadre">
+  <p class="etiquette">Colonne, puis volet repliable</p>
+  <div class="contenu" style="display: grid; gap: var(--espace-4); max-width: 22rem">
+    <nav class="bib-navigation-secondaire" aria-labelledby="ex-nav-titre">
+      <a id="ex-nav-titre" class="bib-navigation-secondaire__titre" href="#apercu">Études</a>
+      <ul>
+        <li><a href="#apercu">Apprendre à chercher</a>
+          <ul><li><a href="#apercu" aria-current="page">Citer ses sources</a></li><li><a href="#apercu">Évaluer l’information</a></li></ul>
+        </li>
+        <li><a href="#apercu">Droit d’auteur</a></li>
+        <li><a href="https://exemple.ca/">Boîte à outils<span class="bib-navigation-secondaire__externe" aria-hidden="true"></span></a></li>
+      </ul>
+    </nav>
+    <details class="bib-navigation-secondaire-repliable">
+      <summary><span>Dans cette section</span><span class="bib-navigation-secondaire__chevron" aria-hidden="true"></span></summary>
+      <nav class="bib-navigation-secondaire bib-navigation-secondaire--dans-repliable" aria-labelledby="ex-nav-titre-2"><a id="ex-nav-titre-2" class="bib-navigation-secondaire__titre" href="#apercu">Études</a><ul><li><a href="#apercu">Apprendre à chercher</a></li></ul></nav>
+    </details>
+  </div>
+  <p class="legende">En page, une seule des deux variantes est affichée selon la largeur (colonne dès 1200 px) : il n’y a jamais deux repères <code>&lt;nav&gt;</code> du même nom.</p>
+</div>

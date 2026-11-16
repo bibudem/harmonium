@@ -1,0 +1,86 @@
+/*
+ * Copier : un texte court à saisir tel quel (adresse de serveur, identifiant, commande), en code, suivi d'un
+ * bouton « Copier ». Tout est en ligne : valide dans un paragraphe ou un élément de liste.
+ *
+ *   <span class="bib-copier" data-copier><code class="bib-copier__code">https://proxy.umontreal.ca</code><button type="button" class="bib-copier__bouton" data-texte="https://proxy.umontreal.ca" aria-label="Copier https://proxy.umontreal.ca" hidden><svg class="bib-copier__icone" viewBox="0 0 256 256" width="1em" height="1em" aria-hidden="true">…</svg><svg class="bib-copier__icone-copie" viewBox="0 0 256 256" width="1em" height="1em" aria-hidden="true">…</svg><span class="bib-copier__libelle" aria-hidden="true">Copier</span></button><span class="bib-masque" role="status"></span></span>
+ *
+ * Le texte reste un <code> sélectionnable. Le bouton n'existe qu'avec l'API du presse-papiers (JavaScript,
+ * contexte sécurisé) : bib-copier.min.js retire son attribut hidden ; sans lui, il ne promet rien qu'il ne
+ * peut faire. Son nom dit quoi (« Copier https://… ») ; le libellé visible est caché aux lecteurs d'écran
+ * pour ne pas doubler le nom (WCAG 2.5.3 : le nom commence par le mot visible). « Copié » s'affiche deux
+ * secondes (icône coche, [data-copie]) et s'annonce dans la région role="status" ; un échec invite à
+ * sélectionner le texte. Garder le HTML sur une ligne : un blanc entre les éléments deviendrait un espace.
+ *
+ * Habillage (action douce par défaut) : --bib-copier-fond (surface), --bib-copier-fond-survol
+ * (jaune), --bib-copier-texte (bleu foncé), --bib-copier-contour (contour du thème).
+ */
+.bib-copier {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  align-items: center;
+  max-width: 100%;
+  vertical-align: baseline;
+}
+
+.bib-copier__code {
+  font-family: var(--police-saisie, 'Courier New', Courier, monospace);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.bib-copier__bouton {
+  display: inline-flex;
+  gap: 0.25rem;
+  align-items: center;
+  min-width: 24px;
+  min-height: 24px;
+  padding: 0.1rem 0.5rem;
+  border: 1px solid var(--bib-copier-contour, var(--couleur-contour));
+  border-radius: var(--rayon-petit);
+  background-color: var(--bib-copier-fond, var(--couleur-surface));
+  color: var(--bib-copier-texte, var(--bleu-fonce));
+  font: inherit;
+  font-size: 0.8333rem;
+  font-weight: var(--graisse-moyenne);
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bib-copier__bouton:hover {
+    background-color: var(--bib-copier-fond-survol, var(--jaune));
+  }
+}
+
+.bib-copier__bouton[hidden] {
+  display: none;
+}
+
+.bib-copier__icone-copie,
+.bib-copier__bouton[data-copie] .bib-copier__icone {
+  display: none;
+}
+
+.bib-copier__bouton[data-copie] .bib-copier__icone-copie {
+  display: inline;
+}
+
+.bib-copier .bib-masque {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+@media (forced-colors: active) {
+  .bib-copier__bouton {
+    border-color: ButtonText;
+  }
+}

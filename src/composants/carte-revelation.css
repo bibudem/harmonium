@@ -1,0 +1,310 @@
+/*
+ * Carte à révélation : une carte de 18 × 20,5 rem (23 × 25 rem dès 600 px) qui montre un titre et révèle sa
+ * description au survol, au focus clavier et au toucher. Deux habillages : un fond uni avec une icône, ou une
+ * photo sous un dégradé (un voile bleu foncé la couvre à la révélation). bib-carte-revelation.min.js
+ * (facultatif) donne le focus à la description au clic ou au toucher ; sans lui, le survol et le clavier
+ * suffisent. La carte se glisse dans un carrousel (elle reste dans la largeur de la piste).
+ *
+ * Fond uni (--bleu-principal, --vert-fonce ou --rose-300 ; ajouter surface-claire au rose) :
+ *
+ *   <div class="bib-carte-revelation bib-carte-revelation--bleu-principal" data-carte-revelation>
+ *     <div class="bib-carte-revelation__icone"><svg width="45" height="45" aria-hidden="true">…</svg></div>
+ *     <h3 class="bib-carte-revelation__titre" id="rev-1">Services</h3>
+ *     <div class="bib-carte-revelation__contenu" tabindex="0" role="group" aria-labelledby="rev-1" data-description>
+ *       <p>Description…</p>
+ *     </div>
+ *   </div>
+ *
+ * Photo (--photo) :
+ *
+ *   <div class="bib-carte-revelation bib-carte-revelation--photo" data-carte-revelation>
+ *     <img class="bib-carte-revelation__photo" src="photo.jpg" alt="" loading="lazy">
+ *     <div class="bib-carte-revelation__degrade" aria-hidden="true"></div>
+ *     <div class="bib-carte-revelation__voile" aria-hidden="true"></div>
+ *     <h3 class="bib-carte-revelation__titre" id="rev-2">Bibliothèque</h3>
+ *     <div class="bib-carte-revelation__contenu" tabindex="0" role="group" aria-labelledby="rev-2" data-description>
+ *       <p class="bib-carte-revelation__sous-titre">Sous-titre</p>
+ *       <div class="bib-carte-revelation__texte"><p>Description…</p></div>
+ *     </div>
+ *   </div>
+ *
+ * La description cachée par l'opacité seule reste lue par les lecteurs d'écran ; elle est la zone focalisable
+ * et défilable de la carte, nommée par le titre (un vrai titre, h3 par défaut). Seuls transform et opacity
+ * sont animés ; le mouvement réduit les coupe. La carte ne se soulève pas au survol. Contrastes : blanc
+ * 7,10:1 sur bleu principal, 11,26:1 sur vert foncé ; bleu foncé 15,2:1 sur rose 300 ; sur photo, au moins
+ * 7:1 même sur une photo blanche. Les liens de la description prennent la couleur du texte sur les fonds
+ * foncés.
+ *
+ * Habillage : --bib-carte-revelation-fond, --bib-carte-revelation-encre, --bib-carte-revelation-icone.
+ */
+.bib-carte-revelation {
+  --_marge: var(--espace-carte);
+  --_hauteur: 20.5rem;
+  position: relative;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  /* Jamais plus large que la piste du carrousel (conteneur de requête) : avec le texte à 200 %, 18rem
+     valait 612 px, une carte plus large qu'un téléphone. Au texte par défaut, la piste est toujours plus
+     large. */
+  width: min(18rem, 100cqi);
+  /* Hors carrousel, cqi peut se référer au viewport : borner aussi au parent. */
+  max-width: 100%;
+  height: var(--_hauteur);
+  overflow: hidden;
+  border-radius: var(--rayon-carte);
+  background-color: var(--bib-carte-revelation-fond, var(--_fond));
+  color: var(--bib-carte-revelation-encre, var(--_encre));
+}
+
+@media (width >= 600px) {
+  .bib-carte-revelation {
+    --_hauteur: 25rem;
+    width: min(23rem, 100cqi);
+  }
+}
+
+/* Liens, focus et accent des fonds foncés : comme le ton foncé de Section */
+.bib-carte-revelation--bleu-principal,
+.bib-carte-revelation--vert-fonce,
+.bib-carte-revelation--photo {
+  --_encre: var(--couleur-sur-fonce);
+  --_icone: var(--couleur-sur-fonce);
+  --couleur-lien: var(--couleur-sur-fonce);
+  --couleur-lien-survol: var(--couleur-sur-fonce);
+  --couleur-focus: var(--couleur-sur-fonce);
+  --rouge-orange-texte: var(--jaune);
+}
+
+.bib-carte-revelation--bleu-principal {
+  --_fond: var(--bleu-principal);
+}
+
+.bib-carte-revelation--vert-fonce {
+  --_fond: var(--vert-fonce);
+}
+
+.bib-carte-revelation--rose-300 {
+  --_fond: var(--rose-300);
+  --_encre: var(--couleur-texte);
+  --_icone: var(--rouge-orange);
+}
+
+.bib-carte-revelation__icone {
+  position: absolute;
+  top: var(--_marge);
+  right: var(--_marge);
+  z-index: var(--z-dessus-2);
+  display: flex;
+  color: var(--bib-carte-revelation-icone, var(--_icone));
+  opacity: 0.5;
+}
+
+.bib-carte-revelation .bib-carte-revelation__titre {
+  position: absolute;
+  right: 4rem;
+  bottom: var(--_marge);
+  left: var(--_marge);
+  z-index: var(--z-dessus-3);
+  margin: 0;
+  font-family: var(--police-sans);
+  font-size: var(--texte-grand);
+  font-weight: var(--graisse-moyenne);
+  line-height: 1.2;
+  transition: transform var(--duree-moyenne-4) var(--courbe-emphase-deceleree);
+}
+
+@media (width >= 900px) {
+  .bib-carte-revelation .bib-carte-revelation__titre {
+    font-size: 1.875rem;
+  }
+}
+
+.bib-carte-revelation__contenu {
+  position: absolute;
+  right: var(--_marge);
+  bottom: var(--_marge);
+  left: var(--_marge);
+  z-index: var(--z-dessus-2);
+  max-height: 52%;
+  overflow-y: auto;
+  font-size: var(--texte-courant);
+  font-weight: 350;
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity var(--duree-moyenne-4) var(--courbe-emphase-deceleree),
+    transform var(--duree-moyenne-4) var(--courbe-emphase-deceleree);
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, currentColor 40%, transparent) transparent;
+}
+
+.bib-carte-revelation__contenu > :first-child,
+.bib-carte-revelation__texte > :first-child {
+  margin-top: 0;
+}
+
+.bib-carte-revelation__contenu > :last-child,
+.bib-carte-revelation__texte > :last-child {
+  margin-bottom: 0;
+}
+
+.bib-carte-revelation__contenu a:not([class]) {
+  color: var(--couleur-lien);
+}
+
+/* Le focus de la description s'affiche sur la carte, à l'intérieur (le bord est rogné par overflow: hidden) */
+.bib-carte-revelation__contenu:focus-visible {
+  outline: none;
+}
+
+.bib-carte-revelation:has(.bib-carte-revelation__contenu:focus-visible) {
+  outline: 3px solid var(--bib-carte-revelation-encre, var(--_encre));
+  outline-offset: -6px;
+}
+
+/* Révélation : le titre monte en haut de la carte (100 % = sa hauteur) */
+.bib-carte-revelation:is(:hover, :focus-within) .bib-carte-revelation__titre {
+  transform: translateY(calc(100% + 2 * var(--_marge) - var(--_hauteur)));
+}
+
+.bib-carte-revelation:is(:hover, :focus-within) .bib-carte-revelation__contenu {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- Photo --- */
+
+.bib-carte-revelation--photo {
+  --_marge: 1.5rem;
+  --_hauteur: 20rem;
+  isolation: isolate;
+  background-color: var(--bib-carte-revelation-fond, var(--bleu-fonce));
+}
+
+@media (width >= 600px) {
+  .bib-carte-revelation--photo {
+    --_hauteur: 25rem;
+  }
+}
+
+.bib-carte-revelation__photo,
+.bib-carte-revelation__degrade,
+.bib-carte-revelation__voile {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.bib-carte-revelation__photo {
+  object-fit: cover;
+}
+
+/* Trois couches noires : voile de 25 %, dégradé de la carte (65 % → 30 % → 0) et dégradé du bas (65 % sur la
+   moitié) */
+.bib-carte-revelation__degrade {
+  background:
+    linear-gradient(to top, color-mix(in srgb, var(--couleur-voile) 65%, transparent), transparent 50%),
+    linear-gradient(
+      to top,
+      color-mix(in srgb, var(--couleur-voile) 65%, transparent),
+      color-mix(in srgb, var(--couleur-voile) 30%, transparent),
+      transparent
+    ),
+    linear-gradient(color-mix(in srgb, var(--couleur-voile) 25%, transparent), color-mix(in srgb, var(--couleur-voile) 25%, transparent));
+}
+
+.bib-carte-revelation__voile {
+  background-color: color-mix(in srgb, var(--bleu-fonce) 70%, transparent);
+  opacity: 0;
+  transition: opacity var(--duree-moyenne-2) var(--courbe-standard);
+}
+
+.bib-carte-revelation--photo .bib-carte-revelation__titre {
+  right: var(--_marge);
+  /* Apparence du h3 du thème (l'original héritait de la règle globale des h3) */
+  font-size: var(--texte-tres-grand);
+  font-weight: var(--graisse-grasse);
+  color: var(--couleur-sur-fonce);
+  transform: translateY(10px);
+  transform-origin: left top;
+  transition: transform var(--duree-moyenne-3) var(--courbe-emphase);
+}
+
+.bib-carte-revelation--photo .bib-carte-revelation__contenu {
+  max-height: 75%;
+  padding-right: var(--espace-1);
+  color: var(--bleu-100);
+  font-weight: inherit;
+  transform: none;
+  transition: opacity var(--duree-longue-2) var(--courbe-standard);
+  scrollbar-color: color-mix(in srgb, var(--couleur-sur-fonce) 40%, transparent) transparent;
+}
+
+.bib-carte-revelation__sous-titre {
+  margin: 0 0 var(--espace-2);
+  font-size: var(--texte-courant);
+  line-height: 1.2;
+}
+
+@media (width >= 900px) {
+  .bib-carte-revelation__sous-titre {
+    font-size: var(--texte-moyen);
+  }
+}
+
+.bib-carte-revelation__texte {
+  font-size: var(--texte-courant);
+}
+
+/* Le contour de la carte serait peint sous la photo, le dégradé et le voile (positionnés) : on le dessine
+   sur une couche au-dessus de tout. */
+.bib-carte-revelation--photo::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  z-index: var(--z-dessus-4);
+  border-radius: calc(var(--rayon-carte) - 6px);
+  pointer-events: none;
+}
+
+.bib-carte-revelation--photo:has(.bib-carte-revelation__contenu:focus-visible) {
+  outline: none;
+}
+
+.bib-carte-revelation--photo:has(.bib-carte-revelation__contenu:focus-visible)::after {
+  outline: 3px solid var(--couleur-sur-fonce);
+}
+
+.bib-carte-revelation--photo:is(:hover, :focus-within) .bib-carte-revelation__titre {
+  transform: translateY(calc(100% + 2 * var(--_marge) - var(--_hauteur))) scale(0.95);
+}
+
+.bib-carte-revelation:is(:hover, :focus-within) .bib-carte-revelation__voile {
+  opacity: 1;
+}
+
+@media (width >= 900px) {
+  .bib-carte-revelation--photo .bib-carte-revelation__titre {
+    font-size: 2.25rem;
+    font-weight: var(--graisse-forte);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bib-carte-revelation__titre,
+  .bib-carte-revelation__contenu,
+  .bib-carte-revelation__voile {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .bib-carte-revelation {
+    border: 1px solid CanvasText;
+  }
+
+  .bib-carte-revelation__photo {
+    forced-color-adjust: none;
+  }
+}

@@ -1,0 +1,21 @@
+---
+/*
+ * <ProgressionCarrousel> : la barre de progression sous un carrousel : le curseur a la largeur de la part
+ * visible et suit le défilement. Visuelle seulement (aria-hidden) ; masquée sans JavaScript et quand tout tient
+ * dans la largeur.
+ */
+import '../src/composants/carrousel.css'
+import { classes } from './styles.ts'
+interface Props {
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+// `reste` porte l'attribut de portée du parent : son style s'applique à `class`
+const { class: classe, className, ...reste } = Astro.props
+---
+
+<div class:list={['bib-carrousel__progression', classes(classe, className)]} aria-hidden="true" hidden data-progression {...reste}>
+  <span class="bib-carrousel__curseur" data-curseur></span>
+</div>

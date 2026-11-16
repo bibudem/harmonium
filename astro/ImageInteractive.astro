@@ -1,0 +1,53 @@
+---
+/*
+ * <ImageInteractive> : une capture d'écran commentée (liste de zones et image éclairée). Produit le HTML
+ * documenté dans src/composants/image-interactive.css et importe cette feuille ; bib-image-interactive.min.js
+ * rend la liste interactive.
+ *
+ *   <ImageInteractive image={capture} alt="Barre des pages de DaVinci Resolve" numerotee zones={[
+ *     { id: 'media', libelle: 'Média – Importer sons, images, vidéos', haut: 0, gauche: 0, largeur: 14.29, hauteur: 100 },
+ *   ]} />
+ *
+ * `image` : image importée (formats et tailles d'astro:assets) ou adresse. Positions en pour cent de l'image.
+ * `numerotee` : liste ordonnée (<ol>) ; sinon <ul>.
+ */
+import '../src/composants/image-interactive.css'
+import type { ImageMetadata } from 'astro'
+import { Image as ImageAstro } from 'astro:assets'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+type Zone = { id: string; libelle: string; haut: number; gauche: number; largeur: number; hauteur: number }
+
+interface Props {
+  image: ImageMetadata | string
+  alt: string
+  zones: Zone[]
+  numerotee?: boolean
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const { image, alt, zones, numerotee = false, class: classe, className, style } = Astro.props
+if (!image || alt === undefined || !zones?.length) throw new Error('ImageInteractive : les propriétés `image`, `alt` et `zones` sont obligatoires.')
+const Liste = numerotee ? 'ol' : 'ul'
+const position = (z: Zone) => `top: ${z.haut}%; left: ${z.gauche}%; width: ${z.largeur}%; height: ${z.hauteur}%`
+---
+
+<div class:list={['bib-image-interactive', classes(classe, className)]} style={fusionnerStyles(style)} data-image-interactive>
+  <Liste class="bib-image-interactive__zones">
+    {zones.map((z) => <li data-zone={z.id} data-position={position(z)}>{z.libelle}</li>)}
+  </Liste>
+  <div class="bib-image-interactive__cadre">
+    {
+      typeof image === 'string' ? (
+        <img src={image} alt={alt} decoding="async" />
+      ) : (
+        <ImageAstro src={image} alt={alt} widths={[600, 900, 1200, image.width].filter((w) => w <= image.width)} sizes="(min-width: 900px) 800px, 100vw" />
+      )
+    }
+    <span class="bib-image-interactive__projecteur" aria-hidden="true" data-projecteur></span>
+    {zones.map((z) => <span class="bib-image-interactive__cible" aria-hidden="true" data-cible={z.id} style={position(z)} />)}
+  </div>
+</div>

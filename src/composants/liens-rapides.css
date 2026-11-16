@@ -1,0 +1,287 @@
+/*
+ * Liens rapides : quelques raccourcis toujours à portée. Dès 900 px, un tiroir bleu au bord droit de l'écran ;
+ * replié, seule sa poignée (une flèche vers la gauche) dépasse, et un clic la fait sortir une rangée de liens
+ * (icône et libellé court dessous). Sous 900 px, une barre fixe au bas de l'écran, icônes et libellés courts.
+ * Un élément peut être un bouton qui déclenche un événement de la fenêtre (le clavardage, par exemple).
+ *
+ *   <div class="bib-liens-rapides theme-clair">
+ *     <div class="bib-liens-rapides__bureau" data-liens-rapides>
+ *       <nav class="bib-liens-rapides__panneau" aria-label="Liens rapides" data-replie>
+ *         <button type="button" class="bib-liens-rapides__poignee bib-infobulle bib-infobulle--gauche" aria-expanded="false" aria-controls="lr-liste" aria-label="Liens rapides" data-infobulle="Liens rapides" data-poignee><span class="bib-liens-rapides__chevron" aria-hidden="true"></span></button>
+ *         <ul class="bib-liens-rapides__liste" id="lr-liste">
+ *           <li><a class="bib-liens-rapides__lien" href="/horaires/" aria-label="Horaires et lieux"><svg width="24" height="24" aria-hidden="true">…</svg><span class="bib-liens-rapides__etiquette" aria-hidden="true">Horaires</span></a></li>
+ *           <li><button type="button" class="bib-liens-rapides__lien" aria-label="Clavarder" data-evenement="bib:ouvrir-clavardage" data-repli="/clavarder/"><svg width="24" height="24" aria-hidden="true">…</svg><span class="bib-liens-rapides__etiquette" aria-hidden="true">Clavarder</span></button></li>
+ *         </ul>
+ *       </nav>
+ *     </div>
+ *     <nav class="bib-liens-rapides__mobile" aria-label="Liens rapides" data-liens-rapides-mobile>
+ *       <ul class="bib-liens-rapides__liste">…les mêmes éléments (icônes de 26 px)…</ul>
+ *     </nav>
+ *   </div>
+ *
+ * Deux <nav> du même nom, un seul affiché à la fois (la CSS bascule à 900 px). À placer après <main> : barre
+ * et tiroir sont fixes, leur place dans le DOM ne change que l'ordre de tabulation (en-tête, contenu, liens
+ * rapides, pied de page ; WCAG 2.4.3).
+ *
+ * - Tiroir : replié dès le chargement ; la poignée (bouton de divulgation, aria-expanded) ouvre la rangée,
+ *   Échap (le focus revient à la poignée), un clic ailleurs ou le défilement la referment. Replié, les liens
+ *   sortent de l'ordre de tabulation. Sans JavaScript, la rangée reste dépliée.
+ * - Barre mobile : elle sort de l'écran au défilement vers le bas et revient au défilement vers le haut, en
+ *   haut et en bas de la page, et dès qu'un lien reçoit le focus. Elle suit le doigt, pixel pour pixel, puis
+ *   finit de sortir ou revient à l'arrêt. Mouvement réduit : tout ou rien. Sans JavaScript, elle reste
+ *   affichée. Le corps de page réserve sa hauteur (padding-bottom) et scroll-padding-bottom écarte le focus de
+ *   dessous la barre (WCAG 2.4.11).
+ * - bib-liens-rapides.min.js (facultatif) fait tout cela et pose, sur la racine du document,
+ *   --bib-liens-rapides-hauteur (hauteur réelle de la barre), --bib-liens-rapides-decalage (0 affichée, toute sa
+ *   hauteur sortie) et --bib-liens-rapides-retrait (part sortie, de 0 à 1 : le bouton « Retour en haut » s'en
+ *   sert pour sortir avec la barre).
+ * - Un bouton à data-evenement déclenche cet événement sur la fenêtre (new Event(nom, { cancelable: true })) ;
+ *   si personne ne l'annule (preventDefault) et que data-repli donne une adresse, la page s'y rend.
+ *   « bib:ouvrir-clavardage » ouvre le clavardage d'Harmonium.
+ * - Le nom accessible est le libellé complet, qui contient le mot affiché (WCAG 2.5.3) ; le libellé court est
+ *   décoratif. Blanc sur bleu principal : 7,10:1.
+ *
+ * Habillage : --bib-liens-rapides-fond (bleu principal) et --bib-liens-rapides-texte (blanc).
+ */
+.bib-liens-rapides {
+  --_fond: var(--bib-liens-rapides-fond, var(--bleu-principal));
+  --_texte: var(--bib-liens-rapides-texte, var(--couleur-sur-fonce));
+}
+
+.bib-liens-rapides__liste {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bib-liens-rapides__lien {
+  color: var(--_texte);
+}
+
+.bib-liens-rapides__lien:hover {
+  color: var(--_texte);
+}
+
+/* Le bleu du focus global disparaît sur le fond bleu */
+.bib-liens-rapides :focus-visible {
+  outline-color: var(--couleur-surface);
+  outline-offset: -3px;
+}
+
+.bib-liens-rapides button {
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.bib-liens-rapides svg {
+  display: block;
+}
+
+/* ---- Bureau ---- */
+.bib-liens-rapides__bureau {
+  display: none;
+}
+
+@media (width >= 900px) {
+  .bib-liens-rapides__bureau {
+    display: flex;
+    position: fixed;
+    z-index: var(--z-tiroir);
+    top: 0;
+    right: 0;
+    bottom: 0;
+    flex-direction: column;
+    justify-content: center;
+    pointer-events: none;
+  }
+}
+
+/* Poignée et rangée de liens côte à côte ; repliée, seule la poignée (--_poignee) dépasse du bord droit */
+.bib-liens-rapides__panneau {
+  --_poignee: 40px;
+  display: flex;
+  align-items: stretch;
+  border-radius: var(--rayon-petit) 0 0 var(--rayon-petit);
+  background-color: var(--_fond);
+  box-shadow: var(--ombre-2);
+  pointer-events: auto;
+  transition: transform var(--duree-moyenne-4) var(--courbe-emphase-deceleree);
+}
+
+/* Sans JavaScript (scripting: none), la rangée reste dépliée */
+@media (scripting: enabled) {
+  .bib-liens-rapides__panneau[data-replie] {
+    transform: translateX(calc(100% - var(--_poignee)));
+    transition: transform var(--duree-courte-4) var(--courbe-emphase-acceleree);
+  }
+
+  /* Repliée, les liens sortent de l'ordre de tabulation et de l'arbre d'accessibilité, après la fin du
+     glissement */
+  .bib-liens-rapides__panneau[data-replie] .bib-liens-rapides__liste {
+    visibility: hidden;
+    transition: visibility 0s linear var(--duree-courte-4);
+  }
+}
+
+@media (scripting: none) {
+  .bib-liens-rapides__poignee {
+    display: none;
+  }
+}
+
+.bib-liens-rapides__poignee {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--_poignee);
+  min-height: 48px;
+  padding: 0;
+  border-radius: inherit;
+  color: var(--_texte);
+  /* Le survol couvre toute la poignée, coins arrondis compris */
+  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+}
+
+/* Infobulle « Liens rapides » à gauche de la poignée, tant que la rangée est repliée */
+.bib-liens-rapides__poignee[aria-expanded='true'] {
+  --infobulle-visibilite: hidden;
+  --infobulle-opacite: 0;
+}
+
+/* La flèche (CaretLeft de Phosphor) pointe vers où la rangée va : à gauche pour sortir, à droite pour rentrer */
+.bib-liens-rapides__chevron {
+  width: 24px;
+  height: 24px;
+  background-color: currentcolor;
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20256%20256'%3E%3Cpath%20d='M168.49%2C199.51a12%2C12%2C0%2C0%2C1-17%2C17l-80-80a12%2C12%2C0%2C0%2C1%2C0-17l80-80a12%2C12%2C0%2C0%2C1%2C17%2C17L97%2C128Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: rotate var(--duree-courte-4) var(--courbe-standard);
+}
+
+.bib-liens-rapides__poignee[aria-expanded='true'] .bib-liens-rapides__chevron {
+  rotate: 180deg;
+}
+
+.bib-liens-rapides__panneau .bib-liens-rapides__liste {
+  display: flex;
+  gap: 0.25rem;
+  padding: 6px 8px 6px 0;
+}
+
+/* Icône et libellé court dessous, comme la barre mobile */
+.bib-liens-rapides__panneau .bib-liens-rapides__lien {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  min-width: 4.5rem;
+  min-height: 3.5rem;
+  padding: 0.375rem var(--espace-1);
+  border-radius: var(--rayon-tres-petit);
+  text-decoration: none;
+  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+}
+
+.bib-liens-rapides__panneau .bib-liens-rapides__lien:hover {
+  background-color: color-mix(in srgb, var(--couleur-surface) 10%, transparent);
+}
+
+/* ---- Mobile ---- */
+.bib-liens-rapides__mobile {
+  display: flex;
+  position: fixed;
+  z-index: var(--z-tiroir);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  justify-content: center;
+  padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
+  background-color: var(--_fond);
+  box-shadow: var(--ombre-2);
+  translate: 0 var(--bib-liens-rapides-decalage, 0px);
+  transition: translate var(--duree-courte-4) var(--courbe-standard);
+}
+
+/* Le doigt la déplace : elle le suit sans retard */
+.bib-liens-rapides__mobile[data-suit] {
+  transition: none;
+}
+
+/* Le focus dans la barre la ramène entière */
+.bib-liens-rapides__mobile:focus-within {
+  translate: 0;
+  transition: translate var(--duree-courte-4) var(--courbe-standard);
+}
+
+/* Avec le texte agrandi, les boutons passent sur une deuxième ligne au lieu de sortir de l'écran (WCAG
+   1.4.10) */
+.bib-liens-rapides__mobile .bib-liens-rapides__liste {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  width: 500px;
+  max-width: 100%;
+}
+
+/* Icône et petit libellé dessous (le nom accessible reste le libellé complet, qui contient le mot affiché :
+   WCAG 2.5.3) */
+.bib-liens-rapides__mobile .bib-liens-rapides__lien {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  min-width: 4rem;
+  min-height: 3.5rem;
+  padding: 0.375rem 0.25rem;
+  border-radius: var(--rayon-tres-petit);
+  text-decoration: none;
+}
+
+.bib-liens-rapides__etiquette {
+  font-size: var(--texte-minuscule);
+  font-weight: var(--graisse-moyenne);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+@media (width < 900px) {
+  /* --bib-liens-rapides-hauteur : posée par le script (hauteur réelle, zone des gestes comprise) ; 86 px sans
+     script */
+  body:has(.bib-liens-rapides) {
+    padding-bottom: var(--bib-liens-rapides-hauteur, calc(86px + env(safe-area-inset-bottom, 0px)));
+  }
+
+  html:has(.bib-liens-rapides) {
+    scroll-padding-bottom: var(--bib-liens-rapides-hauteur, calc(86px + env(safe-area-inset-bottom, 0px)));
+  }
+}
+
+@media (width >= 900px) {
+  .bib-liens-rapides__mobile {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bib-liens-rapides__panneau,
+  .bib-liens-rapides__mobile,
+  .bib-liens-rapides__chevron {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .bib-liens-rapides__panneau,
+  .bib-liens-rapides__mobile {
+    border: 1px solid CanvasText;
+  }
+
+  .bib-liens-rapides__chevron {
+    background-color: ButtonText;
+  }
+}

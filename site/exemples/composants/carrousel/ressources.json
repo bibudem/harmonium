@@ -1,0 +1,9 @@
+{
+  "styles": [],
+  "scripts": [
+    {
+      "src": "@@dist/bib-carrousel.min.js",
+      "attributs": "type=\"module\""
+    }
+  ]
+}

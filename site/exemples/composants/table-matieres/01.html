@@ -1,0 +1,31 @@
+<div class="demo-cadre">
+  <p class="etiquette">Sur cette page : titres h2 et sous-titres h3</p>
+  <div class="contenu bib-page-avec-sommaire">
+    <div class="bib-table-matieres" data-table-matieres>
+      <nav class="bib-navigation-secondaire bib-navigation-secondaire--sommaire" aria-labelledby="ex-toc-titre">
+        <p class="bib-navigation-secondaire__titre" id="ex-toc-titre">Sur cette page</p>
+        <ul>
+          <li><a href="#ex-toc-emprunter">Emprunter</a><ul><li><a href="#ex-toc-duree">Durée du prêt</a></li></ul></li>
+          <li><a href="#ex-toc-retourner">Retourner</a></li>
+          <li><a href="#ex-toc-aide">Obtenir de l’aide</a></li>
+        </ul>
+      </nav>
+      <details class="bib-navigation-secondaire-repliable">
+        <summary><span id="ex-toc-resume">Sur cette page</span><span class="bib-navigation-secondaire__chevron" aria-hidden="true"></span></summary>
+        <nav class="bib-navigation-secondaire bib-navigation-secondaire--dans-repliable bib-navigation-secondaire--sommaire" aria-labelledby="ex-toc-resume">
+          <ul>
+            <li><a href="#ex-toc-emprunter">Emprunter</a><ul><li><a href="#ex-toc-duree">Durée du prêt</a></li></ul></li>
+            <li><a href="#ex-toc-retourner">Retourner</a></li>
+            <li><a href="#ex-toc-aide">Obtenir de l’aide</a></li>
+          </ul>
+        </nav>
+      </details>
+    </div>
+    <div class="bib-page-avec-sommaire__contenu ex-table-matieres__texte">
+      <section><h2 class="ex-table-matieres__titre" id="ex-toc-emprunter">Emprunter</h2><p>Consultez votre dossier pour connaître les documents que vous avez empruntés.</p><h3 id="ex-toc-duree">Durée du prêt</h3><p>Vérifiez la date de retour dans votre dossier.</p></section>
+      <section><h2 class="ex-table-matieres__titre" id="ex-toc-retourner">Retourner</h2><p>Consultez les modalités de retour de votre bibliothèque.</p></section>
+      <section><h2 class="ex-table-matieres__titre" id="ex-toc-aide">Obtenir de l’aide</h2><p>Contactez votre bibliothèque pour une question sur votre dossier.</p></section>
+    </div>
+  </div>
+  <p class="legende">Sur téléphone, ouvrir « Sur cette page ». Un lien mène à son titre et referme le volet. Au défilement, le lien de la section lue est mis en évidence.</p>
+</div>

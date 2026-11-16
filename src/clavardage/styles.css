@@ -1,0 +1,479 @@
+/*
+ * Styles du clavardage flottant. « #s-lch-widget-9467 » est remplacé à
+ * l'exécution par l'id réel du bloc (data-id). Passer par l'id fait gagner
+ * ces règles sur celles de LibChat (insérées après, à la fin du <head>) et
+ * les limite à ce widget.
+ *
+ * Habillage : les propriétés --bib-clavardage-* ci-dessous, à redéfinir dans
+ * la feuille du site (voir la page Clavardage du mini-site, site/pages/composants/clavardage.html). Valeurs par défaut : celles du site
+ * des Bibliothèques.
+ */
+
+/* ---- Bloc ----
+   Placé d'après le rond, pas d'après le libellé : le rond ne bouge pas quand
+   LibChat change le texte. À droite, la marge du site plus la demi-largeur
+   que le libellé (centré) peut dépasser du rond ; en bas, la place d'un
+   libellé de deux lignes. */
+#s-lch-widget-9467.s-lch-widget-float {
+  --_couleur: var(--bib-clavardage-couleur, #0057ac);
+  --_couleur-survol: var(--bib-clavardage-couleur-survol, #0b113a);
+  --_sur-couleur: var(--bib-clavardage-sur-couleur, #fff);
+  --_surface: var(--bib-clavardage-surface, #fff);
+  --_texte: var(--bib-clavardage-texte, #0b113a);
+  --_texte-secondaire: var(--bib-clavardage-texte-secondaire, #4a5160);
+  --_bordure: var(--bib-clavardage-bordure, #c3ccd5);
+  --_pastille: var(--bib-clavardage-pastille, #f04e24);
+  --_rayon: var(--bib-clavardage-rayon, 12px);
+  --_droite: var(--bib-clavardage-droite, 1.5rem);
+  /* Au-dessus de la carte de <bib-consentement> tant qu'elle est affichée */
+  --_bas: max(var(--bib-clavardage-bas, 1.5rem), calc(var(--bib-consentement-hauteur, 0px) + 0.75rem));
+  --_ombre-1: 0 2px 1px -1px rgb(11 17 58 / 20%), 0 1px 1px 0 rgb(11 17 58 / 14%), 0 1px 3px 0 rgb(11 17 58 / 12%);
+  --_ombre-2: 0 3px 5px -1px rgb(11 17 58 / 20%), 0 6px 10px 0 rgb(11 17 58 / 14%), 0 1px 18px 0 rgb(11 17 58 / 12%);
+  --_courbe-standard: cubic-bezier(0.2, 0, 0, 1);
+  --_courbe-deceleree: cubic-bezier(0, 0, 0, 1);
+  --_courbe-emphase: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --_courbe-icone: cubic-bezier(0.77, 0, 0.175, 1);
+  --_rond: 3.5rem;
+  --_libelle-largeur: 10rem;
+  /* Mesurée par le script (hauteur réelle du libellé), sinon deux lignes */
+  --_libelle-hauteur: var(--_libelle-mesure, 2.5rem);
+
+  z-index: var(--bib-clavardage-z-index, 1100);
+  right: calc(var(--_droite) + (var(--_libelle-largeur) - var(--_rond)) / 2);
+  left: auto;
+  bottom: calc(var(--_bas) + var(--_libelle-hauteur));
+  padding: 0;
+  color: var(--_texte);
+  font-family: var(--bib-clavardage-police, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ouvert : LibChat étire le bloc sur toute la hauteur de l'écran. Il reste
+   ici ancré en bas, au-dessus du bouton, à la hauteur du panneau. */
+#s-lch-widget-9467.s-lch-widget-float.open {
+  z-index: var(--bib-clavardage-z-index-ouvert, 1300);
+  top: auto;
+  width: auto;
+  height: auto;
+}
+
+/* Panneau : 32 rem au plus, réduit sur un écran peu haut (la place du
+   bouton, de son libellé et des marges déduite). */
+#s-lch-widget-9467 .s-lch-widget-float-load,
+#s-lch-widget-9467 .s-lch-widget-float-load.expanded {
+  flex: none;
+  width: min(375px, calc(100vw - var(--_droite) - 1.5rem));
+  height: min(32rem, calc(100dvh - var(--_bas) - var(--_libelle-hauteur) - var(--_rond) - 0.75rem - 1.5rem));
+  min-height: 0;
+  border: 1px solid var(--_bordure);
+  border-radius: var(--_rayon);
+  background-color: var(--_surface);
+  box-shadow: var(--_ombre-2);
+}
+
+/* Ouverture et fermeture : le panneau naît du rond, en fondu avec une
+   légère montée ; il repart par le même chemin, plus vite. LibChat bascule
+   display : display passe en transition discrète, @starting-style donne
+   l'état de départ. */
+#s-lch-widget-9467 .s-lch-widget-float-load {
+  opacity: 0;
+  transform: translateY(0.75rem) scale(0.96);
+  transform-origin: right bottom;
+  pointer-events: none;
+  transition:
+    opacity 150ms var(--_courbe-deceleree),
+    transform 150ms var(--_courbe-deceleree),
+    display 150ms allow-discrete;
+}
+
+#s-lch-widget-9467.open .s-lch-widget-float-load {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  transition-duration: 250ms;
+  transition-timing-function: var(--_courbe-emphase);
+}
+
+@starting-style {
+  #s-lch-widget-9467.open .s-lch-widget-float-load {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.96);
+  }
+}
+
+#s-lch-widget-9467.open .s-lch-widget-float-btn {
+  margin-top: 0.75rem;
+}
+
+/* ---- Bouton : un rond, libellé dessous ---- */
+#s-lch-widget-9467 .s-lch-widget-float-btn {
+  /* Icône « Chats » de Phosphor */
+  --_icone: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M216,80H184V48a16,16,0,0,0-16-16H40A16,16,0,0,0,24,48V176a8,8,0,0,0,13,6.22L72,154V184a16,16,0,0,0,16,16h93.59L219,230.22a8,8,0,0,0,5,1.78,8,8,0,0,0,8-8V96A16,16,0,0,0,216,80ZM66.55,137.78,40,159.25V48H168v88H71.58A8,8,0,0,0,66.55,137.78ZM216,207.25l-26.55-21.47a8,8,0,0,0-5-1.78H88V152h80a16,16,0,0,0,16-16V96h32Z'/%3E%3C/svg%3E");
+
+  display: grid;
+  place-items: center;
+  position: relative;
+  box-sizing: border-box;
+  width: var(--_rond);
+  height: var(--_rond);
+  /* Le CSS du site (button { … }) ne déforme pas le rond */
+  min-width: 0;
+  max-width: none;
+  min-height: 0;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  appearance: none;
+  text-transform: none;
+  letter-spacing: normal;
+  word-spacing: normal;
+  text-shadow: none;
+  background-color: var(--_couleur);
+  box-shadow: var(--_ombre-2);
+  color: var(--_sur-couleur);
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    background-color 200ms var(--_courbe-standard),
+    opacity 200ms var(--_courbe-emphase),
+    scale 200ms var(--_courbe-emphase);
+}
+
+@starting-style {
+  #s-lch-widget-9467 .s-lch-widget-float-btn {
+    opacity: 0;
+    scale: 0.9;
+  }
+}
+
+/* La bulle de LibChat cède la place à l'icône ; le nom accessible reste
+   dans aria-label */
+#s-lch-widget-9467 .s-lch-widget-float-btn > svg {
+  display: none;
+}
+
+#s-lch-widget-9467 .s-lch-widget-float-btn::before {
+  /* Flèche vers le bas (caret-down de Phosphor), panneau ouvert : le bouton
+     réduit le panneau, la conversation continue */
+  --_icone-reduire: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z'/%3E%3C/svg%3E");
+
+  content: '';
+  width: 55%;
+  height: 55%;
+  background-color: currentColor;
+  -webkit-mask: var(--_icone) center / contain no-repeat;
+  mask: var(--_icone) center / contain no-repeat;
+  transition: scale 200ms var(--_courbe-deceleree);
+}
+
+#s-lch-widget-9467 .s-lch-widget-float-btn[aria-expanded='true']::before {
+  width: 50%;
+  height: 50%;
+  -webkit-mask-image: var(--_icone-reduire);
+  mask-image: var(--_icone-reduire);
+  animation: bib-clavardage-icone-reduire 250ms var(--_courbe-icone);
+}
+
+#s-lch-widget-9467 .s-lch-widget-float-btn[aria-expanded='false']::before {
+  animation: bib-clavardage-icone-bulle 250ms var(--_courbe-icone);
+}
+
+@keyframes bib-clavardage-icone-reduire {
+  from {
+    opacity: 0;
+    translate: 0 -30%;
+    scale: 0.8;
+  }
+}
+
+@keyframes bib-clavardage-icone-bulle {
+  from {
+    opacity: 0;
+    scale: 0.6;
+  }
+}
+
+/* Libellé sous le rond : le nom accessible lui-même (aria-label, que
+   LibChat change selon l'état). Texte visible et nom lu identiques
+   (WCAG 2.5.3) ; texte de remplacement vide : pas lu deux fois. */
+#s-lch-widget-9467 .s-lch-widget-float-btn::after {
+  /* Sans « / '' » (Safari < 17.4, Firefox < 128), le libellé s'affiche quand même ; le
+     nom accessible reste aria-label */
+  content: attr(aria-label);
+  content: attr(aria-label) / '';
+  position: absolute;
+  top: calc(100% + 0.375rem);
+  left: 50%;
+  width: max-content;
+  max-width: var(--_libelle-largeur);
+  translate: -50% 0;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  background-color: var(--_surface);
+  box-shadow: var(--_ombre-1);
+  color: var(--_texte);
+  text-align: center;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  #s-lch-widget-9467 .s-lch-widget-float-btn:hover {
+    background-color: var(--_couleur-survol);
+  }
+
+  #s-lch-widget-9467 .s-lch-widget-float-btn:hover::before {
+    scale: 1.1;
+  }
+}
+
+#s-lch-widget-9467 .s-lch-widget-float-btn:not(.online, .bot)::after {
+  color: var(--_texte-secondaire);
+}
+
+/* !important : un « button:focus { outline: none !important } » du site ne cache pas le focus */
+#s-lch-widget-9467 .s-lch-widget-float-btn:focus-visible {
+  outline: 3px solid var(--_couleur-survol) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 3px var(--_surface);
+}
+
+/* Pastille des messages non lus */
+#s-lch-widget-9467 #s-lch-widget-float-indicator {
+  top: 0;
+  right: 0;
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 2px solid var(--_surface);
+  background-color: var(--_pastille);
+}
+
+@media (forced-colors: active) {
+  #s-lch-widget-9467 .s-lch-widget-float-btn {
+    border: 2px solid ButtonText;
+  }
+
+  #s-lch-widget-9467 .s-lch-widget-float-btn::before {
+    background-color: ButtonText;
+  }
+}
+
+/* < 900 px : le rond seul (libellé masqué, gardé comme nom accessible) */
+@media (max-width: 899.98px) {
+  #s-lch-widget-9467.s-lch-widget-float {
+    --_rond: 3rem;
+    --_libelle-hauteur: 0rem;
+
+    right: var(--bib-clavardage-droite-mobile, 1rem);
+    bottom: max(var(--bib-clavardage-bas-mobile, 1rem), calc(var(--bib-consentement-hauteur, 0px) + 0.75rem));
+    width: auto;
+  }
+
+  #s-lch-widget-9467 .s-lch-widget-float-btn::after {
+    display: none;
+  }
+}
+
+/* Annonce pour les lecteurs d'écran (masquée à l'écran) */
+#s-lch-widget-9467 .bib-clavardage-masque {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* ---- Invitation (bulle à gauche du rond) ---- */
+#s-lch-widget-9467 .invitation-clavardage {
+  position: absolute;
+  right: calc(100% + 0.875rem);
+  bottom: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.25rem;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: min(17rem, calc(100vw - var(--_rond) - 3rem));
+  padding: 0.75rem 0.5rem 0.75rem 1rem;
+  border: 1px solid var(--_bordure);
+  border-radius: var(--_rayon);
+  background-color: var(--_surface);
+  box-shadow: var(--_ombre-2);
+  color: var(--_texte);
+  transform-origin: right bottom;
+  animation: bib-clavardage-invitation-entree 320ms var(--_courbe-emphase) both;
+}
+
+/* Pointe vers le rond */
+#s-lch-widget-9467 .invitation-clavardage::after {
+  content: '';
+  position: absolute;
+  right: -0.4375rem;
+  bottom: calc(var(--_rond) / 2 - 0.4375rem);
+  width: 0.75rem;
+  height: 0.75rem;
+  border-top: 1px solid var(--_bordure);
+  border-right: 1px solid var(--_bordure);
+  background-color: var(--_surface);
+  rotate: 45deg;
+}
+
+#s-lch-widget-9467 .invitation-clavardage.sortie {
+  animation: bib-clavardage-invitation-sortie 150ms var(--_courbe-deceleree) both;
+}
+
+#s-lch-widget-9467 .invitation-texte {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+#s-lch-widget-9467 .invitation-fermer {
+  --_croix: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z'/%3E%3C/svg%3E");
+
+  display: grid;
+  flex: none;
+  place-items: center;
+  box-sizing: border-box;
+  width: 1.75rem;
+  height: 1.75rem;
+  min-width: 0;
+  max-width: none;
+  min-height: 0;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  appearance: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--_texte-secondaire);
+  cursor: pointer;
+}
+
+#s-lch-widget-9467 .invitation-fermer::before {
+  content: '';
+  width: 1rem;
+  height: 1rem;
+  background-color: currentColor;
+  -webkit-mask: var(--_croix) center / contain no-repeat;
+  mask: var(--_croix) center / contain no-repeat;
+}
+
+#s-lch-widget-9467 .invitation-fermer:hover {
+  background-color: rgb(11 17 58 / 8%);
+  background-color: color-mix(in srgb, var(--_texte) 8%, transparent);
+  color: var(--_texte);
+}
+
+#s-lch-widget-9467 .invitation-fermer:focus-visible {
+  outline: 3px solid var(--_couleur-survol) !important;
+  outline-offset: 1px !important;
+}
+
+#s-lch-widget-9467.open .invitation-clavardage {
+  display: none;
+}
+
+/* Pulsation du rond : trois anneaux qui s'élargissent (3,6 s en tout) */
+#s-lch-widget-9467 .s-lch-widget-float-btn.appel {
+  animation: bib-clavardage-appel 1.2s var(--_courbe-deceleree) 3;
+}
+
+@keyframes bib-clavardage-appel {
+  0% {
+    box-shadow: var(--_ombre-2), 0 0 0 0 color-mix(in srgb, var(--_couleur) 55%, transparent);
+  }
+
+  100% {
+    box-shadow: var(--_ombre-2), 0 0 0 1rem color-mix(in srgb, var(--_couleur) 0%, transparent);
+  }
+}
+
+@keyframes bib-clavardage-invitation-entree {
+  from {
+    opacity: 0;
+    translate: 0.75rem 0;
+    scale: 0.92;
+  }
+}
+
+@keyframes bib-clavardage-invitation-sortie {
+  to {
+    opacity: 0;
+    translate: 0.5rem 0;
+    scale: 0.96;
+  }
+}
+
+@keyframes bib-clavardage-fondu {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #s-lch-widget-9467 .s-lch-widget-float-btn.appel {
+    animation: none;
+  }
+
+  #s-lch-widget-9467 .s-lch-widget-float-load,
+  #s-lch-widget-9467.open .s-lch-widget-float-load {
+    transform: none;
+  }
+
+  @starting-style {
+    #s-lch-widget-9467.open .s-lch-widget-float-load {
+      transform: none;
+    }
+
+    #s-lch-widget-9467 .s-lch-widget-float-btn {
+      scale: 1;
+    }
+  }
+
+  #s-lch-widget-9467 .s-lch-widget-float-btn::before {
+    animation: none !important;
+  }
+
+  #s-lch-widget-9467 .invitation-clavardage {
+    animation-name: bib-clavardage-fondu;
+  }
+
+  #s-lch-widget-9467 .invitation-clavardage.sortie {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* Contraste élevé, croix de l'invitation : après ses règles, qu'elles ne l'écrasent pas */
+@media (forced-colors: active) {
+  #s-lch-widget-9467 .invitation-fermer::before {
+    background-color: ButtonText;
+  }
+
+  #s-lch-widget-9467 .invitation-fermer {
+    border: 1px solid ButtonText;
+  }
+}
+
+@media print {
+  #s-lch-widget-9467 {
+    display: none;
+  }
+}

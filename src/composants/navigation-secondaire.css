@@ -1,0 +1,153 @@
+/*
+ * Navigation secondaire : la navigation de la section courante. Une liste imbriquée de liens ; la page courante
+ * porte aria-current="page" et la branche qui la contient est ouverte.
+ *
+ *   <nav class="bib-navigation-secondaire" aria-labelledby="titre-nav">
+ *     <a id="titre-nav" class="bib-navigation-secondaire__titre" href="/etudes/">Études</a>
+ *     <ul>
+ *       <li><a href="/etudes/chercher/" aria-current="page">Apprendre à chercher</a>
+ *         <ul><li><a href="…">Citer ses sources</a></li></ul>
+ *       </li>
+ *       <li><a href="https://…">Autre site<span class="bib-navigation-secondaire__externe" aria-hidden="true"></span></a></li>
+ *     </ul>
+ *   </nav>
+ *
+ * Deux variantes, rendues toutes les deux en HTML et basculées par CSS (un seul repère <nav> du même nom à
+ * la fois) : « colonne » (colonne de gauche à partir de 1200 px) et « repliable » (sous 1200 px, un <details>
+ * « Dans cette section » placé sous le fil d'Ariane, fermé par défaut) :
+ *
+ *   <details class="bib-navigation-secondaire-repliable">
+ *     <summary><span>Dans cette section</span><span class="bib-navigation-secondaire__chevron" aria-hidden="true"></span></summary>
+ *     <nav class="bib-navigation-secondaire bib-navigation-secondaire--dans-repliable" aria-labelledby="titre-nav-2">…</nav>
+ *   </details>
+ *
+ * Un lien vers un autre site porte la flèche oblique (.bib-navigation-secondaire__externe). Sommaire « Sur cette page »
+ * (--sommaire) : la section en cours de lecture porte aria-current="true", en gras, avec le trait épais et un
+ * fond pâle. Le titre d'une page dans une autre langue porte son lang.
+ */
+.bib-navigation-secondaire {
+  font-size: var(--texte-reduit);
+}
+
+.bib-navigation-secondaire__titre {
+  display: block;
+  margin-block-start: 0;
+  margin-block-end: var(--espace-element);
+  color: var(--couleur-texte);
+  font-size: var(--texte-grand);
+  font-weight: var(--graisse-forte);
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+.bib-navigation-secondaire li {
+  margin: 0;
+}
+
+.bib-navigation-secondaire ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bib-navigation-secondaire ul ul {
+  padding-inline-start: var(--espace-2);
+}
+
+.bib-navigation-secondaire li a {
+  display: block;
+  padding: var(--espace-1) 0.75rem;
+  border-inline-start: 2px solid var(--couleur-bordure);
+  color: var(--couleur-texte);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+li a .bib-navigation-secondaire__externe {
+  margin-inline-start: 0.25em;
+  vertical-align: -0.1em;
+}
+
+.bib-navigation-secondaire li a:hover {
+  color: var(--couleur-lien);
+  border-inline-start-color: var(--couleur-lien);
+}
+
+.bib-navigation-secondaire [aria-current='page'],
+.bib-navigation-secondaire [aria-current='true'] {
+  font-weight: var(--graisse-forte);
+}
+
+.bib-navigation-secondaire li [aria-current='page'],
+.bib-navigation-secondaire li [aria-current='true'] {
+  color: var(--couleur-lien);
+  border-inline-start: 4px solid var(--couleur-lien);
+}
+
+/* « Sur cette page » : la section en cours a aussi un fond pâle */
+.bib-navigation-secondaire--sommaire li [aria-current='true'] {
+  background-color: var(--couleur-teinte);
+}
+
+/* ---- Variante repliable (< 1200 px) ---- */
+.bib-navigation-secondaire-repliable {
+  margin-block-end: var(--espace-4);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-petit);
+}
+
+.bib-navigation-secondaire-repliable > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espace-2);
+  min-height: 48px;
+  padding: var(--espace-1) var(--espace-2);
+  font-weight: var(--graisse-forte);
+  cursor: pointer;
+  list-style: none;
+}
+
+.bib-navigation-secondaire-repliable > summary::-webkit-details-marker {
+  display: none;
+}
+
+.bib-navigation-secondaire__chevron {
+  flex-shrink: 0;
+  width: 0.5em;
+  height: 0.5em;
+  margin-block-start: -0.25em;
+  border-block-end: 2px solid currentColor;
+  border-inline-end: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform var(--duree-courte-4) var(--courbe-standard);
+}
+
+[open] > summary .bib-navigation-secondaire__chevron {
+  margin-block-start: 0.25em;
+  transform: rotate(-135deg);
+}
+
+.bib-navigation-secondaire--dans-repliable {
+  padding: var(--espace-1) var(--espace-2) var(--espace-2);
+}
+
+.bib-navigation-secondaire--dans-repliable .bib-navigation-secondaire__titre {
+  font-size: var(--texte-courant);
+  overflow-wrap: anywhere;
+}
+
+@media (width >= 1200px) {
+  .bib-navigation-secondaire-repliable {
+    display: none;
+  }
+}
+
+/* Flèche oblique d'un lien vers un autre site (ArrowUpRight de Phosphor) */
+.bib-navigation-secondaire__externe {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20256%20256'%3E%3Cpath%20d='M200%2C64V168a8%2C8%2C0%2C0%2C1-16%2C0V83.31L69.66%2C197.66a8%2C8%2C0%2C0%2C1-11.32-11.32L172.69%2C72H88a8%2C8%2C0%2C0%2C1%2C0-16H192A8%2C8%2C0%2C0%2C1%2C200%2C64Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}

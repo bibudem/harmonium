@@ -1,0 +1,11 @@
+{
+  "styles": [
+    "@@/exemples/composants/entete/style.css"
+  ],
+  "scripts": [
+    {
+      "src": "@@dist/bib-entete.min.js",
+      "attributs": "type=\"module\""
+    }
+  ]
+}

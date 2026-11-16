@@ -1,0 +1,96 @@
+/*
+ * Tableau : un vrai <table>, cellules séparées par un filet, dans une zone sur surface claire qui
+ * défile à l'horizontale quand le tableau est plus large que l'écran.
+ *
+ *   <div class="bib-tableau-zone" role="region" aria-label="Frais de retard" tabindex="0" data-tableau-defilant>
+ *     <table class="bib-tableau" aria-label="Frais de retard">
+ *       <thead><tr class="bib-tableau__rangee"><th scope="col" class="bib-tableau__cellule">Document</th>…</tr></thead>
+ *       <tbody>
+ *         <tr class="bib-tableau__rangee"><th scope="row" class="bib-tableau__cellule">Livre</th><td class="bib-tableau__cellule bib-tableau__cellule--droite">5 $</td></tr>
+ *       </tbody>
+ *     </table>
+ *   </div>
+ *
+ * Les <th> portent leur portée (scope="col" dans <thead>, "row" ailleurs). La zone est un arrêt
+ * de tabulation et une région nommée d'après le tableau ; avec bib-tableau.min.js (facultatif),
+ * elle ne l'est que si le tableau défile vraiment (sinon un arrêt inutile, et le nom annoncé deux
+ * fois) ; sans lui, elle l'est toujours.
+ *
+ * Modificateurs : <table> --compact (cellules de 6 px de marge haute et basse) ; cellule --centre,
+ * --droite, --justifie (alignement des colonnes GFM :-: et -:) ; rangée --survol (surligne au
+ * survol). La zone ajoute la surface d'Harmonium (bib-surface) ; la dernière rangée n'a pas de filet.
+ */
+
+/* position: relative : les éléments en position absolue du tableau (texte masqué des liens)
+   restent dans la zone qui défile ; sans elle, ils débordaient de la page sur un téléphone */
+.bib-tableau-zone {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--rayon-minuscule);
+  background-color: var(--couleur-fond);
+  color: var(--couleur-texte);
+  box-shadow:
+    0 2px 1px -1px color-mix(in srgb, var(--bleu-fonce) 20%, transparent),
+    0 1px 1px 0 color-mix(in srgb, var(--bleu-fonce) 14%, transparent),
+    0 1px 3px 0 color-mix(in srgb, var(--bleu-fonce) 12%, transparent);
+}
+
+@media (forced-colors: active) {
+  .bib-tableau-zone {
+    border: 1px solid CanvasText;
+  }
+}
+
+.bib-tableau {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
+  background: none;
+}
+
+.bib-tableau__cellule {
+  padding: 16px;
+  /* Filet du bas seulement, sans fond : la feuille d'un thème hôte (WordPress, gabarit) qui encadre
+     ou colore th et td ne s'y ajoute pas */
+  border: 0;
+  border-bottom: 1px solid var(--couleur-bordure);
+  background: none;
+  color: var(--couleur-texte);
+  font-size: var(--texte-petit);
+  font-weight: var(--graisse-moyenne);
+  line-height: 1.43;
+  text-align: left;
+  vertical-align: inherit;
+}
+
+.bib-tableau thead .bib-tableau__cellule {
+  line-height: 1.5rem;
+}
+
+/* Dernière rangée sans filet */
+.bib-tableau tbody > tr:last-child > * {
+  border-bottom: 0;
+}
+
+.bib-tableau--compact td,
+.bib-tableau--compact th {
+  padding: 6px 16px;
+}
+
+.bib-tableau__cellule--centre {
+  text-align: center;
+}
+
+.bib-tableau__cellule--droite {
+  text-align: right;
+}
+
+.bib-tableau__cellule--justifie {
+  text-align: justify;
+}
+
+.bib-tableau__rangee--survol:hover {
+  background-color: color-mix(in srgb, var(--bleu-fonce) 4%, transparent);
+}

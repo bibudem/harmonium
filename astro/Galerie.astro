@@ -1,0 +1,20 @@
+---
+/*
+ * <Galerie> : des figures côte à côte (<FigureGalerie>). Produit le HTML documenté dans
+ * src/composants/galerie.css et importe cette feuille.
+ */
+import '../src/composants/galerie.css'
+import { classes } from './styles.ts'
+
+interface Props {
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+const { class: classe, className } = Astro.props
+---
+
+<div class:list={['bib-galerie', classes(classe, className)]}>
+  <slot />
+</div>

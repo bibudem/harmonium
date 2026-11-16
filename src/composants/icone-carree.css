@@ -1,0 +1,74 @@
+/*
+ * Icône carrée : icône dans un carré de couleur (10,875 × 11,875 rem, centré), pour illustrer
+ * une carte ou un bloc.
+ *
+ *   <div class="bib-icone-carree" style="--bib-icone-carree-fond: var(--rose-500)">
+ *     <div class="bib-icone-carree__icone" aria-hidden="true"><svg viewBox="0 0 256 256">…</svg></div>
+ *   </div>
+ *
+ * L'icône prend la couleur du fond assombrie de 80 % (contraste de 6,5 à 12,6:1 sur les fonds
+ * clairs). Sur un fond trop foncé (bleu principal foncé, vert foncé : 1,9:1 et 1,75:1 en
+ * assombri), ajouter --fonce : l'icône est éclaircie (moitié fond, moitié surface), soit 3,75:1
+ * et 4,02:1, au-delà des 3:1 d'un élément graphique.
+ *
+ * Avec texte : le texte (2/3) et le carré (1/3) côte à côte, centrés en hauteur, à toutes les largeurs.
+ * Bloc de mise en page propre à cette feuille (bib-icone-carree-texte), et non modificateur du carré :
+ * c'est le parent du carré, pas une autre apparence du carré.
+ *
+ *   <div class="bib-icone-carree-texte">
+ *     <div class="bib-icone-carree-texte__texte"><h3>Notre mission</h3><p>Texte…</p></div>
+ *     <div class="bib-icone-carree" style="--bib-icone-carree-fond: var(--vert-pale)">…</div>
+ *   </div>
+ */
+.bib-icone-carree {
+  --_fond: var(--bib-icone-carree-fond, transparent);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10.875rem;
+  /* Avec le texte agrandi à 200 %, 10,875rem dépassait la largeur d'un téléphone (370 px) */
+  max-width: 100%;
+  height: 11.875rem;
+  margin-inline: auto;
+  border-radius: var(--rayon-carte, 12px);
+  background-color: var(--_fond);
+}
+
+.bib-icone-carree__icone {
+  display: flex;
+}
+
+.bib-icone-carree__icone svg {
+  width: 5.25rem;
+  height: 5.25rem;
+  fill: color-mix(in srgb, var(--_fond) 20%, var(--couleur-voile, #000));
+}
+
+.bib-icone-carree--fonce .bib-icone-carree__icone svg {
+  fill: color-mix(in srgb, var(--_fond) 50%, var(--couleur-surface, #fff));
+}
+
+/* ---- Avec texte ---- */
+.bib-icone-carree-texte {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  align-items: center;
+  /* L'original n'avait pas d'écart : sur téléphone, les puces du texte touchaient le carré */
+  column-gap: var(--espace-element);
+  margin-block: var(--espace-bloc);
+}
+
+.bib-icone-carree-texte__texte > :first-child {
+  margin-top: 0;
+}
+
+.bib-icone-carree-texte__texte > :last-child {
+  margin-bottom: 0;
+}
+
+@media (forced-colors: active) {
+  .bib-icone-carree__icone svg {
+    fill: CanvasText;
+  }
+}

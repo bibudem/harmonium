@@ -1,0 +1,120 @@
+/*
+ * Intégration tierce : le conteneur où un service externe (formulaire LibWizard ou LibAnswers, fenêtre de
+ * clavardage LibChat, iframe) vient se loger. Il réserve la place du contenu avant son arrivée, affiche
+ * « Chargement… » par-dessus et annonce un échec au lieu de laisser un trou.
+ *
+ *   <div class="bib-integration" style="--bib-integration-hauteur: 860px; --bib-integration-hauteur-large: 650px"
+ *        data-integration data-src="https://unequestion.bib.umontreal.ca/1.0/widgets/7159"
+ *        data-message-erreur="Le formulaire n’a pas pu être chargé. Rechargez la page ou réessayez plus tard.">
+ *     <div id="s-la-widget-7159" class="bib-integration__cible"></div>
+ *     <p class="bib-integration__chargement">Chargement du formulaire…</p>
+ *     <p class="bib-integration__erreur" role="status"></p>
+ *     <noscript><p>Ce formulaire a besoin de JavaScript pour s’afficher.</p></noscript>
+ *   </div>
+ *
+ * La cible porte l’id que le script tiers cherche ; elle reste vide dans le HTML. bib-integration.min.js
+ * charge data-src (à chaque visite de la page, navigation côté client comprise), masque le contenu arrivé
+ * (visibility, place gardée) jusqu’au chargement de ses feuilles de style, et écrit data-message-erreur dans la
+ * région role="status", toujours présente, si le script échoue. Sans data-src, la page charge elle-même le
+ * contenu dans la cible (iframe, par exemple) : le script ne fait que le masquage et le retrait du message.
+ *
+ * Place réservée : --bib-integration-hauteur (« 860px », « 120rem » ; auto par défaut) et
+ * --bib-integration-hauteur-large dès 1200 px. Mesurer le contenu chargé à 390 et à 1440 px et prendre un peu
+ * moins, pour ne jamais laisser de vide ; en rem si le contenu suit la taille du texte (iframe LibWizard), en
+ * px s’il est en pixels fixes (LibAnswers, LibChat). Elle est levée en cas d’échec et sans JavaScript.
+ *
+ * Variante --clavardage : fenêtre LibChat intégrée (402 px réservés, message d’échec en rouge, pas de
+ * défilement horizontal propre). Le contenu de LibAnswers (radios portées à 24 px, bouton d’envoi à 44 px
+ * sous 900 px) et la boîte de LibChat (bordure comprise dans la largeur) sont corrigés ici, car ils sont
+ * injectés dans la page ; une iframe d’un autre domaine ne peut pas l’être.
+ */
+.bib-integration {
+  position: relative;
+  /* Un formulaire tiers à largeur fixe défile dans son conteneur, pas la page (WCAG 1.4.10) */
+  max-width: 100%;
+  overflow-x: auto;
+  min-height: var(--bib-integration-hauteur, auto);
+}
+
+@media (width >= 1200px) {
+  .bib-integration {
+    min-height: var(--bib-integration-hauteur-large, var(--bib-integration-hauteur, auto));
+  }
+}
+
+.bib-integration--clavardage {
+  --bib-integration-hauteur: 402px;
+
+  overflow-x: visible;
+}
+
+/* Contenu arrivé, mais ses styles pas encore : invisible, place gardée */
+.bib-integration[data-attente] > .bib-integration__cible {
+  visibility: hidden;
+}
+
+.bib-integration__cible > iframe {
+  display: block;
+  width: 100%;
+  border: 0;
+}
+
+/* Par-dessus la place réservée : son retrait ne déplace pas le contenu */
+.bib-integration__chargement {
+  position: absolute;
+  inset: 0 0 auto;
+  margin: 0;
+  color: var(--couleur-texte-secondaire);
+}
+
+.bib-integration:not([data-attente]):has(> .bib-integration__cible:not(:empty)) > .bib-integration__chargement,
+.bib-integration[data-etat='erreur'] > .bib-integration__chargement {
+  display: none;
+}
+
+.bib-integration[data-etat='erreur'] {
+  min-height: 0;
+}
+
+/* Toujours rendue (vide, sans hauteur) : une région live doit exister avant qu’on y écrive pour être annoncée */
+.bib-integration__erreur {
+  margin: 0;
+  color: var(--bib-integration-erreur, inherit);
+  font-weight: var(--graisse-forte);
+}
+
+.bib-integration--clavardage .bib-integration__erreur {
+  --bib-integration-erreur: var(--alerte-erreur-icone);
+}
+
+/* Widget LibAnswers (Bootstrap 3) : étiquettes des radios de 20 px, sous la cible de 24 px (WCAG 2.5.8) ;
+   bouton d’envoi de 34 px, sous les 44 px d’une commande principale sur téléphone */
+.bib-integration .s-la-askform .radio label {
+  padding-block: 2px;
+}
+
+.bib-integration .s-la-askform .s-la-askform-button {
+  min-height: var(--taille-cible);
+}
+
+@media (width >= 900px) {
+  .bib-integration .s-la-askform .s-la-askform-button {
+    min-height: 0;
+  }
+}
+
+/* La boîte injectée par LibChat a une bordure en plus de sa largeur de 100 % */
+.bib-integration .lci_chat_load {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+@media (scripting: none) {
+  .bib-integration {
+    min-height: 0;
+  }
+
+  .bib-integration__chargement {
+    display: none;
+  }
+}

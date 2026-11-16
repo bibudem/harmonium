@@ -1,0 +1,46 @@
+---
+/*
+ * <Typographie> : produit le HTML documenté dans src/composants/typographie.css et importe cette
+ * feuille.
+ *
+ * `variant` donne l'apparence, `component` la balise : variant="h2" component="h1" rend un <h1>
+ * qui a l'apparence d'un h2. Sans component, la balise suit la variante (h1-h6, body et subtitle
+ * → p, autres → span). subtitle1 et subtitle2 donnent un <p> (pas un faux titre) ; variant="p"
+ * donne un <p> en body1.
+ */
+import '../src/composants/typographie.css'
+import { couleurTheme } from './couleurs.ts'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+// Balises de texte (sans élément vide comme img ou br, qui n'ont pas d'enfants)
+type BaliseTexte = 'p' | 'span' | 'div' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'figcaption' | 'li' | 'label' | 'strong' | 'em' | 'small'
+
+interface Props {
+  variant?: string
+  component?: string
+  gutterBottom?: boolean
+  paragraph?: boolean
+  noWrap?: boolean
+  align?: 'left' | 'center' | 'right' | 'justify' | 'inherit'
+  /** text.primary, text.secondary, primary ou nom de la palette */
+  color?: string
+  id?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+  [attribut: string]: unknown
+}
+
+const { variant: varianteDemandee = 'body1', component, gutterBottom = false, paragraph = false, noWrap = false, align, color, class: classe, className, style, sx: _sx, ...reste } = Astro.props
+
+const variante = varianteDemandee === 'p' ? 'body1' : varianteDemandee
+const BALISES: Record<string, string> = { h1: 'h1', h2: 'h2', h3: 'h3', h4: 'h4', h5: 'h5', h6: 'h6', subtitle1: 'p', subtitle2: 'p', body1: 'p', body2: 'p', inherit: 'p' }
+const Balise = (component ?? (paragraph ? 'p' : BALISES[variante]) ?? 'span') as BaliseTexte
+const styleFinal = fusionnerStyles({ color: couleurTheme(color), textAlign: align && align !== 'inherit' ? align : undefined }, style)
+---
+
+<Balise
+  class:list={['bib-typographie', `bib-typographie--${variante}`, { 'bib-typographie--marge-bas': gutterBottom, 'bib-typographie--paragraphe': paragraph, 'bib-typographie--sans-retour': noWrap }, classes(classe, className)]}
+  style={styleFinal}
+  {...reste}><slot /></Balise
+>

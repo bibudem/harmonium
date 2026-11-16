@@ -1,0 +1,36 @@
+---
+/*
+ * <ListeLiens> : une liste de liens en cartes. Produit le HTML documenté dans src/composants/liste-liens.css et
+ * importe cette feuille ; ses éléments sont des <ElementListeLiens>.
+ *
+ *   <ListeLiens><ElementListeLiens title="Prêts" href="/prets/" /></ListeLiens>
+ *
+ * `grille` : cartes côte à côte, sans retrait. `offset` : décalage en colonnes (0,5 ; 0 en grille).
+ */
+import '../src/composants/liste-liens.css'
+import ColonneDecalee from './ColonneDecalee.astro'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Props {
+  offset?: number
+  /** Cartes côte à côte plutôt qu'empilées */
+  grille?: boolean
+  /** Passé dans le contenu (etudes) mais ignoré, comme dans la source */
+  bg?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+  [attribut: string]: unknown
+}
+
+const { grille = false, class: classe, className, style, ...props } = Astro.props
+// En grille, les cartes s'alignent sur le titre de la page (pas de retrait)
+const { offset = grille ? 0 : 0.5, ...reste } = props
+---
+
+<ColonneDecalee offset={offset} class={classes(classe, className)} style={fusionnerStyles(style)} {...reste}>
+  <ul class:list={['bib-liste-liens', { grille }]} data-revelation="groupe">
+    <slot />
+  </ul>
+</ColonneDecalee>

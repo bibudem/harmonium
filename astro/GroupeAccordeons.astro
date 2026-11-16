@@ -1,0 +1,40 @@
+---
+/*
+ * <GroupeAccordeons> : un groupe de volets dont un seul est ouvert à la fois, de la couleur
+ * choisie (voir src/composants/accordeons.css). L'exclusivité est native : les <details> du
+ * groupe partagent un même `name`, que le groupe pose à la place du marqueur de chaque
+ * <Accordeon>. Un groupe imbriqué est rendu avant son parent : ses volets ont déjà leur nom.
+ *
+ *   <GroupeAccordeons color="rose">…</GroupeAccordeons>
+ *
+ * Couleurs : bleuPrincipal (défaut), neutre, rose, vertPale. Un autre habillage passe par les variables
+ * --bib-accordeon-* (ex. pastille jaune et filet gris). Aussi : AccordeonGroupe.
+ */
+import '../src/composants/accordeons.css'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+import { idUnique } from './ids.ts'
+
+interface Props {
+  color?: 'bleuPrincipal' | 'neutre' | 'rose' | 'vertPale'
+  id?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+  [attribut: string]: unknown
+}
+
+const COULEURS: Record<string, string | undefined> = { bleuPrincipal: undefined, neutre: 'bib-accordeons--neutre', rose: 'bib-accordeons--rose', vertPale: 'bib-accordeons--vert' }
+
+const { color = 'bleuPrincipal', class: classe, className, style, sx: _sx, ...reste } = Astro.props
+
+if (!(color in COULEURS)) throw new Error(`GroupeAccordeons : la couleur « ${color} » n'est pas prise en charge (${Object.keys(COULEURS).join(', ')}).`)
+
+const nom = idUnique('accordeons')
+const contenu = Astro.slots.has('default') ? await Astro.slots.render('default') : ''
+const html = contenu.replace(/\sdata-accordeon-groupe(?:="[^"]*")?/g, ` name="${nom}"`)
+---
+
+<div class:list={['bib-accordeons', COULEURS[color], classes(classe, className)]} style={fusionnerStyles(style)} {...reste}>
+  <Fragment set:html={html} />
+</div>

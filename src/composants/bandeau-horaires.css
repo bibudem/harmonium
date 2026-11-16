@@ -1,0 +1,296 @@
+/*
+ * Bandeau des horaires : « Horaires du jour », une rangée sous l'en-tête, sur toutes les pages. Une horloge,
+ * une bibliothèque à choisir dans une liste, son statut (« Ouvert jusqu'à 22 h », « Fermé, ouvre demain à
+ * 8 h ») avec une pastille de couleur, puis un lien vers tous les horaires.
+ *
+ *   <section class="bib-bandeau-horaires theme-clair" aria-labelledby="bh-titre" data-bandeau-horaires data-defaut="ss">
+ *     <div class="bib-bandeau-horaires__rangee">
+ *       <div class="bib-bandeau-horaires__choix">
+ *         <span class="bib-bandeau-horaires__horloge" aria-hidden="true"></span>
+ *         <label class="bib-bandeau-horaires__titre" id="bh-titre" for="bh-choix">Horaires du jour</label>
+ *         <span class="bib-bandeau-horaires__selecteur">
+ *           <select class="bib-bandeau-horaires__liste" id="bh-choix" data-choix>
+ *             <option value="ss" selected>Sciences de la santé</option>
+ *             <option value="dr">Droit</option>
+ *           </select>
+ *           <span class="bib-bandeau-horaires__chevron" aria-hidden="true"></span>
+ *         </span>
+ *       </div>
+ *       <p class="bib-bandeau-horaires__statut" data-statut>
+ *         <span class="bib-bandeau-horaires__pastille" aria-hidden="true" data-pastille></span>
+ *         <span data-texte>Chargement des horaires…</span>
+ *       </p>
+ *       <a class="bib-bandeau-horaires__tous" href="/horaires/">Tous les horaires<span class="bib-bandeau-horaires__fleche" aria-hidden="true"></span></a>
+ *     </div>
+ *   </section>
+ *
+ * bib-bandeau-horaires.min.js (facultatif, mais sans lui ni la liste ni le statut ne s'affichent : seul le
+ * lien reste) lit l'API des horaires (data-api, https://api.bib.umontreal.ca/horaires par défaut ; deux jours,
+ * pour « ouvre demain ») et remplit le statut. data-defaut est le code de la bibliothèque choisie au premier
+ * affichage ; le choix est gardé d'une page à l'autre (localStorage, facultatif). Le <option> porte le code
+ * de l'API de chaque bibliothèque.
+ *
+ * - Le statut devient une région role="status" une fois rempli : un changement de bibliothèque est annoncé sans
+ *   déplacer le focus, mais le remplissage au chargement ne l'est pas (sinon, une annonce à chaque page). Le
+ *   texte dit l'état ; la pastille ne fait que le doubler.
+ * - « Horaires du jour » n'est pas écrit (l'horloge et le statut suffisent à l'œil) : il reste le nom de la
+ *   liste et du bandeau pour les lecteurs d'écran.
+ * - Au défilement, il s'estompe à mesure qu'il passe sous l'en-tête collant (data-sous, le sélecteur de cet
+ *   en-tête : [data-entete] par défaut) et revient en remontant ; il reste affiché si le focus y est. Masqué,
+ *   il est visibility: hidden (retiré du clavier).
+ * - La liste est celle du système : contour blanc à 55 % sur le fond (6,05:1, WCAG 1.4.11), options lisibles
+ *   quel que soit le système.
+ *
+ * Habillage : --bib-bandeau-horaires-fond (bleu foncé), --bib-bandeau-horaires-texte, --bib-bandeau-horaires-
+ * hauteur (rangée de 45 px dès 900 px), --bib-bandeau-horaires-retrait (marge à droite du lien, pour aligner
+ * sa flèche sur un bouton d'en-tête). Sur une grande bannière sous un en-tête transparent, ajouter
+ * bib-bandeau-horaires--sur-banniere : dès 1200 px, il se pose sur le haut de la photo sans pousser la page ;
+ * la bannière ajoute sa hauteur à son retrait (--bib-banniere-entete). Dans ce cas, envelopper la section dans un
+ * <div> ordinaire, sans position : il garde la place du bandeau.
+ */
+.bib-bandeau-horaires {
+  position: relative;
+  z-index: var(--z-dessus-2);
+  background-color: var(--bib-bandeau-horaires-fond, var(--bleu-fonce));
+  color: var(--bib-bandeau-horaires-texte, var(--couleur-sur-fonce));
+  --couleur-focus: var(--couleur-sur-fonce);
+}
+
+/* Tout à fait effacé au défilement (le script lie l'opacité au défilement) ; visibility le retire aussi du
+   clavier et des lecteurs d'écran pendant qu'il est invisible */
+.bib-bandeau-horaires[data-masque] {
+  visibility: hidden;
+}
+
+/* --_ecart : le même entre l'horloge et la liste, et entre la liste et le statut (sur une rangée) ; le point
+   d'état reste collé à son texte */
+.bib-bandeau-horaires__rangee {
+  --_ecart: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem var(--_ecart);
+  max-width: var(--largeur-max);
+  margin-inline: auto;
+  padding: var(--espace-1) 16px;
+  font-size: var(--texte-petit);
+  line-height: 1.3;
+}
+
+/* Avec le texte agrandi, la liste passe sous l'étiquette au lieu de déborder de l'écran */
+.bib-bandeau-horaires__choix {
+  display: flex;
+  flex: 1 1 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--_ecart);
+  min-width: 0;
+}
+
+.bib-bandeau-horaires__horloge,
+.bib-bandeau-horaires__chevron,
+.bib-bandeau-horaires__fleche {
+  flex-shrink: 0;
+  background-color: currentcolor;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+
+.bib-bandeau-horaires__horloge {
+  width: 20px;
+  height: 20px;
+  mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20256%20256'%3E%3Cpath%20d='M128%2C24A104%2C104%2C0%2C1%2C0%2C232%2C128%2C104.11%2C104.11%2C0%2C0%2C0%2C128%2C24Zm0%2C192a88%2C88%2C0%2C1%2C1%2C88-88A88.1%2C88.1%2C0%2C0%2C1%2C128%2C216Zm64-88a8%2C8%2C0%2C0%2C1-8%2C8H128a8%2C8%2C0%2C0%2C1-8-8V72a8%2C8%2C0%2C0%2C1%2C16%2C0v48h48A8%2C8%2C0%2C0%2C1%2C192%2C128Z'/%3E%3C/svg%3E");
+}
+
+.bib-bandeau-horaires__titre {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Liste : capsule à contour clair sur le bandeau, chevron à la place de la flèche du navigateur */
+.bib-bandeau-horaires__selecteur {
+  position: relative;
+  display: flex;
+  flex: 1 1 10rem;
+  align-items: center;
+  min-width: 0;
+  max-width: 22rem;
+}
+
+.bib-bandeau-horaires__liste {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.5rem;
+  padding: 0.25rem 2.25rem 0.25rem 0.875rem;
+  border: 1px solid color-mix(in srgb, var(--couleur-surface) 55%, transparent);
+  border-radius: var(--rayon-plein);
+  background-color: color-mix(in srgb, var(--couleur-surface) 8%, transparent);
+  color: var(--couleur-sur-fonce);
+  font: inherit;
+  font-weight: var(--graisse-forte);
+  text-overflow: ellipsis;
+  appearance: none;
+  cursor: pointer;
+  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+}
+
+.bib-bandeau-horaires__liste:hover {
+  background-color: color-mix(in srgb, var(--couleur-surface) 16%, transparent);
+}
+
+.bib-bandeau-horaires__liste:focus-visible {
+  outline: 3px solid var(--couleur-focus);
+  outline-offset: 2px;
+}
+
+/* Options de la liste ouverte : lisibles quel que soit le système */
+.bib-bandeau-horaires__liste option {
+  background-color: var(--couleur-surface);
+  color: var(--couleur-texte);
+  font-weight: var(--graisse-normale);
+}
+
+.bib-bandeau-horaires__chevron {
+  position: absolute;
+  right: 0.875rem;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+  mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20256%20256'%3E%3Cpath%20d='M216.49%2C104.49l-80%2C80a12%2C12%2C0%2C0%2C1-17%2C0l-80-80a12%2C12%2C0%2C0%2C1%2C17-17L128%2C159l71.51-71.52a12%2C12%2C0%2C0%2C1%2C17%2C17Z'/%3E%3C/svg%3E");
+}
+
+.bib-bandeau-horaires__statut {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--espace-1);
+  min-width: 0;
+  margin: 0;
+}
+
+/* Pastille d'état : double le texte, qui dit l'état */
+.bib-bandeau-horaires__pastille {
+  flex-shrink: 0;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background-color: var(--couleur-texte-secondaire);
+}
+
+.bib-bandeau-horaires__pastille[data-etat='open'] {
+  background-color: var(--vert-pale);
+}
+
+.bib-bandeau-horaires__pastille[data-etat='closing-soon'] {
+  background-color: var(--jaune);
+}
+
+.bib-bandeau-horaires__pastille[data-etat='closed'] {
+  background-color: var(--rouge-orange);
+}
+
+.bib-bandeau-horaires__tous {
+  margin-inline-end: var(--bib-bandeau-horaires-retrait, 0px);
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 2.5rem;
+  color: inherit;
+  font-weight: var(--graisse-moyenne);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.bib-bandeau-horaires__tous:hover {
+  color: inherit;
+  text-decoration-thickness: 2px;
+}
+
+.bib-bandeau-horaires__fleche {
+  width: 16px;
+  height: 16px;
+  mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20256%20256'%3E%3Cpath%20d='M221.66%2C133.66l-72%2C72a8%2C8%2C0%2C0%2C1-11.32-11.32L196.69%2C136H40a8%2C8%2C0%2C0%2C1%2C0-16H196.69L138.34%2C61.66a8%2C8%2C0%2C0%2C1%2C11.32-11.32l72%2C72A8%2C8%2C0%2C0%2C1%2C221.66%2C133.66Z'/%3E%3C/svg%3E");
+}
+
+/* Sans JavaScript : ni liste ni statut, seulement le lien */
+@media (scripting: none) {
+  .bib-bandeau-horaires__selecteur,
+  .bib-bandeau-horaires__statut {
+    display: none;
+  }
+}
+
+@media (width >= 600px) {
+  .bib-bandeau-horaires__rangee {
+    padding-inline: 24px;
+  }
+}
+
+@media (width >= 900px) {
+  .bib-bandeau-horaires__choix {
+    flex: 0 1 auto;
+  }
+
+  /* Rangée de 45 px */
+  .bib-bandeau-horaires__rangee {
+    min-height: var(--bib-bandeau-horaires-hauteur, 45px);
+    padding-block: 0;
+  }
+
+  .bib-bandeau-horaires__liste {
+    min-height: 1.75rem;
+  }
+
+  .bib-bandeau-horaires__selecteur {
+    flex: 0 1 auto;
+    min-width: 16rem;
+  }
+
+  .bib-bandeau-horaires__tous {
+    min-height: 1.75rem;
+    margin-left: auto;
+  }
+}
+
+@media (width >= 1200px) {
+  .bib-bandeau-horaires__rangee {
+    padding-inline: 1.25rem;
+  }
+
+  /* Bannière photo sous l'en-tête transparent : le bandeau se pose sur le haut de la photo, à sa place
+     normale, sans pousser la page. Le <div> ordinaire qui l'enveloppe, sans position, garde sa place dans le
+     flux. */
+  .bib-bandeau-horaires--sur-banniere {
+    position: absolute;
+    right: 0;
+    left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bib-bandeau-horaires__liste {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .bib-bandeau-horaires {
+    border-block: 1px solid CanvasText;
+  }
+
+  .bib-bandeau-horaires__pastille {
+    forced-color-adjust: none;
+  }
+
+  .bib-bandeau-horaires__horloge,
+  .bib-bandeau-horaires__chevron,
+  .bib-bandeau-horaires__fleche {
+    background-color: CanvasText;
+  }
+}

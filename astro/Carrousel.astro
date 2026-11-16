@@ -1,0 +1,117 @@
+---
+/*
+ * <Carrousel> : un carrousel de cartes à défilement natif. Produit le HTML documenté dans
+ * src/composants/carrousel.css et importe cette feuille ; les flèches et la barre de progression sont
+ * <BoutonsCarrousel> et <ProgressionCarrousel>. bib-carrousel.min.js (facultatif) les branche.
+ *
+ *   <Carrousel title="Nos services" description="Un aperçu." moreText="Voir tout" moreLink="/services/">
+ *     <CarteImage … /> <CarteImage … />
+ *   </Carrousel>
+ *
+ * Chaque enfant de premier niveau du slot est une diapositive. `title` : chaîne (rendue en h2) ; un autre
+ * titre passe en slot « title ». `description` : chaîne, ou slot « description ». `ariaLabel` : nom
+ * accessible, à donner quand le titre est un élément (qui doublerait le nom). `moreTarget="_blank"` ouvre
+ * moreLink dans un nouvel onglet (annoncé par le bouton).
+ */
+import '../src/composants/carrousel.css'
+import Typographie from './Typographie.astro'
+import Bouton from './Bouton.astro'
+import { panneauxDuSlot } from './decoupage.ts'
+import { idUnique } from './ids.ts'
+import BoutonsCarrousel from './BoutonsCarrousel.astro'
+import ProgressionCarrousel from './ProgressionCarrousel.astro'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Props {
+  /** Chaîne (rendue en h2) ; un autre titre passe en slot « title » */
+  title?: string
+  /** Chaîne ; un élément passe en slot « description » */
+  description?: string
+  moreText?: string
+  moreLink?: string
+  /** `_blank` pour ouvrir moreLink dans un nouvel onglet (annoncé par Bouton) */
+  moreTarget?: string
+  /** Nom accessible : le titre seul. À donner quand le titre est un élément
+      (un Titre de vitrine contient le texte masqué de son lien d'ancre, qui
+      doublait le nom : « … Lien vers la section « … » ») */
+  ariaLabel?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+  [attribut: string]: unknown
+}
+
+const { title, description, moreText, moreLink, moreTarget, ariaLabel, class: classe, className, style, ...reste } = Astro.props
+const id = idUnique('carrousel')
+const { panneaux, annexes } = panneauxDuSlot(Astro.slots.has('default') ? await Astro.slots.render('default') : '')
+const total = panneaux.length
+const aTitre = title !== undefined || Astro.slots.has('title')
+// Un slot passé sous condition ({texte && <… slot="description" />}) existe
+// même vide pour Astro.slots.has : on regarde ce qu'il rend
+const htmlDescription = Astro.slots.has('description') ? (await Astro.slots.render('description')).trim() : ''
+const aDescription = description !== undefined || htmlDescription !== ''
+---
+
+<div
+  class:list={['bib-carrousel', classes(classe, className)]}
+  style={fusionnerStyles(style)}
+  role="region"
+  aria-roledescription="carrousel"
+  aria-labelledby={aTitre && !ariaLabel ? `${id}-titre` : undefined}
+  aria-label={ariaLabel}
+  data-carrousel
+  {...reste}
+>
+  <div class:list={['bib-carrousel__entete', { 'bib-carrousel__entete--sans-description': !aDescription }]}>
+    {
+      aTitre && (
+        <div class="bib-carrousel__titre" id={`${id}-titre`}>
+          <slot name="title">
+            <Typographie component="h2" variant="h2">
+              {title}
+            </Typographie>
+          </slot>
+        </div>
+      )
+    }
+    <div class="bib-carrousel__rangee">
+      <div class="bib-carrousel__description">
+        {
+          aDescription && (
+            htmlDescription ? (
+              <Fragment set:html={htmlDescription} />
+            ) : (
+              <Typographie variant="body1" component="div">
+                {description}
+              </Typographie>
+            )
+          )
+        }
+      </div>
+      <BoutonsCarrousel class="bib-carrousel__commandes-entete" piste={`${id}-piste`} />
+    </div>
+  </div>
+
+  <div class="bib-carrousel__piste" tabindex="0" role="group" aria-label="Contenus du carrousel" id={`${id}-piste`} data-piste data-revelation="groupe" data-revelation-mouvement="echelle">
+    {
+      panneaux.map((html, i) => (
+        <div class="bib-carrousel__diapositive" role="group" aria-roledescription="diapositive" aria-label={`${i + 1} sur ${total}`} data-diapositive>
+          <Fragment set:html={html} />
+        </div>
+      ))
+    }
+  </div>
+  <ProgressionCarrousel class="bib-carrousel__progression-piste" />
+  <Fragment set:html={annexes} />
+
+  {
+    moreLink && moreText && (
+      <div class="bib-carrousel__plus">
+        <Bouton primary href={moreLink} target={moreTarget}>
+          {moreText}
+        </Bouton>
+      </div>
+    )
+  }
+</div>

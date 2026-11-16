@@ -1,0 +1,185 @@
+/*
+ * Retour en haut : un bouton « Retour en haut de la page », fixé en bas à droite.
+ *
+ *   <button type="button" class="bib-retour-haut bib-infobulle bib-infobulle--gauche" data-retour-haut aria-label="Retour en haut de la page" data-infobulle="Retour en haut"><span class="bib-retour-haut__fleche" aria-hidden="true"></span></button>
+ *
+ * - Il apparaît quand on a défilé de plus d'un écran et demi (bib-retour-haut.min.js pose [data-visible]),
+ *   et disparaît en haut de page. Masqué, il est visibility: hidden : il sort aussi de l'ordre de
+ *   tabulation et de l'arbre d'accessibilité. Sans le script, il reste masqué (le défilement natif suffit).
+ * - Un vrai <button> avec un nom accessible (la flèche, dessinée en CSS, est décorative). Cible de 48 px,
+ *   40 × 48 px en onglet (WCAG 2.5.8 demande 24 px). Bleu principal (bleu foncé au survol) ; pictogramme
+ *   blanc, 7,1:1.
+ * - ≥ 900 px : onglet collé au bord droit, dans la marge : il ne recouvre jamais le texte. < 900 px :
+ *   rond de 48 px, qui se retire après 2,5 s sans défilement (sauf focus ou survol).
+ * - Mode contraste forcé : bordure système. Impression : masqué. L'infobulle suit infobulle.css.
+ *
+ * Placement (propre à chaque site : un clavardage, une barre de liens rapides ou une bannière de
+ * consentement occupent le coin) : --bib-retour-haut-bas (distance du bas sous 900 px), --bib-retour-haut-bas-large
+ * (dès 900 px) et --bib-retour-haut-retrait (décalage vers le bas quand une barre de liens rapides sort de
+ * l'écran, multiplié par --bib-liens-rapides-retrait, de 0 à 1). Par défaut : à 1 rem du bas.
+ */
+.bib-retour-haut {
+  --_ecart: 1rem;
+  display: grid;
+  position: fixed;
+  /* Un cran au-dessus du clavardage flottant (BoutonClavardage, même
+     niveau) : son infobulle passe toujours devant le rond */
+  z-index: calc(var(--z-entete) + 1);
+  right: var(--_ecart);
+  /* < 900 px : au-dessus de la pastille de clavardage (3 rem + 0,75 rem) */
+  bottom: var(--bib-retour-haut-bas, var(--_ecart));
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: var(--bleu-principal);
+  box-shadow: var(--ombre-2);
+  color: var(--couleur-sur-fonce);
+  cursor: pointer;
+  visibility: hidden;
+  opacity: 0;
+  translate: 0 0.75rem;
+  transition:
+    opacity var(--duree-courte-4) var(--courbe-standard-acceleree),
+    translate var(--duree-courte-4) var(--courbe-standard-acceleree),
+    visibility 0s linear var(--duree-courte-4),
+    background-color var(--duree-courte-4) var(--courbe-standard);
+}
+
+.bib-retour-haut[data-visible] {
+  visibility: visible;
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity var(--duree-moyenne-1) var(--courbe-standard-deceleree),
+    translate var(--duree-moyenne-1) var(--courbe-standard-deceleree),
+    visibility 0s,
+    background-color var(--duree-courte-4) var(--courbe-standard);
+}
+
+/* Sous 900 px, la barre des liens rapides sort de l'écran au défilement
+   vers le bas, au rythme du doigt (LiensRapides) : le bouton descend avec
+   elle, jusqu'à l'écart habituel du bas de l'écran. transform s'ajoute au
+   translate de l'apparition sans le remplacer. */
+@media (width < 900px) {
+  .bib-retour-haut {
+    /* Il sort entièrement de l'écran avec la barre : pendant la lecture
+       (défilement vers le bas), il ne recouvre plus le texte ; il revient
+       avec elle dès qu'on remonte, quand on cherche à revenir en haut. */
+    transform: translateY(calc(var(--bib-liens-rapides-retrait, 0) * var(--bib-retour-haut-retrait, 0px)));
+    transition:
+      opacity var(--duree-courte-4) var(--courbe-standard-acceleree),
+      translate var(--duree-courte-4) var(--courbe-standard-acceleree),
+      visibility 0s linear var(--duree-courte-4),
+      background-color var(--duree-courte-4) var(--courbe-standard),
+      transform var(--duree-courte-4) var(--courbe-standard);
+  }
+
+  .bib-retour-haut[data-visible] {
+    transition:
+      opacity var(--duree-moyenne-1) var(--courbe-standard-deceleree),
+      translate var(--duree-moyenne-1) var(--courbe-standard-deceleree),
+      visibility 0s,
+      background-color var(--duree-courte-4) var(--courbe-standard),
+      transform var(--duree-courte-4) var(--courbe-standard);
+  }
+
+  /* Pendant que le doigt déplace la barre, le bouton la suit sans retard */
+  body:has([data-liens-rapides-mobile][data-suit]) .bib-retour-haut {
+    transition-duration: var(--duree-courte-4), var(--duree-courte-4), 0s, var(--duree-courte-4), 0s;
+  }
+
+  body:has([data-liens-rapides-mobile][data-suit]) .bib-retour-haut[data-visible] {
+    transition-duration: var(--duree-moyenne-1), var(--duree-moyenne-1), 0s, var(--duree-courte-4), 0s;
+  }
+
+  /* Le focus ramène la barre entière : le bouton reprend sa place au-dessus */
+  body:has([data-liens-rapides-mobile]:focus-within) .bib-retour-haut {
+    transform: none;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bib-retour-haut:hover {
+    background-color: var(--bleu-fonce);
+  }
+}
+
+/* Infobulle (utilitaire .bib-infobulle de global.css) : muette tant que le
+   bouton est masqué, sa visibilité l'emporterait sur celle du bouton */
+.bib-retour-haut:not([data-visible]) {
+  --infobulle-visibilite: hidden;
+  --infobulle-opacite: 0;
+}
+
+.bib-retour-haut:focus-visible {
+  outline: 3px solid var(--bleu-fonce);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px var(--couleur-surface);
+}
+
+.bib-retour-haut svg {
+  display: block;
+}
+
+/* ≥ 900 px : un onglet collé au bord droit, comme la poignée du tiroir des
+   liens rapides (même colonne de 40 px, en bas plutôt qu'au centre). Il
+   reste dans la marge et ne recouvre plus le texte, qui s'arrête au moins
+   40 px avant le bord (64 px de gouttière dès 1200 px). */
+@media (width >= 900px) {
+  .bib-retour-haut {
+    --_ecart: 1.5rem;
+    right: 0;
+    /* En colonne au-dessus du rond de clavardage (comme sous 900 px) :
+       l'infobulle, à gauche, s'ouvre au-dessus du rond et de son libellé,
+       sans passer derrière. 6,75 rem = libellé (2,5) + rond (3,5) + écart
+       (0,75) de BoutonClavardage. Plus haut encore tant que la bannière de
+       consentement est affichée (--decalage-consentement). */
+    bottom: var(--bib-retour-haut-bas-large, var(--_ecart));
+    width: 40px;
+    height: 48px;
+    border-radius: var(--rayon-petit) 0 0 var(--rayon-petit);
+    translate: 0.75rem 0;
+  }
+
+  .bib-retour-haut[data-visible] {
+    translate: 0 0;
+  }
+
+  .bib-retour-haut svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+@media (forced-colors: active) {
+  .bib-retour-haut {
+    border: 2px solid ButtonText;
+    background-color: ButtonFace;
+    color: ButtonText;
+  }
+}
+
+@media print {
+  .bib-retour-haut {
+    display: none;
+  }
+}
+
+/* Flèche vers le haut (ArrowUp de Phosphor, gras) */
+.bib-retour-haut__fleche {
+  display: block;
+  width: 24px;
+  height: 24px;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20256%20256'%3E%3Cpath%20d='M208.49%2C120.49a12%2C12%2C0%2C0%2C1-17%2C0L140%2C69V216a12%2C12%2C0%2C0%2C1-24%2C0V69L64.49%2C120.49a12%2C12%2C0%2C0%2C1-17-17l72-72a12%2C12%2C0%2C0%2C1%2C17%2C0l72%2C72A12%2C12%2C0%2C0%2C1%2C208.49%2C120.49Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+@media (width >= 900px) {
+  .bib-retour-haut__fleche {
+    width: 22px;
+    height: 22px;
+  }
+}

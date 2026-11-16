@@ -1,0 +1,61 @@
+---
+/*
+ * <Equipe> : la grille de vignettes d'une équipe. Produit le HTML documenté dans src/composants/equipe.css et
+ * importe cette feuille (et carte-lien.css). Le site choisit et ordonne les personnes ; une équipe vide n'affiche
+ * rien.
+ *
+ *   <Equipe nom="Équipe : Bibliothèque de droit" membres={[{ nomComplet: 'Marie Tremblay', fonction: 'bibliothécaire', url: '/equipe/?q=Marie%20Tremblay', photo }]} />
+ *
+ * Un membre : `nomComplet`, `fonction`, `url` (sa fiche) et `photo` (image importée ou adresse). `niveauTitre` :
+ * niveau du nom (3 sous un titre de niveau 2).
+ */
+import '../src/composants/equipe.css'
+import '../src/composants/carte-lien.css'
+import { Picture } from 'astro:assets'
+import type { ImageMetadata } from 'astro'
+import { classes } from './styles.ts'
+
+interface Membre {
+  nomComplet: string
+  fonction: string
+  url: string
+  photo?: ImageMetadata | string
+}
+
+interface Props {
+  membres: Membre[]
+  /** Nom accessible de la liste */
+  nom?: string
+  niveauTitre?: 3 | 4 | 5
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+const { membres, nom = 'Équipe', niveauTitre = 3, class: classe, className } = Astro.props
+const Titre = `h${niveauTitre}` as 'h3'
+const majuscule = (t: string) => t.charAt(0).toUpperCase() + t.slice(1)
+---
+
+{
+  membres.length > 0 && (
+    <ul class:list={['bib-equipe', classes(classe, className)]} aria-label={nom}>
+      {membres.map((p) => (
+        <li class="bib-equipe__vignette bib-carte-lien">
+          {p.photo &&
+            (typeof p.photo === 'string' ? (
+              <img class="bib-equipe__photo" src={p.photo} alt="" width="160" height="160" loading="lazy" decoding="async" />
+            ) : (
+              <Picture class="bib-equipe__photo" src={p.photo} alt="" width={160} height={160} densities={[1, 2]} fit="cover" position="center" formats={['avif', 'webp']} fallbackFormat="webp" loading="lazy" decoding="async" />
+            ))}
+          <Titre class="bib-equipe__nom">
+            <a class="bib-lien-etire" href={p.url}>
+              {p.nomComplet}
+            </a>
+          </Titre>
+          <p class="bib-equipe__fonction">{majuscule(p.fonction)}</p>
+        </li>
+      ))}
+    </ul>
+  )
+}

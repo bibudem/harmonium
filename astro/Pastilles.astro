@@ -1,0 +1,66 @@
+---
+/*
+ * <Pastilles> : une liste nommée de pastilles, liens ou texte, avec une icône facultative. Produit le HTML
+ * documenté dans src/composants/pastilles.css et importe cette feuille.
+ *
+ *   <Pastilles nom="Caractéristiques" pastilles={[
+ *     { libelle: 'Logiciel libre', variante: 'jaune', icone: 'libre' },
+ *     { libelle: 'Guides', lien: '/informatique/logiciels/zotero', variante: 'bleu', icone: 'lien', masque: ' : Zotero' },
+ *   ]} />
+ *
+ * `variante` : jaune, rose, bleu, lieu, neutre (sans : teinte bleue pâle). `icone` : libre, distance, lien,
+ * lieu. `masque` : texte ajouté pour les lecteurs d'écran (ce qui distingue deux liens au même libellé).
+ */
+import '../src/composants/pastilles.css'
+import { ICONES_PASTILLES, type IconePastille } from './icones-pastilles.ts'
+import { classes } from './styles.ts'
+
+interface Pastille {
+  libelle: string
+  lien?: string
+  variante?: 'jaune' | 'rose' | 'bleu' | 'lieu' | 'neutre'
+  icone?: IconePastille
+  masque?: string
+}
+
+interface Props {
+  /** Ce que la liste énumère (aria-label) */
+  nom: string
+  pastilles: Pastille[]
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  [attribut: `data-${string}`]: unknown
+}
+
+const { nom, pastilles, class: classe, className, ...reste } = Astro.props
+const classe_ = (p: Pastille) => ['bib-pastille', p.variante && `bib-pastille--${p.variante}`]
+const taille = (p: Pastille) => (p.icone === 'lieu' ? 14 : 16)
+---
+
+<ul class:list={['bib-pastilles', classes(classe, className)]} aria-label={nom} {...reste}>
+  {
+    pastilles.map((p) => {
+      const contenu = (
+        <>
+          {p.icone && (
+            <svg viewBox="0 0 256 256" width={taille(p)} height={taille(p)} fill="currentColor" aria-hidden="true" focusable="false">
+              <path d={ICONES_PASTILLES[p.icone]} />
+            </svg>
+          )}
+          {p.libelle}
+          {p.masque && <span class="bib-masque">{p.masque}</span>}
+        </>
+      )
+      return p.lien ? (
+        <li>
+          <a class:list={classe_(p)} href={p.lien}>
+            {contenu}
+          </a>
+        </li>
+      ) : (
+        <li class:list={classe_(p)}>{contenu}</li>
+      )
+    })
+  }
+</ul>

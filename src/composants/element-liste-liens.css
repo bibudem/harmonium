@@ -1,0 +1,247 @@
+/*
+ * Élément de liste de liens : une carte séparée (fond légèrement teinté, sans bordure, espace entre les
+ * cartes) avec un titre, une description et, à droite, un bouton (texte d'appel) ou une pastille fléchée ;
+ * toute la carte est cliquable. Construite sur le motif de carte-lien.css (à charger aussi).
+ *
+ *   <ul class="bib-liste-liens">
+ *     <li class="bib-element-liste-liens bib-carte-lien">
+ *       <div class="bib-element-liste-liens__texte">
+ *         <h3 class="bib-element-liste-liens__titre"><a class="bib-lien-etire bib-element-liste-liens__lien" href="/prets/" aria-describedby="appel-1">Prêts</a></h3>
+ *         <div class="bib-element-liste-liens__description">Durées et conditions.</div>
+ *       </div>
+ *       <span class="bib-element-liste-liens__bouton" aria-hidden="true"><span id="appel-1">Voir</span><span class="bib-element-liste-liens__fleche"></span></span>
+ *       <!-- ou, sans texte d'appel : -->
+ *       <span class="bib-pastille-fleche bib-pastille-fleche--petite bib-element-liste-liens__pastille" aria-hidden="true">…</span>
+ *     </li>
+ *   </ul>
+ *
+ * Au survol et au focus, le fond s'assombrit, la carte se soulève (ombre au survol) et la pastille se
+ * remplit. Un seul lien, sur le titre ; son ::after couvre la ligne ; son nom reste court (le titre, plus
+ * « (PDF) » pour un PDF). Le bouton ou la pastille est un repère visuel (aria-hidden) ; le texte d'appel
+ * décrit le lien (aria-describedby). Le niveau du titre se règle sans changer sa taille. --vert-fonce (sur
+ * une section vert foncé) : pastille vert pâle avec une flèche bleu foncé (7,32:1).
+ */
+.bib-element-liste-liens {
+  /* Pastille (PastilleFleche) : pleine, plus vive et un peu plus grande au survol */
+  --pastille-fond: var(--bleu-fonce);
+  --pastille-fond-actif: var(--bleu-principal);
+  --pastille-encre: var(--couleur-sur-fonce);
+  --pastille-echelle-active: 1.1;
+  --rayon-lien-etire: var(--rayon-moyen);
+  --carte-fond: color-mix(in srgb, currentColor 4%, transparent);
+  --carte-fond-survol: color-mix(in srgb, currentColor 8%, transparent);
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--espace-element);
+  padding: var(--espace-element) 1.25rem;
+  border-radius: var(--rayon-moyen);
+  background-color: var(--carte-fond);
+  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+}
+
+/* Espace entre les cartes, et sous le texte d'introduction */
+.bib-element-liste-liens + .bib-element-liste-liens {
+  margin-top: 0.75rem;
+}
+
+.bib-element-liste-liens:first-child {
+  margin-top: var(--espace-element);
+}
+
+.bib-element-liste-liens--vert-fonce {
+  --pastille-fond: var(--vert-pale);
+  --pastille-fond-actif: var(--couleur-sur-fonce);
+  --pastille-encre: var(--bleu-fonce);
+  --carte-fond: color-mix(in srgb, currentColor 7%, transparent);
+  --carte-fond-survol: color-mix(in srgb, currentColor 14%, transparent);
+}
+
+.bib-element-liste-liens__texte {
+  flex: 1 1 auto;
+  width: 100%;
+  margin-block: 4px;
+}
+
+/* Même taille quel que soit le niveau (h2 sans titre de bloc, h3 sinon) */
+.bib-element-liste-liens .bib-element-liste-liens__titre {
+  margin-block: 0.5em;
+  font-size: var(--texte-grand);
+  font-weight: var(--graisse-forte);
+  line-height: 1.25;
+}
+
+.bib-element-liste-liens__lien:focus-visible {
+  outline: none;
+}
+
+/* Le lien s'étire sur la carte (.bib-lien-etire) ; son ::after porte aussi
+   l'anneau de focus, à l'intérieur de la carte */
+.bib-element-liste-liens__lien:focus-visible::after {
+  outline: 3px solid var(--couleur-focus);
+  outline-offset: -3px;
+}
+
+/* Survol et focus : le fond fonce (titre non souligné). Pas de carte qui
+   se soulève (déplacement et ombre) : effet retiré à la demande. */
+@media (hover: hover) and (pointer: fine) {
+  .bib-element-liste-liens:hover {
+    background-color: var(--carte-fond-survol);
+  }
+}
+
+.bib-element-liste-liens:has(.bib-element-liste-liens__lien:focus-visible) {
+  background-color: var(--carte-fond-survol);
+}
+
+.bib-element-liste-liens__description {
+  padding-top: 0.25rem;
+  /* 17 px au texte par défaut, comme la source ; suit le réglage de
+     texte du navigateur */
+  font-size: var(--texte-courant);
+  line-height: 1.4;
+}
+
+.bib-element-liste-liens__bouton,
+.bib-element-liste-liens__pastille {
+  flex: none;
+  margin-bottom: 0.75rem;
+}
+
+/* Repère visuel seulement (aria-hidden) : le clic traverse jusqu'au lien
+   étiré, que son calque (will-change, transform) recouvrait. La pastille
+   a déjà la même règle dans PastilleFleche, pour toutes les cartes. */
+.bib-element-liste-liens__bouton {
+  pointer-events: none;
+}
+
+/* Bouton secondaire (à contour), sur tous les fonds : contour et texte de
+   la couleur du texte de la bande (bleu foncé sur fond clair, blanc sur
+   fond foncé), fond transparent. La carte entière est le lien ; le bouton
+   plein bleu foncé de la source se voyait à peine sur le vert foncé. */
+.bib-element-liste-liens__bouton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 3.125rem;
+  padding: 6px 16px 6px 25px;
+  border: 1px solid currentColor;
+  border-radius: var(--rayon-plein);
+  background-color: transparent;
+  color: inherit;
+  font-size: var(--texte-petit);
+  font-weight: var(--graisse-normale);
+  letter-spacing: 0.02857em;
+  /* Texte agrandi sur écran étroit : l'appel passe à la ligne au lieu de
+     pousser la page au-delà de l'écran (WCAG 1.4.10) */
+  max-width: 100%;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.bib-element-liste-liens__fleche {
+  fill: currentColor;
+}
+
+/* Survol et focus : la flèche du bouton avance d'un cran (celle de la
+   pastille : .bib-carte-lien de global.css). Survol réservé aux pointeurs fins :
+   au toucher, un survol fantôme resterait après le tapotement. */
+.bib-element-liste-liens__bouton > .bib-element-liste-liens__fleche {
+  transition: transform var(--duree-courte-4) var(--courbe-standard-deceleree);
+  will-change: transform;
+}
+
+/* will-change : la pastille garde son calque en permanence. Sans lui, le
+   navigateur la promeut au début de l'agrandissement et la redessine à la
+   fin, et la flèche sautait d'un demi-pixel (le « glitch » au survol). */
+.bib-element-liste-liens__pastille {
+  will-change: scale;
+}
+
+.bib-element-liste-liens__pastille > .bib-pastille-fleche__fleche {
+  will-change: transform;
+}
+
+.bib-element-liste-liens__bouton {
+  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bib-element-liste-liens:hover .bib-element-liste-liens__bouton {
+    background-color: color-mix(in srgb, currentColor 12%, transparent);
+  }
+
+  .bib-element-liste-liens:hover .bib-element-liste-liens__bouton > .bib-element-liste-liens__fleche {
+    transform: translateX(3px);
+  }
+
+  .bib-element-liste-liens:hover .bib-element-liste-liens__bouton.bib-element-liste-liens__bouton--externe > .bib-element-liste-liens__fleche {
+    transform: translate(2px, -2px);
+  }
+}
+
+.bib-element-liste-liens:has(.bib-element-liste-liens__lien:focus-visible) .bib-element-liste-liens__bouton {
+  background-color: color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.bib-element-liste-liens:has(.bib-element-liste-liens__lien:focus-visible) .bib-element-liste-liens__pastille {
+  scale: 1.1;
+}
+
+.bib-element-liste-liens:has(.bib-element-liste-liens__lien:focus-visible) .bib-element-liste-liens__bouton > .bib-element-liste-liens__fleche {
+  transform: translateX(3px);
+}
+
+.bib-element-liste-liens:has(.bib-element-liste-liens__lien:focus-visible) .bib-element-liste-liens__bouton.bib-element-liste-liens__bouton--externe > .bib-element-liste-liens__fleche {
+  transform: translate(2px, -2px);
+}
+
+@media (width >= 900px) {
+  .bib-element-liste-liens {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .bib-element-liste-liens .bib-element-liste-liens__titre {
+    font-size: var(--texte-tres-grand);
+  }
+
+  .bib-element-liste-liens__texte > * {
+    max-width: 83.3333%;
+  }
+
+  .bib-element-liste-liens__bouton,
+  .bib-element-liste-liens__pastille {
+    margin-bottom: 0;
+  }
+}
+
+@media (width >= 1200px) {
+  .bib-element-liste-liens__texte > * {
+    max-width: 66.6667%;
+  }
+}
+
+@media (forced-colors: active) {
+  .bib-element-liste-liens {
+    border: 1px solid CanvasText;
+  }
+
+  .bib-element-liste-liens__bouton {
+    border: 1px solid CanvasText;
+  }
+}
+
+/* Flèche du bouton (Phosphor) : → pour une page du site, ↗ pour un autre site */
+.bib-element-liste-liens__fleche {
+  display: block;
+  width: 24px;
+  height: 24px;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20256%20256'%3E%3Cpath%20d='M221.66%2C133.66l-72%2C72a8%2C8%2C0%2C0%2C1-11.32-11.32L196.69%2C136H40a8%2C8%2C0%2C0%2C1%2C0-16H196.69L138.34%2C61.66a8%2C8%2C0%2C0%2C1%2C11.32-11.32l72%2C72A8%2C8%2C0%2C0%2C1%2C221.66%2C133.66Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.bib-element-liste-liens__bouton--externe .bib-element-liste-liens__fleche {
+  mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20256%20256'%3E%3Cpath%20d='M200%2C64V168a8%2C8%2C0%2C0%2C1-16%2C0V83.31L69.66%2C197.66a8%2C8%2C0%2C0%2C1-11.32-11.32L172.69%2C72H88a8%2C8%2C0%2C0%2C1%2C0-16H192A8%2C8%2C0%2C0%2C1%2C200%2C64Z'/%3E%3C/svg%3E");
+}

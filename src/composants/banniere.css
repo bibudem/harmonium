@@ -1,0 +1,332 @@
+/*
+ * Bannière : une photo sous un voile, avec le titre de la page (<h1>) en bas à gauche, et une ligne de
+ * sous-titre ou des enfants (sommaire, boutons) facultatifs.
+ *
+ *   <div class="bib-banniere bib-banniere--vague">
+ *     <img class="bib-banniere__image" src="photo.jpg" alt="" fetchpriority="high">
+ *     <div class="bib-banniere__texte">
+ *       <div class="bib-banniere__colonne">
+ *         <h1 class="bib-typographie bib-typographie--titreSuperHero bib-banniere__titre">Les bibliothèques</h1>
+ *         <div class="bib-banniere__sous-titre">Étudier, chercher, créer.</div>
+ *       </div>
+ *     </div>
+ *     <div class="bib-banniere__enfants">…</div>
+ *   </div>
+ *
+ * Hauteurs (minimales : avec le texte agrandi à 200 %, le titre ne doit pas être rogné) : 26 / 30 / 34 rem
+ * (moins de 600 px, dès 600 px, dès 900 px), 15 / 16 / 18 rem avec --petite ; dès 1536 px, le quart de la
+ * largeur au-delà de 34 rem. Texte, liens et focus blancs : la photo est sombre.
+ *
+ * Voile : uniforme (noir, --bib-banniere-voile, 50 % par défaut) ou --vague : un dégradé bleu foncé qui monte
+ * du coin bas gauche, sous le titre, et s'efface sur la photo (sur toute la largeur sous 900 px, où le texte la
+ * prend aussi ; dès 900 px, le texte n'occupe que la gauche), avec une ombre diffuse sous les lettres.
+ * --bib-banniere-cadrage : la hauteur de la photo à garder (« 20 % » ; 50 % par défaut), pour que les visages
+ * restent sous l'en-tête. Un titre de plus de 45 caractères (--titre-long) prend environ 70 % de la taille
+ * normale, lignes équilibrées.
+ *
+ * Placement (propre à chaque site) : --bib-banniere-entete est la hauteur d'un en-tête transparent que la
+ * bannière glisse sous elle dès 1200 px (0 par défaut) ; --bib-banniere-marge-basse règle le chevauchement
+ * avec le contenu suivant (0 par défaut). Une photo qui charge reste sur le bleu foncé ; [data-fondu] sur
+ * l'image la fait apparaître en fondu.
+ *
+ * Variante --section (sous-pages) : une bande basse de 230 px, dont le titre est un paragraphe qui garde
+ * l'apparence d'un h2 (le <h1> est celui du contenu), collé en bas à droite (215 px de marge dès 900 px), la
+ * vague centrée sous lui.
+ */
+.bib-banniere {
+  /* Hauteur totale, et ce que le contenu suivant peut en recouvrir */
+  --hauteur: 26rem;
+  --_entete: var(--bib-banniere-entete, 0rem);
+  --_voile: var(--bib-banniere-voile, 50%);
+  --vague-taille: 210% 150%;
+
+  display: flex;
+  position: relative;
+  isolation: isolate;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 100%;
+  min-height: calc(var(--hauteur) - var(--_entete));
+  margin-bottom: var(--bib-banniere-marge-basse, 0);
+  overflow: hidden;
+  /* Sous la photo pendant son chargement (fondu) */
+  background-color: var(--bleu-fonce);
+  color: var(--couleur-sur-fonce);
+  --couleur-lien: var(--couleur-sur-fonce);
+  --couleur-lien-survol: var(--couleur-sur-fonce);
+  --couleur-focus: var(--couleur-sur-fonce);
+}
+
+/* Voile uniforme */
+.bib-banniere::before {
+  content: '';
+  position: absolute;
+  z-index: var(--z-dessous);
+  inset: 0;
+  background-color: color-mix(in srgb, var(--couleur-voile) var(--_voile), transparent);
+}
+
+/* Vague bleu foncé à la place du voile */
+.bib-banniere--vague::before {
+  background-color: transparent;
+  background-image: radial-gradient(
+    ellipse var(--vague-taille) at var(--vague-x, 0%) 100%,
+    color-mix(in srgb, var(--bleu-fonce) 74%, transparent),
+    color-mix(in srgb, var(--bleu-fonce) 70%, transparent) 50%,
+    color-mix(in srgb, var(--bleu-fonce) 58%, transparent) 68%,
+    color-mix(in srgb, var(--bleu-fonce) 34%, transparent) 83%,
+    color-mix(in srgb, var(--bleu-fonce) 12%, transparent) 94%,
+    transparent
+  );
+}
+
+.bib-banniere--vague {
+  text-shadow:
+    0 0 2px color-mix(in srgb, var(--couleur-voile) 45%, transparent),
+    0 1px 12px color-mix(in srgb, var(--couleur-voile) 55%, transparent),
+    0 2px 32px color-mix(in srgb, var(--couleur-voile) 45%, transparent);
+}
+
+/* L'ombre est pour le texte blanc posé sur la photo : les surfaces claires n'en héritent pas */
+.bib-banniere--vague :where(.theme-clair, .surface-claire, .bib-bouton, button) {
+  text-shadow: none;
+}
+
+.bib-banniere__image {
+  position: absolute;
+  z-index: var(--z-fond);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% var(--bib-banniere-cadrage, 50%);
+  transition: opacity var(--duree-longue-2) var(--courbe-standard-deceleree);
+}
+
+.bib-banniere__image[data-fondu] {
+  opacity: 0;
+}
+
+.bib-banniere--petite {
+  --hauteur: 15rem;
+}
+
+/* Avec un sommaire (panneau de liens qui déborde de la bannière) : rien n'est rogné */
+.bib-banniere:has([data-sommaire]) {
+  z-index: var(--z-dessus-1);
+  overflow: visible;
+}
+
+@media (width >= 600px) {
+  .bib-banniere {
+    --hauteur: 30rem;
+  }
+
+  .bib-banniere--petite {
+    --hauteur: 16rem;
+  }
+}
+
+@media (width >= 900px) {
+  .bib-banniere {
+    --hauteur: 34rem;
+    --vague-taille: 100% 175%;
+  }
+
+  .bib-banniere--petite {
+    --hauteur: 18rem;
+  }
+}
+
+/* Très grands écrans : à hauteur fixe, la bannière devenait une mince bande ; elle suit la largeur (le quart) */
+@media (width >= 1536px) {
+  .bib-banniere:not(.bib-banniere--petite, .bib-banniere--section) {
+    --hauteur: max(34rem, 25vw);
+  }
+}
+
+@media (width >= 1200px) {
+  /* Glissée sous un en-tête transparent : le texte reste sous lui */
+  .bib-banniere {
+    min-height: var(--hauteur);
+    margin-top: calc(-1 * var(--_entete));
+    padding-top: var(--_entete);
+  }
+}
+
+/* Même boîte qu'une section : marges internes et largeur maximale */
+.bib-banniere__texte {
+  width: 100%;
+  max-width: var(--largeur-max);
+  margin-inline: auto;
+  padding: 48px 16px;
+}
+
+.bib-banniere--petite .bib-banniere__texte {
+  margin-bottom: max(-4rem, -72px);
+}
+
+.bib-banniere__colonne {
+  width: 100%;
+}
+
+.bib-banniere__titre {
+  margin: 0;
+  overflow-wrap: break-word;
+}
+
+/* Titre long : environ 70 % de la taille normale, lignes équilibrées */
+.bib-banniere--titre-long .bib-banniere__titre {
+  font-size: 2rem;
+  text-wrap: balance;
+}
+
+.bib-banniere__sous-titre {
+  margin-top: 8px;
+}
+
+.bib-banniere__enfants {
+  width: 100%;
+  padding: 0 var(--espace-2) var(--espace-2);
+}
+
+@media (width >= 600px) {
+  .bib-banniere--titre-long .bib-banniere__titre {
+    font-size: 2.75rem;
+  }
+
+  .bib-banniere__texte {
+    padding-inline: 20px;
+  }
+
+  .bib-banniere__colonne {
+    width: calc(100% * 10 / 12);
+  }
+
+  .bib-banniere__sous-titre {
+    margin-top: 12px;
+  }
+
+  .bib-banniere__enfants {
+    padding: 0 var(--espace-3) var(--espace-4);
+  }
+}
+
+@media (width >= 900px) {
+  .bib-banniere--titre-long .bib-banniere__titre {
+    font-size: 3.25rem;
+  }
+
+  .bib-banniere__texte {
+    padding: 64px 40px;
+  }
+
+  .bib-banniere__colonne {
+    width: calc(100% * 8 / 12);
+  }
+
+  .bib-banniere--petite .bib-banniere__colonne {
+    width: 100%;
+  }
+
+  .bib-banniere__sous-titre {
+    margin-top: 16px;
+  }
+
+  .bib-banniere__enfants {
+    padding: 0 3.75rem 4.25rem;
+  }
+}
+
+@media (width >= 1200px) {
+  .bib-banniere__texte {
+    padding: 96px 64px;
+  }
+}
+
+/* Ligne de sous-titre : collée au titre, qu'elle complète */
+.bib-banniere__sous-titre:has(> .bib-banniere__sous-titre-ligne) {
+  margin-top: 4px;
+}
+
+.bib-banniere:has(.bib-banniere__sous-titre-ligne) .bib-banniere__titre {
+  padding-bottom: 0;
+}
+
+/* Le sommaire ou le bouton qui suit la ligne s'en détache */
+.bib-banniere__sous-titre-ligne + :is([data-sommaire], .bib-bouton) {
+  margin-top: var(--espace-3);
+}
+
+@media (width >= 900px) {
+  .bib-banniere__sous-titre:has(> .bib-banniere__sous-titre-ligne) {
+    margin-top: 8px;
+  }
+
+  .bib-banniere__sous-titre-ligne + :is([data-sommaire], .bib-bouton) {
+    margin-top: var(--espace-4);
+  }
+}
+
+/* ---- Variante sous-pages : bande basse de 230 px, titre en paragraphe ----
+   Le titre est collé à droite, mais un titre long s'étend jusqu'à la gauche : la vague est centrée sous lui. */
+.bib-banniere--section {
+  --hauteur: 230px;
+  --vague-x: 50%;
+  --vague-taille: 150% 260%;
+
+  margin-bottom: 0;
+}
+
+.bib-banniere--section .bib-banniere__texte {
+  margin-bottom: 0;
+  padding: 0 var(--gouttiere);
+}
+
+/* 1 rem au-dessus et au-dessous : les jambages ne touchent pas le bas de la bande */
+.bib-banniere--section .bib-banniere__colonne {
+  display: flex;
+  container-type: inline-size;
+  justify-content: flex-end;
+  align-items: flex-end;
+  width: 100%;
+  padding-block: var(--espace-2);
+}
+
+/* Apparence d'un h2 (2,5 rem, puis 3,5 rem dès 900 px) ; un mot long se coupe plutôt que de sortir */
+.bib-banniere__titre-section {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: break-word;
+  font-size: 2.5rem;
+  font-weight: var(--graisse-forte);
+  line-height: 1.1;
+}
+
+/* Rangée étroite (texte agrandi sur un téléphone) : coupure avec trait d'union */
+@container (width <= 16rem) {
+  .bib-banniere__titre-section {
+    hyphens: auto;
+  }
+}
+
+@media (width >= 900px) {
+  .bib-banniere--section {
+    --vague-taille: 105% 300%;
+  }
+
+  .bib-banniere--section .bib-banniere__colonne {
+    width: 100%;
+    padding: var(--espace-2) 215px 48px 0;
+  }
+
+  .bib-banniere__titre-section {
+    font-size: 3.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bib-banniere__image {
+    transition: none;
+  }
+}

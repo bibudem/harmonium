@@ -1,0 +1,29 @@
+---
+/*
+ * <AccordeonTitre> : le titre cliquable d'un volet, rendu en <summary> (voir
+ * src/composants/accordeons.css). Le titre est un h3 par défaut ; `niveauTitre` le règle selon
+ * la hiérarchie de la page (0 : pas de titre, un <span>). Le contenu reste du texte : un lien ou
+ * un bouton dans un <summary> serait un élément interactif imbriqué.
+ *
+ * Aussi : AccordeonResume (ancien nom).
+ */
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Props {
+  niveauTitre?: 0 | 2 | 3 | 4 | 5 | 6
+  id?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+  [attribut: string]: unknown
+}
+
+const { niveauTitre = 3, class: classe, className, style, sx: _sx, ...reste } = Astro.props
+const Titre = (niveauTitre ? `h${niveauTitre}` : 'span') as 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'span'
+---
+
+<summary class:list={['bib-accordeon__titre', classes(classe, className)]} style={fusionnerStyles(style)} {...reste}>
+  <Titre class="bib-accordeon__intitule"><slot /></Titre>
+  <span class="bib-accordeon__indicateur" aria-hidden="true"></span>
+</summary>

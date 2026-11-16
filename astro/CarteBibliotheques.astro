@@ -1,0 +1,153 @@
+---
+/*
+ * <CarteBibliotheques> : les bibliothèques qui offrent un service, en liste numérotée et sur une carte chargée à
+ * la demande. Produit le HTML documenté dans src/composants/carte-bibliotheques.css et importe cette feuille
+ * (et celle des pastilles) ; bib-carte-bibliotheques.min.js (facultatif) montre la carte.
+ *
+ *   <CarteBibliotheques service="des postes Apportez Votre Appareil (AVA)" sousTitre="61 postes" nomPastilles="Nombre de postes"
+ *     lieux={[{ nom: 'Aménagement', lien: 'https://bib.umontreal.ca/…', itineraire: 'https://maps.google.com/…',
+ *               coords: [45.5163, -73.6149], pastilles: [{ libelle: '2 postes' }], details: ['Section arrière'] }]} />
+ *
+ * - `lieux` : nom, lien, itineraire, coords [latitude, longitude], region (sans : `regionDefaut`), emplacement
+ *   (HTML court : « Pavillon principal, 2<sup>e</sup> étage »), pastilles [{ libelle, lien? }], details (HTML
+ *   court, une précision par élément).
+ * - Plusieurs régions : des boutons pour cadrer la carte sur l'une d'elles. Trois lieux ou moins : la liste
+ *   entière, sans défilement.
+ * - Les données structurées (schema.org ItemList de Library) sont ajoutées, sauf `donneesStructurees={false}`.
+ */
+import '../src/composants/carte-bibliotheques.css'
+import '../src/composants/pastilles.css'
+import { idUnique } from './ids.ts'
+import { classes } from './styles.ts'
+
+interface LieuCarte {
+  nom: string
+  lien: string
+  itineraire: string
+  coords: [number, number]
+  region?: string
+  emplacement?: string
+  pastilles?: { libelle: string; lien?: string }[]
+  details?: string[]
+}
+
+interface Props {
+  /** Ce que les bibliothèques offrent, après « offrant » : « des postes AVA » */
+  service: string
+  lieux: LieuCarte[]
+  sousTitre?: string
+  nomPastilles?: string
+  regionDefaut?: string
+  niveau?: 2 | 3 | 4 | 5 | 6
+  donneesStructurees?: boolean
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+const { service, lieux, sousTitre, nomPastilles = 'Caractéristiques', regionDefaut = 'Montréal', niveau = 3, donneesStructurees = true, class: classe, className } = Astro.props
+const Titre = `h${niveau}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+const id = idUnique('carte-bibliotheques')
+const regionDe = (l: LieuCarte) => l.region ?? regionDefaut
+const regions = [...new Set(lieux.map(regionDe))]
+const listeComplete = lieux.length <= 3
+const texte = (html: string) => html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
+const EPINGLE = 'M128,16a88.1,88.1,0,0,0-88,88c0,75.3,80,132.17,83.41,134.55a8,8,0,0,0,9.18,0C136,236.17,216,179.3,216,104A88.1,88.1,0,0,0,128,16Zm0,56a32,32,0,1,1-32,32A32,32,0,0,1,128,72Z'
+const EXTERNE = 'M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z'
+const CARTE = 'M227.69,51.27a6,6,0,0,0-5.15-1.09L160.7,65.64l-62-31a6,6,0,0,0-4.14-.45l-64,16A6,6,0,0,0,26,56V200a6,6,0,0,0,7.46,5.82L95.3,190.36l62,31a6,6,0,0,0,4.14.45l64-16A6,6,0,0,0,230,200V56A6,6,0,0,0,227.69,51.27ZM102,49.71l52,26V206.29l-52-26Zm-64,11,52-13V179.32l-52,13ZM218,195.32l-52,13V76.68l52-13Z'
+
+const jsonLd = donneesStructurees
+  ? JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      name: `Bibliothèques de l’Université de Montréal offrant ${service}`,
+      numberOfItems: lieux.length,
+      itemListElement: lieux.map((l, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        item: {
+          '@type': 'Library',
+          name: l.nom,
+          url: l.lien,
+          description: [l.emplacement && texte(l.emplacement), ...(l.details ?? []).map((d) => `${texte(d)}.`)].filter(Boolean).join(' ') || undefined,
+          hasMap: l.itineraire,
+          geo: { '@type': 'GeoCoordinates', latitude: l.coords[0], longitude: l.coords[1] },
+        },
+      })),
+    }).replace(/</g, '\\u003c')
+  : undefined
+---
+
+<div class:list={['bib-carte-bibliotheques', classes(classe, className)]} data-carte-bibliotheques>
+  {jsonLd && <script is:inline type="application/ld+json" set:html={jsonLd} />}
+  {
+    regions.length > 1 && (
+      <div class="bib-carte-bibliotheques__regions" role="group" aria-label="Afficher la région" data-regions hidden>
+        {regions.map((nom, i) => (
+          <button type="button" class="bib-carte-bibliotheques__region" aria-pressed={String(i === 0)} data-region={nom}>
+            {nom}
+          </button>
+        ))}
+      </div>
+    )
+  }
+  <div class:list={['bib-carte-bibliotheques__disposition', { 'bib-carte-bibliotheques__disposition--liste-complete': listeComplete }]}>
+    <div class="bib-carte-bibliotheques__zone" data-zone-carte hidden>
+      <div class="bib-carte-bibliotheques__carte" data-carte role="region" aria-label={`Carte des bibliothèques offrant ${service}`}>
+        <div class="bib-carte-bibliotheques__invite">
+          <svg viewBox="0 0 256 256" width="40" height="40" fill="currentColor" aria-hidden="true" focusable="false"><path d={CARTE} /></svg>
+          <p>La carte s’affiche à la demande : elle charge les fonds d’OpenStreetMap.</p>
+          <button type="button" class="bib-carte-bibliotheques__afficher" data-afficher>Afficher la carte</button>
+        </div>
+      </div>
+      <p class="bib-carte-bibliotheques__etat" role="status" data-etat-carte></p>
+    </div>
+    <div class="bib-carte-bibliotheques__panneau">
+      <p class="bib-carte-bibliotheques__entete" id={`${id}-entete`}>
+        <strong>{lieux.length} {lieux.length > 1 ? 'bibliothèques' : 'bibliothèque'}{sousTitre && <span class="bib-carte-bibliotheques__sous-titre"> · {sousTitre}</span>}</strong>
+        <span class="bib-carte-bibliotheques__defiler" aria-hidden="true">Faites défiler ↓</span>
+      </p>
+      <ol class="bib-carte-bibliotheques__liste" aria-labelledby={`${id}-entete`}>
+        {
+          lieux.map((l, i) => (
+            <li class="bib-carte-bibliotheques__lieu" data-lieu={l.nom} data-lat={l.coords[0]} data-lng={l.coords[1]} data-region={regionDe(l)} data-itineraire={l.itineraire}>
+              <span class="bib-carte-bibliotheques__numero" aria-hidden="true">{i + 1}</span>
+              <div class="bib-carte-bibliotheques__corps">
+                <Titre class="bib-carte-bibliotheques__titre"><a href={l.lien}>{l.nom}</a></Titre>
+                {(l.emplacement || regionDe(l) !== regionDefaut) && (
+                  <p class="bib-carte-bibliotheques__emplacement">
+                    <svg viewBox="0 0 256 256" width="14" height="14" fill="currentColor" aria-hidden="true" focusable="false"><path d={EPINGLE} /></svg>
+                    <span>
+                      {regionDe(l) !== regionDefaut && regionDe(l)}
+                      {regionDe(l) !== regionDefaut && l.emplacement && ' · '}
+                      {l.emplacement && <Fragment set:html={l.emplacement} />}
+                    </span>
+                  </p>
+                )}
+                {l.pastilles && l.pastilles.length > 0 && (
+                  <ul class="bib-pastilles" aria-label={nomPastilles} data-pastilles>
+                    {l.pastilles.map((p) => <li>{p.lien ? <a class="bib-pastille bib-pastille--neutre" href={p.lien}>{p.libelle}</a> : <span class="bib-pastille bib-pastille--neutre">{p.libelle}</span>}</li>)}
+                  </ul>
+                )}
+                {l.details && l.details.length > 0 && (
+                  <ul class="bib-carte-bibliotheques__details" data-details>
+                    {l.details.map((d) => <li set:html={d} />)}
+                  </ul>
+                )}
+                <div class="bib-carte-bibliotheques__actions">
+                  <button type="button" class="bib-carte-bibliotheques__lien" data-voir hidden>
+                    Voir sur la carte<span class="bib-masque"> : {l.nom}</span>
+                  </button>
+                  <a class="bib-carte-bibliotheques__lien" href={l.itineraire}>
+                    Itinéraire<span class="bib-masque"> vers {l.nom} (Google Maps)</span>
+                    <svg viewBox="0 0 256 256" width="14" height="14" fill="currentColor" aria-hidden="true" focusable="false"><path d={EXTERNE} /></svg>
+                  </a>
+                </div>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</div>

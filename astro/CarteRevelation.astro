@@ -1,0 +1,101 @@
+---
+/*
+ * <CarteRevelation> : une carte qui révèle sa description au survol, au focus et au toucher. Produit le HTML
+ * documenté dans src/composants/carte-revelation.css et importe cette feuille ; bib-carte-revelation.min.js
+ * (facultatif) donne le focus à la description au clic ou au toucher.
+ *
+ *   <CarteRevelation title="Services" Icon={BooksIcon} couleur="vertFonce"><p>Description…</p></CarteRevelation>
+ *   <CarteRevelation title="Bibliothèque" subtitle="Droit" Image={photo}><p>Description…</p></CarteRevelation>
+ *
+ * Avec `Image` (image importée ou adresse), la carte est une carte à photo ; sans, un fond uni (`couleur` :
+ * bleuPrincipal, rose300 ou vertFonce) avec `Icon`. `niveauTitre` : 2 à 6 (3 par défaut). `alt` : seulement
+ * si la photo porte un message.
+ */
+import '../src/composants/carte-revelation.css'
+import type { ImageMetadata } from 'astro'
+import { Image as ImageAstro } from 'astro:assets'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+import { idUnique } from './ids.ts'
+
+type Couleur = 'bleuPrincipal' | 'rose300' | 'vertFonce'
+
+interface Props {
+  title: string
+  /** Composant d'icône (fond uni) */
+  Icon?: any
+  couleur?: Couleur
+  /** Avec une photo seulement */
+  subtitle?: string
+  Image?: ImageMetadata | string
+  /** Texte de remplacement de la photo ; décorative par défaut */
+  alt?: string
+  niveauTitre?: 2 | 3 | 4 | 5 | 6
+  id?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+  /** Hérités des anciennes cartes : acceptés et ignorés */
+  bg?: Couleur
+  small?: boolean
+}
+
+const { title, Icon, couleur, bg, subtitle, Image, alt = '', niveauTitre = 3, class: classe, className, style, small: _petite, ...reste } = Astro.props
+
+if (!title) throw new Error('CarteRevelation : la propriété `title` est obligatoire.')
+if (!Image && !Icon) throw new Error('CarteRevelation : donner `Image` (carte à photo) ou `Icon` (fond uni).')
+const COULEUR_CSS: Record<Couleur, string> = { bleuPrincipal: 'bleu-principal', rose300: 'rose-300', vertFonce: 'vert-fonce' }
+const fond = couleur ?? bg ?? 'bleuPrincipal'
+if (!COULEUR_CSS[fond]) throw new Error(`CarteRevelation : couleur invalide (${Object.keys(COULEUR_CSS).join(', ')}).`)
+
+const idTitre = idUnique('carte-titre')
+const Titre = `h${niveauTitre}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+
+// En cover, une photo plus large que la carte (paysage dans une carte portrait) s'affiche à la hauteur de la
+// carte × son ratio : 37,5rem pour du 3:2, et non 23rem. Annoncer 23rem faisait choisir une image trop petite.
+const ratio = !Image || typeof Image === 'string' ? 1 : Image.width / Image.height
+const largeurPetite = Math.ceil(Math.max(18, 20 * ratio) * 100) / 100
+const largeurGrande = Math.ceil(Math.max(23, 25 * ratio) * 100) / 100
+const largeurs = [...new Set([largeurPetite, largeurGrande].flatMap((rem) => [1, 2].map((d) => Math.ceil(rem * 16 * d))))].sort((a, b) => a - b)
+const tailles = `(min-width: 600px) ${largeurGrande}rem, ${largeurPetite}rem`
+---
+
+{
+  Image ? (
+    <div class:list={['bib-carte-revelation', 'bib-carte-revelation--photo', classes(classe, className)]} style={fusionnerStyles(style)} data-carte-revelation {...reste}>
+      {typeof Image === 'string' ? (
+        <img class="bib-carte-revelation__photo" src={Image} alt={alt} loading="lazy" decoding="async" />
+      ) : (
+        <ImageAstro class="bib-carte-revelation__photo" src={Image} alt={alt} widths={largeurs} sizes={tailles} loading="lazy" />
+      )}
+      <div class="bib-carte-revelation__degrade" aria-hidden="true" />
+      <div class="bib-carte-revelation__voile" aria-hidden="true" />
+      <Titre class="bib-carte-revelation__titre" id={idTitre}>
+        {title}
+      </Titre>
+      <div class="bib-carte-revelation__contenu" tabindex="0" role="group" aria-labelledby={idTitre} data-description>
+        {subtitle && <p class="bib-carte-revelation__sous-titre">{subtitle}</p>}
+        <div class="bib-carte-revelation__texte">
+          <slot />
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div
+      class:list={['bib-carte-revelation', `bib-carte-revelation--${COULEUR_CSS[fond]}`, { 'surface-claire': fond === 'rose300' }, classes(classe, className)]}
+      style={fusionnerStyles(style)}
+      data-carte-revelation
+      {...reste}
+    >
+      <div class="bib-carte-revelation__icone">
+        <Icon size={45} aria-hidden="true" focusable="false" />
+      </div>
+      <Titre class="bib-carte-revelation__titre" id={idTitre}>
+        {title}
+      </Titre>
+      <div class="bib-carte-revelation__contenu" tabindex="0" role="group" aria-labelledby={idTitre} data-description>
+        <slot />
+      </div>
+    </div>
+  )
+}

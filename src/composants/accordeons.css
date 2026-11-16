@@ -1,0 +1,245 @@
+/*
+ * Accordéons : volets repliables en <details> natif (clavier, sans JavaScript). Un groupe de
+ * volets qui portent le même attribut name n'en ouvre qu'un à la fois.
+ *
+ *   <div class="bib-accordeons">
+ *     <details class="bib-accordeon" name="faq">
+ *       <summary class="bib-accordeon__titre">
+ *         <h3 class="bib-accordeon__intitule">Question</h3>
+ *         <span class="bib-accordeon__indicateur" aria-hidden="true"></span>
+ *       </summary>
+ *       <div class="bib-accordeon__contenu">Réponse…</div>
+ *     </details>
+ *   </div>
+ *
+ * Le niveau du titre (h3 ici) suit la hiérarchie de la page ; sans titre, un <span>. Le titre
+ * reste du texte : pas de lien ni de bouton dans un <summary>.
+ *
+ * Couleurs : bleu par défaut ; modificateurs --neutre (titre ouvert dans
+ * la couleur du texte, filet gris, pastille jaune, fond gris), --rose et --vert sur le groupe (ou
+ * sur un volet).
+ * Habillage : --bib-accordeon-accent (titre ouvert, icône), --bib-accordeon-filet (trait sous
+ * le titre), --bib-accordeon-pastille (rond derrière l'icône), --bib-accordeon-fond (fond du
+ * contenu).
+ *
+ * Ouverture animée (hauteur et opacité) là où ::details-content et interpolate-size existent ;
+ * ailleurs, le contenu apparaît en fondu. Facultatif : bib-accordeons.min.js ouvre le volet
+ * qui contient la cible d'une ancre et garde le titre cliqué sous le pointeur quand un autre
+ * volet se ferme plus haut.
+ */
+.bib-accordeons,
+.bib-accordeon {
+  --_accent: var(--bib-accordeon-accent, var(--bleu-principal));
+  --_filet: var(--bib-accordeon-filet, var(--bleu-principal));
+  --_pastille: var(--bib-accordeon-pastille, var(--bleu-100));
+  --_fond: var(--bib-accordeon-fond, var(--bleu-100));
+}
+
+.bib-accordeons--rose,
+.bib-accordeon--rose {
+  --bib-accordeon-accent: var(--rouge-orange-texte-sur-clair);
+  --bib-accordeon-filet: var(--rouge-orange-texte-sur-clair);
+  --bib-accordeon-pastille: var(--rose-100);
+  --bib-accordeon-fond: var(--rose-100);
+}
+
+/* Neutre : jetons de rôle du site s'il les définit */
+.bib-accordeons--neutre,
+.bib-accordeon--neutre {
+  --bib-accordeon-accent: var(--couleur-texte);
+  --bib-accordeon-filet: var(--action-contour, #7d8696);
+  --bib-accordeon-pastille: var(--action-douce-fond-survol, var(--jaune));
+  --bib-accordeon-fond: var(--couleur-fond-neutre, color-mix(in srgb, var(--couleur-bordure) 30%, var(--couleur-surface)));
+}
+
+/* Vert : le titre passe au vert foncé (le vert pâle n'atteint que 2,5:1) ; le vert pâle reste
+   pour le trait et teinte le fond */
+.bib-accordeons--vert,
+.bib-accordeon--vert {
+  --bib-accordeon-accent: var(--vert-fonce);
+  --bib-accordeon-filet: var(--vert-pale);
+  --bib-accordeon-pastille: color-mix(in srgb, var(--vert-pale) 25%, var(--couleur-surface));
+  --bib-accordeon-fond: color-mix(in srgb, var(--vert-pale) 25%, var(--couleur-surface));
+}
+
+/* Transparent : le volet prend la couleur de sa bande */
+.bib-accordeon {
+  background-color: transparent;
+  color: var(--couleur-texte);
+}
+
+@supports (interpolate-size: allow-keywords) and selector(::details-content) {
+  .bib-accordeon {
+    interpolate-size: allow-keywords;
+  }
+
+  .bib-accordeon::details-content {
+    block-size: 0;
+    overflow-y: clip;
+    opacity: 0;
+    transition:
+      block-size var(--duree-moyenne-1) var(--courbe-emphase),
+      opacity var(--duree-moyenne-1) var(--courbe-emphase),
+      content-visibility var(--duree-moyenne-1) allow-discrete;
+  }
+
+  .bib-accordeon[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+
+  .bib-accordeon.bib-accordeon--sans-transition::details-content {
+    transition: none;
+  }
+
+  @media print {
+    .bib-accordeon::details-content {
+      transition: none;
+    }
+  }
+}
+
+.bib-accordeon__titre {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espace-2);
+  padding: 30px 0 20px;
+  border-bottom: 1px solid var(--_filet);
+  list-style: none;
+  cursor: pointer;
+  transition: color var(--duree-moyenne-3) var(--courbe-emphase);
+}
+
+.bib-accordeon__titre::-webkit-details-marker {
+  display: none;
+}
+
+.bib-accordeon[open] > .bib-accordeon__titre {
+  color: var(--_accent);
+}
+
+/* Deux classes : l'emporte sur les titres de la page (.contenu h3, .entry-content h3…) */
+.bib-accordeon .bib-accordeon__intitule {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  font-family: var(--police-sans);
+  font-size: var(--texte-grand);
+  font-weight: var(--graisse-forte);
+  line-height: 1.2;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+}
+
+/* Pastille de 35 px ; le plus et le moins (Phosphor, masques CSS) sont superposés : l'un tourne
+   et s'efface pendant que l'autre arrive. Le changement d'icône, et non la seule pastille,
+   marque l'état, y compris en couleurs forcées. */
+.bib-accordeon__indicateur {
+  position: relative;
+  isolation: isolate;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  color: var(--_accent);
+}
+
+.bib-accordeon__indicateur::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: var(--rayon-plein);
+  background-color: var(--_pastille);
+  transition: opacity var(--duree-moyenne-3) var(--courbe-emphase);
+}
+
+.bib-accordeon__indicateur::after {
+  content: '';
+  grid-area: 1 / 1;
+  width: 17.5px;
+  height: 17.5px;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20256%20256'%3E%3Cpath%20d='M224%2C128a8%2C8%2C0%2C0%2C1-8%2C8H136v80a8%2C8%2C0%2C0%2C1-16%2C0V136H40a8%2C8%2C0%2C0%2C1%2C0-16h80V40a8%2C8%2C0%2C0%2C1%2C16%2C0v80h80A8%2C8%2C0%2C0%2C1%2C224%2C128Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition:
+    opacity var(--duree-courte-4) var(--courbe-standard),
+    transform var(--duree-courte-4) var(--courbe-standard);
+}
+
+.bib-accordeon[open] > .bib-accordeon__titre .bib-accordeon__indicateur::before {
+  opacity: 0;
+}
+
+.bib-accordeon[open] > .bib-accordeon__titre .bib-accordeon__indicateur::after {
+  mask-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20256%20256'%3E%3Cpath%20d='M224%2C128a8%2C8%2C0%2C0%2C1-8%2C8H40a8%2C8%2C0%2C0%2C1%2C0-16H216A8%2C8%2C0%2C0%2C1%2C224%2C128Z'/%3E%3C/svg%3E");
+}
+
+/* La pastille disparaît en couleurs forcées : on cerne l'icône pour que l'indicateur reste
+   repérable comme commande */
+@media (forced-colors: active) {
+  .bib-accordeon__indicateur::before {
+    border: 1px solid CanvasText;
+  }
+
+  .bib-accordeon__indicateur::after {
+    background-color: CanvasText;
+  }
+}
+
+.bib-accordeon__contenu {
+  padding: var(--espace-3);
+  border-radius: 0 0 var(--rayon-petit) var(--rayon-petit);
+  background-color: var(--_fond);
+  color: var(--couleur-texte);
+}
+
+.bib-accordeon__contenu > :first-child {
+  margin-top: 0;
+}
+
+.bib-accordeon__contenu > :last-child {
+  margin-bottom: 0;
+}
+
+/* Repli sans ::details-content ou sans interpolate-size : bref fondu à l'ouverture */
+@supports not ((interpolate-size: allow-keywords) and selector(::details-content)) {
+  .bib-accordeon__contenu {
+    transition: opacity var(--duree-moyenne-1) var(--courbe-emphase-deceleree);
+  }
+
+  @starting-style {
+    .bib-accordeon__contenu {
+      opacity: 0;
+    }
+  }
+}
+
+@media (width >= 900px) {
+  .bib-accordeon__contenu {
+    padding: var(--espace-carte) var(--espace-4);
+  }
+}
+
+/* Ouverture par une ancre : titre et indicateur aussi, sans transition */
+.bib-accordeon--sans-transition .bib-accordeon__titre,
+.bib-accordeon--sans-transition .bib-accordeon__titre *,
+.bib-accordeon--sans-transition .bib-accordeon__titre *::before,
+.bib-accordeon--sans-transition .bib-accordeon__titre *::after {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bib-accordeon,
+  .bib-accordeon::details-content,
+  .bib-accordeon__titre,
+  .bib-accordeon__contenu,
+  .bib-accordeon__indicateur::before,
+  .bib-accordeon__indicateur::after {
+    transition: none;
+  }
+}

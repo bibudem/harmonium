@@ -1,0 +1,32 @@
+---
+/*
+ * <IconeTexte> : l'icône carrée avec texte : le texte (slot) et une grande icône dans un carré. Produit
+ * le HTML « avec texte » documenté dans src/composants/icone-carree.css ; le carré est l'<IconeCarree>.
+ *
+ *   <IconeTexte Icone={TargetIcon} fond="var(--vert-pale)"><h3>Notre mission</h3><p>Texte</p></IconeTexte>
+ */
+import IconeCarree from './IconeCarree.astro'
+import { couleurPalette } from './couleurs.ts'
+import { classes } from './styles.ts'
+
+interface Props {
+  /** Composant d'icône */
+  Icone: any
+  /** Fond du carré : clé de palette ou couleur CSS */
+  fond?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+const { Icone, fond, class: classe, className } = Astro.props
+---
+
+<div class:list={['bib-icone-carree-texte', classes(classe, className)]}>
+  <div class="bib-icone-carree-texte__texte">
+    <slot />
+  </div>
+  <IconeCarree color={couleurPalette(fond)}>
+    <Icone aria-hidden="true" focusable="false" />
+  </IconeCarree>
+</div>

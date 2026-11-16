@@ -1,0 +1,31 @@
+---
+/*
+ * <Encadre> : un encadré d'<Encadres> : le contenu (slot) et une icône facultative à côté du titre
+ * (`Icone`, un composant d'icône rendu à `taille` px, 50 par défaut, de la `couleur` donnée, rouge
+ * orangé par défaut). Produit le HTML documenté dans src/composants/encadres.css.
+ */
+import '../src/composants/encadres.css'
+import { classes } from './styles.ts'
+
+interface Props {
+  Icone?: any
+  taille?: number
+  couleur?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+const { Icone, taille, couleur, class: classe, className } = Astro.props
+---
+
+<div class:list={['bib-encadre', 'surface-claire', classes(classe, className)]}>
+  {
+    Icone && (
+      <span class="bib-encadre__icone" aria-hidden="true">
+        <Icone size={taille ?? 50} color={couleur ?? 'var(--rouge-orange)'} aria-hidden="true" focusable="false" />
+      </span>
+    )
+  }
+  <slot />
+</div>

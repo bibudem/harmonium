@@ -1,0 +1,23 @@
+<div class="demo-cadre">
+  <p class="etiquette">Clavardage intégré (<code>--clavardage</code>, fenêtre LibChat simulée)</p>
+  <div class="contenu">
+    <div class="ex-int-commandes" data-ex-int="clavardage">
+      <button type="button" data-ex-int-action="succes">Recharger le clavardage</button>
+      <button type="button" data-ex-int-action="echec">Simuler un échec</button>
+      <p class="ex-int-journal" aria-live="polite" data-ex-int-journal></p>
+    </div>
+    <div class="ex-int-colonnes">
+      <div class="bib-integration bib-integration--clavardage" data-integration data-src="data:text/javascript,setTimeout(function(){exIntegration.clavardage('libchat_ex-int')},1200)" data-message-erreur="Le service de clavardage est temporairement indisponible.">
+        <div id="libchat_ex-int" class="bib-integration__cible"></div>
+        <p class="bib-integration__chargement">Chargement du clavardage…</p>
+        <p class="bib-integration__erreur" role="status"></p>
+        <noscript><p>Le clavardage a besoin de JavaScript.</p></noscript>
+      </div>
+      <div class="ex-int-apres">
+        <p><strong>Heures du clavardage</strong></p>
+        <p>Du lundi au vendredi, de 9&nbsp;h à 17&nbsp;h.</p>
+      </div>
+    </div>
+  </div>
+  <p class="legende">La fenêtre de LibChat fait 402&nbsp;px de haut, en pixels fixes&nbsp;: la réserve est la même à toutes les largeurs. En cas d’échec, elle est levée et le message s’affiche en rouge.</p>
+</div>

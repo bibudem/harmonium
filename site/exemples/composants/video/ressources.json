@@ -1,0 +1,9 @@
+{
+  "styles": [],
+  "scripts": [
+    {
+      "src": "@@dist/bib-video.min.js",
+      "attributs": "type=\"module\""
+    }
+  ]
+}

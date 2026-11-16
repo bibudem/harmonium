@@ -1,0 +1,79 @@
+---
+/*
+ * <TableauFiltrable> : un tableau précédé de listes de filtre, d'un compte annoncé et de boutons de tri.
+ * Produit le HTML documenté dans src/composants/tableau-filtrable.css et importe cette feuille ;
+ * bib-tableau-filtrable.min.js (facultatif) rend les filtres et le tri actifs. Le slot est le contenu du
+ * tableau (<thead> et <tbody data-corps>), comme pour <Tableau>.
+ *
+ *   <TableauFiltrable
+ *     titre="Fonds"
+ *     total={38}
+ *     unite="fonds ou collection" unites="fonds et collections" vide="Aucun fonds ne correspond à ces critères."
+ *     filtres={[{ cle: 'categorie', libelle: 'Catégorie', toutes: 'Toutes les catégories', options: ['Histoire', 'Droit'] }]}
+ *   >
+ *     <thead>
+ *       <tr>
+ *         <th scope="col"><button type="button" class="bib-tableau-filtrable__tri" data-tri="nom">Nom<span class="bib-tableau-filtrable__fleche" aria-hidden="true"></span></button></th>
+ *         <th scope="col">Catégorie</th>
+ *       </tr>
+ *     </thead>
+ *     <tbody data-corps>
+ *       <tr data-nom="Gilles-Rioux" data-categorie="Histoire"><th scope="row">Gilles-Rioux</th><td>Histoire</td></tr>
+ *     </tbody>
+ *   </TableauFiltrable>
+ *
+ * `filtres` : `cle` (l'attribut data-<cle> des rangées, qui peut être un tableau JSON), `libelle`, `toutes` (le
+ * choix « tout ») et `options`. `total` : le nombre de rangées, pour le compte initial. `aria-label` du
+ * formulaire : `nomFiltres`.
+ */
+import '../src/composants/tableau-filtrable.css'
+import ChampListe from './ChampListe.astro'
+import Tableau from './Tableau.astro'
+import { idUnique } from './ids.ts'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Filtre {
+  cle: string
+  libelle: string
+  toutes: string
+  options: string[]
+}
+
+interface Props {
+  titre: string
+  filtres?: Filtre[]
+  total: number
+  unite?: string
+  unites?: string
+  vide?: string
+  nomFiltres?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const { titre, filtres = [], total, unite = 'résultat', unites = 'résultats', vide = 'Aucun résultat.', nomFiltres = 'Filtrer', class: classe, className, style } = Astro.props
+const ids = filtres.map((f) => idUnique(`filtre-${f.cle}`))
+const annonce = `${total} ${total > 1 ? unites : unite}`
+---
+
+<div class:list={['bib-tableau-filtrable', classes(classe, className)]} style={fusionnerStyles(style)} data-tableau-filtrable data-unite={unite} data-unites={unites} data-vide={vide}>
+  {
+    filtres.length > 0 && (
+      <form class="bib-tableau-filtrable__filtres" aria-label={nomFiltres} data-filtres>
+        {filtres.map((f, i) => (
+          <ChampListe pour={ids[i]} libelle={f.libelle}>
+            <select id={ids[i]} name={f.cle} data-filtre={f.cle}>
+              <option value="">{f.toutes}</option>
+              {f.options.map((o) => <option value={o}>{o}</option>)}
+            </select>
+          </ChampListe>
+        ))}
+      </form>
+    )
+  }
+  <p class="bib-tableau-filtrable__compte" role="status" data-statut>{annonce}</p>
+  <Tableau titre={titre}><slot /></Tableau>
+  <p class="bib-tableau-filtrable__aucun" hidden data-aucun>{vide}</p>
+</div>

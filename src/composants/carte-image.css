@@ -1,0 +1,213 @@
+/*
+ * Carte-lien avec photo : 330 × 500 px, photo de 220 px recadrée, titre en Figtree, texte d'appel et pastille fléchée en bas. Construite sur le motif de carte-lien.css (à charger aussi).
+ *
+ *   <div class="bib-carte-image bib-carte-lien bib-anneau-carte surface-claire">
+ *     <img class="bib-carte-image__photo" src="photo.jpg" alt="" loading="lazy">
+ *     <div class="bib-carte-image__contenu">
+ *       <h3 class="bib-carte-image__titre"><a class="bib-lien-etire" href="/services/" aria-describedby="plus-1">Services</a></h3>
+ *       <div class="bib-carte-image__pied">
+ *         <div class="bib-carte-image__plus" id="plus-1" aria-hidden="true">En savoir plus</div>
+ *         <span class="bib-pastille-fleche" aria-hidden="true"><span class="bib-pastille-fleche__fleche"></span></span>
+ *       </div>
+ *     </div>
+ *   </div>
+ *
+ * Un seul lien, sur le titre, dont le ::after couvre la carte ; son nom accessible est le titre ; le texte
+ * d'appel devient sa description (aria-describedby) et n'est pas relu. La photo est décorative (alt vide) :
+ * un alt égal au titre serait lu deux fois. Le niveau du titre se règle (h3 par défaut), la taille reste
+ * indépendante de ce niveau. Texte et flèche bleu principal sur le fond : 6,8:1.
+ *
+ * --surface : carte blanche à contour et ombre légère, 280 × 400 px, photo de 170 px, titre
+ * sans empattement en gras, texte d'appel en description sous le titre, pastille à contour en bas à droite
+ * (active : --bib-pastille-active-fond et --bib-pastille-active-encre, voir carte-lien.css).
+ *
+ * Grille de cartes (bib-carte-image-grille) : sous 600 px, une rangée qui défile du doigt (accrochée à
+ * chaque carte, la suivante dépasse) ; dès 600 px, une grille dont les cartes s'élargissent pour remplir
+ * la rangée (280 px au moins, trois par rangée au plus).
+ *
+ *   <div class="bib-carte-image-grille">
+ *     <div class="bib-carte-image bib-carte-image--surface bib-carte-lien bib-anneau-carte surface-claire">…</div>
+ *   </div>
+ */
+.bib-carte-image {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 330px;
+  /* Jamais plus large que sa colonne (320 px, WCAG 1.4.10) */
+  max-width: 100%;
+  /* Hauteur minimale (voir CarteIcone) : la carte grandit avec le texte
+     agrandi au lieu de le rogner */
+  min-height: 500px;
+  overflow: hidden;
+  border-radius: var(--rayon-carte);
+  background-color: var(--couleur-fond);
+}
+
+/* Focus sur toute la carte (anneau double de .bib-anneau-carte) : l'anneau
+   déborde, la carte ne le rogne pas */
+.bib-carte-image:has(.bib-lien-etire:focus-visible) {
+  overflow: visible;
+}
+
+.bib-carte-image__photo {
+  display: block;
+  flex-shrink: 0;
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-start-start-radius: inherit;
+  border-start-end-radius: inherit;
+}
+
+.bib-carte-image__contenu {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 0;
+  /* Marge réduite (et non --espace-carte) : la photo prend 220 px sur 500 et
+     le titre a jusqu'à trois lignes */
+  padding: var(--espace-element);
+}
+
+/* Titre en Figtree, quel que soit son niveau sémantique.
+   Le titre entier reste lisible avec le texte agrandi. */
+.bib-carte-image .bib-carte-image__titre {
+  margin: 0.5em 0 var(--espace-1);
+  font-family: var(--police-sans);
+  font-variant-numeric: lining-nums proportional-nums;
+  font-size: var(--texte-grand);
+  font-weight: var(--graisse-normale);
+  line-height: 1.2;
+  overflow-wrap: break-word;
+}
+
+@media (width >= 900px) {
+  .bib-carte-image .bib-carte-image__titre {
+    font-size: 1.875rem;
+  }
+}
+
+.bib-carte-image__pied {
+  display: flex;
+  align-items: center;
+  margin-top: auto;
+  color: var(--couleur-lien);
+}
+
+.bib-carte-image__plus {
+  flex-grow: 1;
+  font-size: var(--texte-courant);
+}
+
+/* Pastille : disque de la couleur des liens à 10 %, comme la source */
+.bib-carte-image__pied {
+  --pastille-fond: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+/* Survol : léger voile, comme le CardActionArea de MUI (opacité 0,04) */
+.bib-carte-image::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-dessus-1);
+  border-radius: inherit;
+  background-color: currentColor;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duree-moyenne-1) var(--courbe-standard);
+}
+
+.bib-carte-image:hover::before {
+  opacity: 0.04;
+}
+
+/* ---- Surface ---- */
+.bib-carte-image--surface {
+  width: 280px;
+  min-height: 400px;
+  border: 1px solid var(--couleur-bordure);
+  background-color: var(--couleur-surface);
+  box-shadow: var(--ombre-1);
+}
+
+.bib-carte-image--surface .bib-carte-image__photo {
+  height: 170px;
+}
+
+.bib-carte-image--surface .bib-carte-image__titre {
+  margin: 0.5em 0 var(--espace-1);
+  font-family: var(--police-sans);
+  font-size: var(--texte-moyen);
+  font-weight: var(--graisse-forte);
+}
+
+@media (width >= 900px) {
+  .bib-carte-image--surface .bib-carte-image__titre {
+    font-size: 1.375rem;
+  }
+}
+
+/* La description suit le titre ; seule la pastille descend en bas à droite */
+.bib-carte-image--surface .bib-carte-image__pied {
+  --pastille-contour: var(--couleur-contour);
+  --pastille-fond: var(--couleur-surface);
+  --pastille-encre: var(--couleur-texte);
+  --pastille-contour-actif: var(--bib-pastille-active-fond, var(--couleur-fond-fort));
+  --pastille-fond-actif: var(--bib-pastille-active-fond, var(--couleur-fond-fort));
+  --pastille-encre-actif: var(--bib-pastille-active-encre, var(--couleur-sur-fonce));
+  flex-direction: column;
+  flex-grow: 1;
+  align-items: stretch;
+  gap: var(--espace-2);
+  margin-top: 0;
+}
+
+.bib-carte-image--surface .bib-carte-image__pied > .bib-pastille-fleche {
+  align-self: flex-end;
+  margin-top: auto;
+}
+
+.bib-carte-image--surface .bib-carte-image__plus {
+  flex-grow: 0;
+  color: var(--couleur-texte);
+  font-size: var(--texte-petit, 0.875rem);
+}
+
+/* ---- Grille de cartes ---- */
+.bib-carte-image-grille {
+  display: flex;
+  gap: var(--espace-grille);
+  /* Sous 600 px : rangée qui défile, accrochée à chaque carte ; le remplissage laisse voir l'ombre et
+     l'anneau de focus */
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  padding: 8px;
+  margin: -8px;
+}
+
+.bib-carte-image-grille > .bib-carte-image {
+  flex: 0 0 min(280px, 80%);
+  scroll-snap-align: start;
+}
+
+@media (width >= 600px) {
+  .bib-carte-image-grille {
+    display: grid;
+    /* Au plus trois par rangée : un tiers du conteneur, moins les écarts */
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, max(280px, calc((100% - 2 * var(--espace-grille)) / 3))), 1fr));
+    overflow: visible;
+  }
+
+  .bib-carte-image-grille > .bib-carte-image {
+    width: auto;
+  }
+}
+
+@media (forced-colors: active) {
+  .bib-carte-image {
+    border: 1px solid CanvasText;
+  }
+}

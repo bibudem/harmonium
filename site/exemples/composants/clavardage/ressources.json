@@ -1,0 +1,9 @@
+{
+  "styles": [],
+  "scripts": [
+    {
+      "src": "@@dist/bib-clavardage.min.js",
+      "attributs": "defer data-invitation=\"5\""
+    }
+  ]
+}

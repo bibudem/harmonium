@@ -1,0 +1,163 @@
+---
+/**
+ * <Entete> : en-tête et menu du site. Produit le HTML documenté dans src/composants/entete.css et importe
+ * cette feuille ; le comportement (rideau, modes, poignée, focus, Échap) est dans bib-entete.min.js, que le
+ * site charge. Sans ce script, la navigation reste dans la barre.
+ *
+ *   <Entete nom="Les bibliothèques" courante={Astro.url.pathname} liens={PAGES}
+ *     institution={{ href: 'https://www.umontreal.ca/', libelle: 'Université de Montréal', logo: logoUdem.src }}>
+ *     <Recherche slot="recherche" action="/resultats/" libelle="Rechercher" />
+ *   </Entete>
+ *
+ * Slots : `recherche` (le haut du rideau, seul visible en mode recherche ; sans lui, pas de loupe) et
+ * `menu` (groupes propres au site, sous « Explorer » ; visibles dès 1200 px avec `menuBureau`).
+ */
+import '../src/composants/entete.css'
+import { classes } from './styles.ts'
+import { idUnique } from './ids.ts'
+
+interface Logo {
+  src: string
+  largeur?: number
+  hauteur?: number
+}
+interface Props {
+  /** Nom du site : texte de la marque, ou texte de remplacement de `logoSite` */
+  nom: string
+  /** Lien d'accueil du site */
+  accueil?: string
+  /** Logo du nom du site, à la place du texte */
+  logoSite?: string | Logo
+  /** Première marque, avant le filet (lien vers l'institution) */
+  institution?: { href: string; libelle: string; logo: string | Logo }
+  /** Pages principales : dans la barre dès 1200 px, sous « Explorer » dans le rideau */
+  liens?: { libelle: string; href: string }[]
+  /** Adresse de la page : aria-current="page" sur son lien, "true" sur la section qui la contient */
+  courante?: string
+  /** Libellé du lien d'accueil en tête d'« Explorer » ; false pour l'omettre */
+  libelleAccueil?: string | false
+  /** Action mise en avant (ex. « Je donne ») : dans la barre dès 1200 px, en fin de rideau dessous */
+  action?: { libelle: string; href: string }
+  /** Garde le bouton Menu dès 1200 px (le rideau porte alors les groupes du slot `menu`) */
+  menuBureau?: boolean
+  /** Bandeau de couleur au-dessus de la barre */
+  bandeau?: boolean
+  /** Barre posée sur la bannière de la page dès 1200 px, blanche après défilement */
+  superpose?: boolean
+  /** Liens de la barre soulignés plutôt que sur une pastille */
+  soulignement?: boolean
+  /** id du rideau */
+  id?: string
+  class?: string
+  className?: string
+}
+const {
+  nom,
+  accueil = '/',
+  logoSite,
+  institution,
+  liens = [],
+  courante,
+  libelleAccueil = 'Accueil',
+  action,
+  menuBureau = false,
+  bandeau = false,
+  superpose = false,
+  soulignement = false,
+  id = idUnique('menu'),
+  class: classe,
+  className,
+} = Astro.props
+if (!nom?.trim()) throw new Error('Entete : le nom du site est requis.')
+const logo = (l: string | Logo) => (typeof l === 'string' ? { src: l } : l)
+const sansBarre = (url: string) => (url.length > 1 ? url.replace(/\/+$/, '') : url)
+const actuel = (href: string) => {
+  if (!courante) return undefined
+  const page = sansBarre(courante)
+  const cible = sansBarre(href)
+  if (page === cible) return 'page'
+  return cible !== '/' && page.startsWith(`${cible}/`) ? 'true' : undefined
+}
+const pages = libelleAccueil ? [{ libelle: libelleAccueil, href: accueil }, ...liens] : liens
+const recherche = Astro.slots.has('recherche')
+const supplement = Astro.slots.has('menu')
+const fleche = '<path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/>'
+const chevron = '<path d="M216.49,104.49l-80,80a12,12,0,0,1-17,0l-80-80a12,12,0,0,1,17-17L128,159l71.51-71.52a12,12,0,0,1,17,17Z"/>'
+const marqueInstitution = institution && logo(institution.logo)
+const marqueSite = logoSite && logo(logoSite)
+---
+<header class:list={['bib-entete', { 'bib-entete--menu-bureau': menuBureau, 'bib-entete--bandeau': bandeau, 'bib-entete--superpose': superpose, 'bib-entete--soulignement': soulignement }, classes(classe, className)]} data-entete>
+  <div class="bib-entete__barre">
+    <div class="bib-entete__marque">
+      {institution && marqueInstitution && (
+        <a class="bib-entete__institution" href={institution.href}>
+          <img src={marqueInstitution.src} alt={institution.libelle} width={marqueInstitution.largeur} height={marqueInstitution.hauteur} />
+        </a>
+      )}
+      <a class="bib-entete__site" href={accueil}>
+        {marqueSite ? <img src={marqueSite.src} alt={`${nom}, accueil`} width={marqueSite.largeur} height={marqueSite.hauteur} /> : <>{nom}<span class="bib-entete__masque">, accueil</span></>}
+      </a>
+    </div>
+    {liens.length > 0 && (
+      <nav class="bib-entete__navigation" aria-label="Navigation principale">
+        <ul>{liens.map(({ libelle, href }) => <li><a href={href} aria-current={actuel(href)}>{libelle}</a></li>)}</ul>
+      </nav>
+    )}
+    {action && <a class="bib-entete__action" href={action.href}>{action.libelle}<svg viewBox="0 0 256 256" width="24" height="24" fill="currentColor" aria-hidden="true" focusable="false" set:html={fleche} /></a>}
+    <div class="bib-entete__outils" data-entete-outils hidden>
+      {recherche && (
+        <button type="button" class="bib-entete__bouton bib-entete__bouton--recherche" aria-label="Rechercher" aria-expanded="false" aria-controls={id} data-entete-recherche>
+          <svg class="bib-entete__loupe" viewBox="0 0 34 34" width="28" height="28" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round">
+            <circle class="verre" cx="14" cy="14" r="8"></circle>
+            <line class="diag-a" x1="7" y1="7" x2="27" y2="27" pathLength="1"></line>
+            <line class="diag-b" x1="27" y1="7" x2="7" y2="27" pathLength="1"></line>
+          </svg>
+        </button>
+      )}
+      <button type="button" class="bib-entete__bouton bib-entete__bouton--menu" aria-label="Menu" aria-expanded="false" aria-controls={id} data-entete-menu>
+        {menuBureau && <span class="bib-entete__libelle-menu" aria-hidden="true"><span class="si-ferme">Menu</span><span class="si-ouvert">Fermer</span></span>}
+        <svg class="bib-entete__burger" viewBox="0 0 34 34" width="34" height="34" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+          <line class="trait haut" x1="11.75" y1="10" x2="28" y2="10"></line>
+          <line class="trait milieu" x1="6" y1="17" x2="28" y2="17"></line>
+          <line class="trait bas" x1="11.75" y1="24" x2="28" y2="24"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div class="bib-entete__voile" data-entete-voile hidden></div>
+  <div class="bib-entete__rideau" id={id} data-entete-rideau data-mode="complet" hidden>
+    <div class="bib-entete__feuille">
+      {recherche && <div class="bib-entete__groupe bib-entete__groupe--recherche"><slot name="recherche" /></div>}
+      {recherche && (
+        <div class="bib-entete__deplier">
+          <button type="button" data-entete-deplier>
+            Afficher le menu
+            <svg viewBox="0 0 256 256" width="22" height="22" fill="currentColor" aria-hidden="true" focusable="false" set:html={chevron} />
+          </button>
+        </div>
+      )}
+      {pages.length > 0 && (
+        <nav class="bib-entete__groupe bib-entete__explorer" aria-labelledby={`${id}-explorer`}>
+          <p class="bib-entete__surtitre" id={`${id}-explorer`}>Explorer</p>
+          <ul class="bib-entete__pages">
+            {pages.map(({ libelle, href }) => (
+              <li>
+                <a href={href} aria-current={actuel(href)}>
+                  <span>{libelle}</span>
+                  <svg viewBox="0 0 256 256" width="24" height="24" fill="currentColor" aria-hidden="true" focusable="false" set:html={fleche} />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+      {supplement && <div class="bib-entete__groupe bib-entete__supplement"><slot name="menu" /></div>}
+      {action && <div class="bib-entete__donner"><a class="bib-entete__action" href={action.href}>{action.libelle}<svg viewBox="0 0 256 256" width="24" height="24" fill="currentColor" aria-hidden="true" focusable="false" set:html={fleche} /></a></div>}
+      <div class="bib-entete__pied">
+        <button type="button" class="bib-entete__poignee" aria-label="Fermer le menu" data-entete-poignee><span aria-hidden="true"></span></button>
+      </div>
+    </div>
+  </div>
+</header>
+{/* Posé dès l'analyse : la barre prend sa forme compacte avant le premier affichage (pas de saut de mise en page) */}
+<script is:inline>document.currentScript?.previousElementSibling?.setAttribute('data-entete-pret', '')</script>

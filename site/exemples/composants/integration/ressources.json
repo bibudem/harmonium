@@ -1,0 +1,16 @@
+{
+  "styles": [
+    "@@dist/bib-integration.min.css",
+    "@@/exemples/composants/integration/style.css"
+  ],
+  "scripts": [
+    {
+      "src": "@@dist/bib-integration.min.js",
+      "attributs": "type=\"module\""
+    },
+    {
+      "src": "@@/exemples/composants/integration/script-1.js",
+      "attributs": "type=\"module\""
+    }
+  ]
+}

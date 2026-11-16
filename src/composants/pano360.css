@@ -1,0 +1,139 @@
+/*
+ * Visite virtuelle 360° : un aperçu léger et un bouton « Démarrer la visite virtuelle » ; la visionneuse
+ * (photo-sphere-viewer, environ 160 Ko compressés avec three.js) et le panorama complet ne sont chargés
+ * qu'au clic, par bib-pano360.min.js.
+ *
+ *   <figure class="bib-pano360" data-pano360 data-image="/img/pano/poste-edition.webp" data-legende="Vue en 360° du poste d'édition"
+ *           data-nom="Visite virtuelle 360° : Poste d'édition" data-description="pano-1-legende">
+ *     <div class="bib-pano360__visionneuse" data-visionneuse>
+ *       <img class="bib-pano360__apercu" src="/img/pano/poste-edition-apercu.webp" alt="Vue en 360° du poste d'édition" width="960" height="480">
+ *       <button type="button" class="bib-pano360__demarrer" data-demarrer hidden>
+ *         <svg viewBox="0 0 256 256" width="24" height="24" aria-hidden="true">…</svg>
+ *         <span>Démarrer la visite virtuelle<span class="bib-masque"> : Poste d'édition</span></span>
+ *       </button>
+ *       <p class="bib-pano360__etat" role="status" data-etat></p>
+ *     </div>
+ *     <figcaption class="bib-pano360__legende" id="pano-1-legende">
+ *       <span>Vue en 360° du poste d'édition. </span>
+ *       <span data-aide hidden>Flèches pour tourner, + et − pour zoomer. </span>
+ *       <a href="/img/pano/poste-edition.webp">Voir l'image panoramique à plat</a>
+ *     </figcaption>
+ *   </figure>
+ *
+ * L'aperçu est une petite image (le centre du panorama, une vingtaine de Ko), préparée par le site. Sans
+ * JavaScript : l'aperçu et son alt, la légende et le lien vers l'image à plat ; le bouton reste masqué.
+ * Avec le script, la visite remplace l'aperçu et reçoit le focus ; c'est une « application » nommée et
+ * décrite par la légende, dont le clavier (flèches, + et −) n'est écouté que lorsqu'elle a le focus.
+ *
+ * Habillage : --bib-pano360-bouton-fond (jaune), --bib-pano360-bouton-fond-survol (jaune pâle),
+ * --bib-pano360-bouton-texte (bleu foncé), --bib-pano360-hauteur (de 280 à 500 px selon la largeur).
+ */
+.bib-pano360 {
+  margin: var(--espace-4) 0;
+}
+
+.bib-pano360__visionneuse {
+  position: relative;
+  height: var(--bib-pano360-hauteur, clamp(280px, 60vw, 500px));
+  overflow: hidden;
+  border-radius: var(--rayon-moyen);
+  background: var(--couleur-teinte);
+}
+
+.bib-pano360__apercu {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Le conteneur de la visite, posé par le script */
+.bib-pano360__visite {
+  width: 100%;
+  height: 100%;
+}
+
+.bib-pano360__demarrer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: inline-flex;
+  gap: var(--espace-1);
+  align-items: center;
+  min-height: var(--taille-cible);
+  max-width: calc(100% - 2 * var(--espace-2));
+  padding: var(--espace-1) var(--espace-3);
+  border: 0;
+  border-radius: var(--rayon-plein);
+  background: var(--bib-pano360-bouton-fond, var(--jaune));
+  box-shadow: var(--ombre-2);
+  color: var(--bib-pano360-bouton-texte, var(--bleu-fonce));
+  font: inherit;
+  font-weight: var(--graisse-forte);
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+}
+
+.bib-pano360__demarrer:hover {
+  background: var(--bib-pano360-bouton-fond-survol, var(--jaune-pale));
+}
+
+.bib-pano360__demarrer[hidden] {
+  display: none;
+}
+
+.bib-pano360__demarrer:disabled {
+  cursor: progress;
+}
+
+.bib-pano360__demarrer svg {
+  flex: 0 0 auto;
+}
+
+.bib-pano360__etat {
+  position: absolute;
+  right: var(--espace-1);
+  bottom: var(--espace-1);
+  left: var(--espace-1);
+  max-inline-size: none;
+  margin: 0;
+  padding: var(--espace-1) var(--espace-2);
+  border-radius: var(--rayon-petit);
+  background: var(--couleur-surface);
+  color: var(--couleur-texte);
+  font-size: 0.875rem;
+}
+
+.bib-pano360__etat:empty {
+  display: none;
+}
+
+.bib-pano360__legende {
+  margin-top: var(--espace-1);
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.bib-pano360__legende a {
+  color: var(--couleur-lien);
+}
+
+.bib-pano360 .bib-masque {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+@media (forced-colors: active) {
+  .bib-pano360__demarrer {
+    border: 2px solid ButtonText;
+  }
+}

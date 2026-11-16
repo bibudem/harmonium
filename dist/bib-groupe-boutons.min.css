@@ -1,0 +1,1 @@
+.bib-groupe-boutons{display:flex;flex-wrap:wrap;gap:0 var(--espace-element);margin-block:0 var(--espace-element)}.bib-groupe-boutons--centre{justify-content:center}.bib-groupe-boutons--pied{gap:var(--espace-element);margin-block:var(--espace-bloc) 0}.bib-groupe-boutons--pied>.bib-bouton{margin:0}

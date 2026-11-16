@@ -1,0 +1,2 @@
+.ex-modalites-titre { margin: 0 0 0.75rem; font-size: var(--texte-moyen); font-weight: var(--graisse-forte); }
+  .ex-modalites-grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: var(--espace-4); }

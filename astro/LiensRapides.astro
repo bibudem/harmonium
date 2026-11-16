@@ -1,0 +1,108 @@
+---
+/*
+ * <LiensRapides> : le tiroir (dès 900 px) et la barre mobile de raccourcis. Produit le HTML documenté dans
+ * src/composants/liens-rapides.css et importe cette feuille ; bib-liens-rapides.min.js (facultatif) ouvre le
+ * tiroir, fait suivre le défilement à la barre et déclenche les événements des boutons.
+ *
+ *   <LiensRapides
+ *     liens={[
+ *       { libelle: 'Horaires et lieux', court: 'Horaires', href: '/horaires/', Icone: ClockCountdownIcon },
+ *       { libelle: 'Clavarder', court: 'Clavarder', evenement: 'bib:ouvrir-clavardage', repli: '/clavarder/', Icone: ChatsIcon },
+ *     ]}
+ *   />
+ *
+ * Un élément : `libelle` (le nom accessible, qui doit contenir `court`), `court` (le libellé affiché) et soit
+ * `href` (un lien), soit `evenement` (un bouton qui déclenche cet événement sur la fenêtre ; `repli` : la page
+ * où aller si personne ne le prend en charge). `Icone` : composant d'icône (reçoit `size`). `nouvelOngletBureau` :
+ * ouvre le lien dans un nouvel onglet dans le tiroir (annoncé). À placer après <main>.
+ */
+import '../src/composants/liens-rapides.css'
+import { idUnique } from './ids.ts'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Lien {
+  libelle: string
+  court: string
+  href?: string
+  evenement?: string
+  repli?: string
+  Icone?: any
+  nouvelOngletBureau?: boolean
+}
+
+interface Props {
+  liens: Lien[]
+  /** Nom des deux repères de navigation */
+  nom?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const { liens, nom = 'Liens rapides', class: classe, className, style, ...reste } = Astro.props
+
+if (!Array.isArray(liens) || liens.length === 0) throw new Error('LiensRapides : la propriété `liens` est obligatoire.')
+for (const l of liens) if (!l.href && !l.evenement) throw new Error(`LiensRapides : « ${l.libelle} » n'a ni href ni evenement.`)
+const idListe = idUnique('liens-rapides-liste')
+---
+
+<div class:list={['bib-liens-rapides', 'theme-clair', classes(classe, className)]} style={fusionnerStyles(style)} {...reste}>
+  <div class="bib-liens-rapides__bureau" data-liens-rapides>
+    <nav class="bib-liens-rapides__panneau" aria-label={nom} data-replie>
+      <button
+        type="button"
+        class="bib-liens-rapides__poignee bib-infobulle bib-infobulle--gauche"
+        aria-expanded="false"
+        aria-controls={idListe}
+        aria-label={nom}
+        data-infobulle={nom}
+        data-poignee><span class="bib-liens-rapides__chevron" aria-hidden="true"></span></button>
+      <ul class="bib-liens-rapides__liste" id={idListe}>
+        {
+          liens.map(({ libelle, court, href, evenement, repli, Icone, nouvelOngletBureau }) => (
+            <li>
+              {href ? (
+                <a
+                  class="bib-liens-rapides__lien"
+                  href={href}
+                  aria-label={nouvelOngletBureau ? `${libelle} (nouvel onglet)` : libelle}
+                  {...(nouvelOngletBureau ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                >
+                  {Icone && <Icone size={24} aria-hidden="true" focusable="false" />}
+                  <span class="bib-liens-rapides__etiquette" aria-hidden="true">{court}</span>
+                </a>
+              ) : (
+                <button type="button" class="bib-liens-rapides__lien" aria-label={libelle} data-evenement={evenement} data-repli={repli}>
+                  {Icone && <Icone size={24} aria-hidden="true" focusable="false" />}
+                  <span class="bib-liens-rapides__etiquette" aria-hidden="true">{court}</span>
+                </button>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+  <nav class="bib-liens-rapides__mobile" aria-label={nom} data-liens-rapides-mobile>
+    <ul class="bib-liens-rapides__liste">
+      {
+        liens.map(({ libelle, court, href, evenement, repli, Icone }) => (
+          <li>
+            {href ? (
+              <a class="bib-liens-rapides__lien" href={href} aria-label={libelle}>
+                {Icone && <Icone size={26} aria-hidden="true" focusable="false" />}
+                <span class="bib-liens-rapides__etiquette" aria-hidden="true">{court}</span>
+              </a>
+            ) : (
+              <button type="button" class="bib-liens-rapides__lien" aria-label={libelle} data-evenement={evenement} data-repli={repli}>
+                {Icone && <Icone size={26} aria-hidden="true" focusable="false" />}
+                <span class="bib-liens-rapides__etiquette" aria-hidden="true">{court}</span>
+              </button>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</div>

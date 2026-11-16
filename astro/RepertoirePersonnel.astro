@@ -1,0 +1,281 @@
+---
+/*
+ * <RepertoirePersonnel> : le répertoire du personnel, avec recherche, filtres par bibliothèque et par
+ * discipline, et pagination. Produit le HTML documenté dans src/composants/repertoire.css et importe cette
+ * feuille (et champ-liste.css) ; bib-repertoire.min.js (facultatif) ajoute la recherche, les filtres et les pages.
+ * Toute la liste est dans le HTML : sans JavaScript, on lit toutes les fiches d'un trait.
+ *
+ *   <RepertoirePersonnel personnes={personnes} bibliotheques={bibliotheques} photoParDefaut={silhouette} />
+ *
+ * `personnes` : `nomComplet`, `fonction`, `bibliotheques`, `disciplines`, `expertises` (listes de textes) et
+ * facultativement `prenom`, `nom`, `direction`, `telephone`, `courriel`, `teams` (adresse de la conversation) et
+ * `photo` (image importée ou adresse). `bibliotheques` : les fiches des bibliothèques (`id`, `titre`, `autreTitre`,
+ * `alias`), qui relient une ancre de l'adresse (#sante) à une valeur du filtre ; sans elles, pas d'ancres.
+ * `photoParDefaut` : la photo des personnes sans photo. `niveauTitre` : niveau du nom de chaque fiche (3 sous un
+ * h2). Le menu des bibliothèques est groupé d'après le début du nom (Bibliothèques, Centres de conservation,
+ * Directions avec leurs équipes, Services et équipes).
+ */
+import '../src/composants/repertoire.css'
+import '../src/composants/champ-liste.css'
+import { Picture } from 'astro:assets'
+import type { ImageMetadata } from 'astro'
+import { normaliserMots, cle, majuscule, SEPARATEUR } from '../src/repertoire/normaliser.ts'
+import { lienTelephone } from './telephone.ts'
+import { idUnique } from './ids.ts'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Personne {
+  nomComplet: string
+  prenom?: string
+  nom?: string
+  fonction: string
+  direction?: string
+  bibliotheques: string[]
+  disciplines: string[]
+  expertises: string[]
+  telephone?: string
+  courriel?: string
+  teams?: string
+  photo?: ImageMetadata | string
+}
+
+interface FicheBibliotheque {
+  id: string
+  titre: string
+  autreTitre?: string
+  alias?: string[]
+}
+
+interface Props {
+  personnes: Personne[]
+  bibliotheques?: FicheBibliotheque[]
+  photoParDefaut?: ImageMetadata | string
+  niveauTitre?: 2 | 3 | 4 | 5 | 6
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const { personnes, bibliotheques = [], photoParDefaut, niveauTitre = 3, class: classe, className, style } = Astro.props
+const Titre = `h${niveauTitre}` as 'h3'
+
+// Valeurs des listes : une option par valeur distincte (comparée sans accents ni casse), libellé de la première
+// occurrence, tri alphabétique.
+function options(valeurs: string[]) {
+  const parCle = new Map<string, string>()
+  for (const valeur of valeurs) if (!parCle.has(cle(valeur))) parCle.set(cle(valeur), majuscule(valeur))
+  return [...parCle].map(([valeur, libelle]) => ({ valeur, libelle })).sort((a, b) => a.libelle.localeCompare(b.libelle, 'fr'))
+}
+
+// Le tableur mêle bibliothèques, directions et services : d'où le libellé « bibliothèques ou directions ».
+const optionsBibliotheques = options(personnes.flatMap((p) => p.bibliotheques)).map((o) => {
+  const bib = bibliotheques.find((b) => [b.id, b.titre, b.autreTitre, ...(b.alias ?? [])].some((v) => v && cle(v) === o.valeur))
+  return { ...o, ancre: bib?.id }
+})
+
+// Le menu en groupes, d'après le début du nom (un ajout au répertoire se range de lui-même) ; le reste, ce sont
+// les services et les équipes
+const GROUPES_BIBLIOTHEQUES = [
+  { libelle: 'Bibliothèques', test: (l: string) => /^biblioth[eè]que\b/i.test(l) },
+  { libelle: 'Centres de conservation', test: (l: string) => /^centre de conservation\b/i.test(l) },
+  { libelle: 'Directions', test: (l: string) => /^direction\b/i.test(l) },
+  { libelle: 'Services et équipes', test: () => true },
+]
+// Directions : la Direction des bibliothèques en tête, les autres en retrait dessous, et sous chaque direction
+// ses équipes : une équipe relève de la direction de la plupart de ses membres (leur champ `direction`). Un
+// <optgroup> ne s'imbrique pas : le retrait est fait d'espaces insécables, que les lecteurs d'écran ne lisent pas.
+const DIRECTION_PARENT = /^direction des biblioth[eè]ques$/i
+const groupeDe = (libelle: string) => GROUPES_BIBLIOTHEQUES.findIndex((h) => h.test(libelle))
+const INDEX_DIRECTIONS = GROUPES_BIBLIOTHEQUES.findIndex((g) => g.libelle === 'Directions')
+const directions = optionsBibliotheques.filter((o) => groupeDe(o.libelle) === INDEX_DIRECTIONS)
+const directionDeLEquipe = new Map<string, string>()
+for (const o of optionsBibliotheques.filter((o) => groupeDe(o.libelle) === GROUPES_BIBLIOTHEQUES.length - 1)) {
+  const compte = new Map<string, number>()
+  for (const p of personnes) if (p.direction && p.bibliotheques.some((b) => cle(b) === o.valeur)) compte.set(cle(p.direction), (compte.get(cle(p.direction)) ?? 0) + 1)
+  const [majoritaire] = [...compte].sort((a, b) => b[1] - a[1])[0] ?? []
+  if (majoritaire && directions.some((d) => d.valeur === majoritaire)) directionDeLEquipe.set(o.valeur, majoritaire)
+}
+type OptionMenu = (typeof optionsBibliotheques)[number] & { niveau: number }
+const avecEquipes = (d: (typeof optionsBibliotheques)[number], niveau: number): OptionMenu[] => [
+  { ...d, niveau },
+  ...optionsBibliotheques.filter((o) => directionDeLEquipe.get(o.valeur) === d.valeur).map((o) => ({ ...o, niveau: niveau + 1 })),
+]
+const parent = directions.find((o) => DIRECTION_PARENT.test(o.libelle))
+const menuDirections: OptionMenu[] = parent
+  ? [...avecEquipes(parent, 0), ...directions.filter((o) => o !== parent).flatMap((o) => avecEquipes(o, 1))]
+  : directions.flatMap((o) => avecEquipes(o, 0))
+const groupesBibliotheques = GROUPES_BIBLIOTHEQUES.map((g, i) => ({
+  libelle: g.libelle,
+  options:
+    i === INDEX_DIRECTIONS
+      ? menuDirections
+      : optionsBibliotheques.filter((o) => groupeDe(o.libelle) === i && !directionDeLEquipe.has(o.valeur)).map((o) => ({ ...o, niveau: 0 })),
+})).filter((g) => g.options.length)
+// Un seul filtre, en deux groupes : les disciplines d'études, puis les expertises et services, pour retrouver
+// aussi la personne responsable d'un service
+const optionsDisciplines = options(personnes.flatMap((p) => p.disciplines))
+const optionsExpertises = options(personnes.flatMap((p) => p.expertises)).filter((o) => !optionsDisciplines.some((d) => d.valeur === o.valeur))
+
+// Ancre de l'adresse → option : l'id de la fiche (#sante), son titre, son autre titre, ou le nom tel qu'il figure
+// dans le tableur.
+const ancres: Record<string, string> = {}
+for (const o of optionsBibliotheques) {
+  ancres[o.valeur] = o.valeur
+  const bib = bibliotheques.find((b) => b.id === o.ancre)
+  if (bib) for (const v of [bib.id, bib.titre, bib.autreTitre]) if (v) ancres[cle(v)] = o.valeur
+}
+
+const fiches = personnes.map((p) => ({
+  ...p,
+  photoImage: p.photo ?? photoParDefaut,
+  hrefTelephone: p.telephone ? lienTelephone(p.telephone) : undefined,
+  texte: normaliserMots([p.nomComplet, p.nom, p.prenom, p.fonction, p.disciplines.join(' '), p.expertises.join(' '), p.bibliotheques.join(' '), p.direction].join(' ')),
+  // La première lettre en majuscule, la suite telle quelle
+  disciplinesAffichees: p.disciplines.map((d, i) => (i === 0 ? majuscule(d) : d)).join(', '),
+  expertisesAffichees: p.expertises.map((d, i) => (i === 0 ? majuscule(d) : d)).join(', '),
+}))
+
+const total = fiches.length
+const n = idUnique('repertoire')
+const ids = { q: `${n}-q`, bib: `${n}-bib`, disc: `${n}-disc` }
+---
+
+<div class:list={['bib-repertoire', classes(classe, className)]} style={fusionnerStyles(style)} data-repertoire data-ancres={JSON.stringify(ancres)}>
+  <form class="bib-repertoire__filtres" role="search" aria-label="Répertoire du personnel" data-filtres>
+    <div class="bib-champ-liste bib-champ-liste--recherche">
+      <label class="bib-champ-liste__etiquette" for={ids.q}>Rechercher</label>
+      <div class="bib-champ-liste__boite">
+        <input type="search" id={ids.q} name="q" placeholder="Chercher un nom, une discipline, etc." autocomplete="off" spellcheck="false" data-recherche />
+      </div>
+    </div>
+    <div class="bib-champ-liste">
+      <label class="bib-champ-liste__etiquette" for={ids.bib}>Bibliothèque ou direction</label>
+      <div class="bib-champ-liste__boite">
+        <select id={ids.bib} name="bibliotheque" data-filtre="bibliotheque">
+          <option value="">Toutes les bibliothèques ou directions</option>
+          {
+            groupesBibliotheques.map((g) => (
+              <optgroup label={g.libelle}>
+                {g.options.map((o) => (
+                  <option value={o.valeur} data-ancre={o.ancre}>
+                    {'   '.repeat(o.niveau) + o.libelle}
+                  </option>
+                ))}
+              </optgroup>
+            ))
+          }
+        </select>
+      </div>
+    </div>
+    <div class="bib-champ-liste">
+      <label class="bib-champ-liste__etiquette" for={ids.disc}>Discipline ou expertise</label>
+      <div class="bib-champ-liste__boite">
+        <select id={ids.disc} name="discipline" data-filtre="discipline">
+          <option value="">Toutes les disciplines et expertises</option>
+          <optgroup label="Disciplines">
+            {optionsDisciplines.map((o) => <option value={o.valeur}>{o.libelle}</option>)}
+          </optgroup>
+          <optgroup label="Expertises et services">
+            {optionsExpertises.map((o) => <option value={o.valeur}>{o.libelle}</option>)}
+          </optgroup>
+        </select>
+      </div>
+    </div>
+  </form>
+
+  <div class="bib-repertoire__actifs" hidden data-actifs></div>
+
+  <p class="bib-repertoire__compte" role="status" data-statut>{total} personnes</p>
+
+  <ul class="bib-repertoire__fiches" aria-label="Membres du personnel" data-liste>
+    {
+      fiches.map((p) => (
+        <li
+          class="bib-repertoire__fiche"
+          data-texte={p.texte}
+          data-bibliotheque={[...new Set([...p.bibliotheques, ...(p.direction ? [p.direction] : [])].map((b) => cle(b)))].join(SEPARATEUR)}
+          data-discipline={[...p.disciplines, ...p.expertises].map((d) => cle(d)).join(SEPARATEUR)}
+        >
+          <div class="bib-repertoire__entete">
+            {/* alt vide : le nom est juste à côté, une description répéterait le titre */}
+            {
+              p.photoImage &&
+                (typeof p.photoImage === 'string' ? (
+                  <img class="bib-repertoire__photo" src={p.photoImage} alt="" width="100" height="100" loading="lazy" decoding="async" />
+                ) : (
+                  <Picture class="bib-repertoire__photo" src={p.photoImage} alt="" width={100} height={100} densities={[1, 2]} fit="cover" position="center" formats={['avif', 'webp']} fallbackFormat="webp" loading="lazy" decoding="async" />
+                ))
+            }
+            <Titre class="bib-repertoire__nom">{p.nomComplet}</Titre>
+          </div>
+          <div class="bib-repertoire__details">
+            <div>
+              <p class="bib-repertoire__fonction">{majuscule(p.fonction)}</p>
+              {p.direction && <p class="bib-repertoire__direction">{majuscule(p.direction)}</p>}
+              {p.disciplines.length > 0 && <p class="bib-repertoire__disciplines">{p.disciplinesAffichees}</p>}
+              {p.expertises.length > 0 && <p class="bib-repertoire__disciplines">{p.expertisesAffichees}</p>}
+            </div>
+            <ul class="bib-repertoire__contacts">
+              {p.telephone && (
+                <li>
+                  {p.hrefTelephone ? (
+                    <a href={p.hrefTelephone}>
+                      <span class="bib-repertoire__icone bib-repertoire__icone--telephone" aria-hidden="true" />
+                      <span>
+                        <span class="bib-masque">Appeler {p.nomComplet} au </span>
+                        {p.telephone}
+                      </span>
+                    </a>
+                  ) : (
+                    <span class="bib-repertoire__sans-lien">
+                      <span class="bib-repertoire__icone bib-repertoire__icone--telephone" aria-hidden="true" />
+                      <span>
+                        <span class="bib-masque">Téléphone : </span>
+                        {p.telephone}
+                      </span>
+                    </span>
+                  )}
+                </li>
+              )}
+              {p.courriel && (
+                <li>
+                  <a href={`mailto:${p.courriel}`}>
+                    <span class="bib-repertoire__icone bib-repertoire__icone--courriel" aria-hidden="true" />
+                    <span class="bib-repertoire__courriel">
+                      <span class="bib-masque">Écrire à {p.nomComplet} : </span>
+                      {p.courriel}
+                    </span>
+                  </a>
+                </li>
+              )}
+              {p.teams && (
+                <li>
+                  <a href={p.teams} target="_blank" rel="noopener noreferrer">
+                    <span class="bib-repertoire__icone bib-repertoire__icone--teams" aria-hidden="true" />
+                    <span>
+                      Clavarder sur Teams<span class="bib-masque"> avec {p.nomComplet} (nouvel onglet)</span>
+                    </span>
+                  </a>
+                </li>
+              )}
+            </ul>
+            {
+              p.bibliotheques.length > 0 && (
+                <ul class="bib-repertoire__bibliotheques">
+                  {p.bibliotheques.map((b) => (
+                    <li>{majuscule(b)}</li>
+                  ))}
+                </ul>
+              )
+            }
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+
+  <nav class="bib-repertoire__pagination" aria-label="Pagination du répertoire" hidden data-pagination>
+    <ul data-pages></ul>
+  </nav>
+</div>

@@ -1,0 +1,32 @@
+/* Commandes de la démo (elles ne font pas partie du composant) */
+  .ex-int-commandes { display: flex; flex-wrap: wrap; align-items: center; gap: var(--espace-1) var(--espace-2); margin-bottom: var(--espace-3); padding-bottom: var(--espace-2); border-bottom: 1px solid var(--couleur-bordure); }
+  .ex-int-commandes button { min-height: var(--taille-cible); padding: 0 1rem; border: 1px solid var(--couleur-fond-fort); border-radius: var(--rayon-plein); background: var(--couleur-surface); color: var(--couleur-fond-fort); font: inherit; font-size: var(--texte-petit); font-weight: var(--graisse-forte); cursor: pointer; }
+  .ex-int-commandes button:hover { background: var(--couleur-teinte); }
+  .ex-int-commandes label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: var(--taille-cible); font-size: var(--texte-petit); cursor: pointer; }
+  .ex-int-commandes input { width: 1.1rem; height: 1.1rem; margin: 0; accent-color: var(--couleur-fond-fort); }
+  .ex-int-journal { flex: 1 1 100%; margin: 0; color: var(--couleur-texte-secondaire); font-size: var(--texte-petit); }
+  .ex-int-apres { margin: var(--espace-3) 0 0; padding: var(--espace-2) var(--espace-3); border-radius: var(--rayon-petit); background: var(--couleur-teinte); }
+  .ex-int-colonnes { display: grid; gap: var(--espace-4); }
+  @media (width >= 900px) { .ex-int-colonnes { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+  .ex-int-colonnes .ex-int-apres { align-self: start; margin: 0; }
+  .ex-int-colonnes .ex-int-apres p { margin: 0 0 0.4rem; }
+
+  /* Imitations du contenu tiers (LibAnswers, LibChat) : ce que le script du fournisseur injecterait.
+     Rien n'est chargé de Springshare. */
+  .ex-int-faux { box-sizing: border-box; max-width: 100%; padding: var(--espace-3); border: 1px solid var(--couleur-bordure); border-radius: var(--rayon-petit); background: var(--couleur-surface); font-size: var(--texte-petit); }
+  .ex-int-faux .nom { margin: 0 0 var(--espace-2); color: var(--couleur-texte-secondaire); font-size: var(--texte-tres-petit); letter-spacing: 0.04em; text-transform: uppercase; }
+  .ex-int-faux .champ { display: grid; gap: 0.3rem; margin-bottom: var(--espace-2); }
+  .ex-int-faux label, .ex-int-faux legend { font-weight: var(--graisse-forte); }
+  .ex-int-faux input[type='text'], .ex-int-faux input[type='email'], .ex-int-faux textarea { box-sizing: border-box; width: 100%; min-height: 2.75rem; padding: 0.5rem 0.75rem; border: 1px solid var(--couleur-bordure); border-radius: var(--rayon-tres-petit); background: var(--couleur-fond); color: var(--couleur-texte); font: inherit; }
+  .ex-int-faux textarea { min-height: 11rem; resize: vertical; }
+  .ex-int-faux fieldset { margin: 0 0 var(--espace-2); padding: 0; border: 0; }
+  .ex-int-faux .radio label { display: flex; align-items: center; gap: 0.5rem; font-weight: var(--graisse-normale); }
+  .ex-int-faux .s-la-askform-button { padding: 0 1.5rem; border: 0; border-radius: var(--rayon-plein); background: var(--couleur-fond-fort); color: var(--couleur-sur-fonce); font: inherit; font-weight: var(--graisse-forte); cursor: pointer; }
+  @media (width >= 900px) { .ex-int-faux .deux { display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--espace-3); } .ex-int-faux .s-la-askform-button { min-height: 2.125rem; } }
+  .ex-int-clav { display: flex; flex-direction: column; height: 402px; border: 1px solid var(--couleur-bordure); border-radius: var(--rayon-petit); background: var(--couleur-surface); overflow: hidden; font-size: var(--texte-petit); }
+  .ex-int-clav .tete { padding: 0.7rem 1rem; background: var(--bleu-principal); color: var(--couleur-sur-fonce); font-weight: var(--graisse-forte); }
+  .ex-int-clav .fil { flex: 1; padding: 1rem; }
+  .ex-int-clav .bulle { max-width: 85%; margin: 0; padding: 0.6rem 0.8rem; border-radius: var(--rayon-petit); background: var(--bleu-100); }
+  .ex-int-clav form { display: flex; gap: 0.5rem; padding: 0.75rem; border-top: 1px solid var(--couleur-bordure); }
+  .ex-int-clav input { flex: 1; min-width: 0; min-height: 2.75rem; padding: 0 0.75rem; border: 1px solid var(--couleur-bordure); border-radius: var(--rayon-tres-petit); font: inherit; }
+  .ex-int-clav button { min-height: 2.75rem; padding: 0 1rem; border: 0; border-radius: var(--rayon-plein); background: var(--couleur-fond-fort); color: var(--couleur-sur-fonce); font: inherit; cursor: pointer; }

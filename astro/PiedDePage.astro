@@ -1,0 +1,157 @@
+---
+/*
+ * <PiedDePage> : le pied de page des sites des bibliothèques. Produit le HTML documenté dans
+ * src/composants/pied-de-page.css et importe cette feuille ; le contenu (colonnes, liens, réseaux,
+ * liens légaux) vient du site, en propriétés.
+ *
+ *   <PiedDePage
+ *     colonnes={[{ titre: "Besoin d'aide?", liens: [{ libelle: 'Nous joindre', href: '/nous-joindre/', Icone: PaperPlaneTiltIcon }] }]}
+ *     urgence={{ href: 'https://urgence.umontreal.ca/', libelle: 'Urgence', Icone: SirenIcon }}
+ *     reseaux={[{ libelle: 'YouTube', href: 'https://…', Icone: YoutubeLogoIcon }]}
+ *     liensQueue={[{ libelle: 'Accessibilité', href: '/accessibilite/' }]}
+ *   />
+ *
+ * - La première colonne porte, sous ses liens, l'urgence puis les réseaux ; les autres colonnes
+ *   sont repliables sous 900 px (bib-pied-de-page.min.js, facultatif).
+ * - `Icone` : un composant d'icône (Phosphor…), rendu à 18 px (24 px pour les réseaux). Un lien
+ *   avec `point` (couleur CSS) reçoit une pastille ; avec `fonction`, une ligne de description.
+ * - Le sceau mène à `accueil`. La licence (CC BY 4.0) est dans la barre du bas.
+ */
+import '../src/composants/pied-de-page.css'
+import Licence from './Licence.astro'
+import SceauBibliotheques from './SceauBibliotheques.astro'
+import { idUnique } from './ids.ts'
+import { classes } from './styles.ts'
+
+interface LienPied {
+  libelle: string
+  href: string
+  rel?: string
+  Icone?: any
+  /** Couleur CSS de la pastille devant le nom (liste « Sites connexes ») */
+  point?: string
+  /** Description sous le nom */
+  fonction?: string
+}
+
+interface Props {
+  colonnes: { titre: string; liens: LienPied[] }[]
+  urgence?: { href: string; libelle: string; Icone?: any }
+  reseaux?: { libelle: string; href: string; Icone: any }[]
+  liensQueue?: { libelle: string; href: string }[]
+  /** Adresse de l'accueil (le sceau et le logo y mènent) */
+  accueil?: string
+  /** Logo horizontal blanc, affiché sur téléphone à la place du sceau */
+  logo?: { src: string; alt?: string; width?: number; height?: number }
+  titre?: string
+  /** Réglages de <Licence> */
+  licence?: { href?: string; texte?: string }
+  /** Texte du bouton des témoins ; null le retire */
+  parametresTemoins?: string | null
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+const {
+  colonnes,
+  urgence,
+  reseaux = [],
+  liensQueue = [],
+  accueil = '/',
+  logo,
+  titre = "Les bibliothèques de l'Université de Montréal",
+  licence,
+  parametresTemoins = 'Paramètres des témoins',
+  class: classe, className,
+} = Astro.props
+const prefixe = idUnique('pied')
+const IconeUrgence = urgence?.Icone
+---
+
+{/* theme-clair : déjà foncé, le pied garde ses couleurs sur les différentes bandes */}
+<footer class:list={['bib-pied-de-page', 'theme-clair', classes(classe, className)]} data-site-footer>
+  <div class="bib-pied-de-page__local">
+    <div class="bib-pied-de-page__interieur">
+      <div class="bib-pied-de-page__signature">
+        {
+          logo && (
+            <a class="bib-pied-de-page__signature-sceau" href={accueil}>
+              <img src={logo.src} alt={logo.alt ?? 'Les bibliothèques, Université de Montréal – Accueil'} width={logo.width ?? 1080} height={logo.height ?? 350} loading="lazy" decoding="async" />
+            </a>
+          )
+        }
+        <h2 class="bib-pied-de-page__titre">{titre}</h2>
+      </div>
+
+      <div class="bib-pied-de-page__colonnes">
+        {
+          colonnes.map(({ titre, liens }, i) => (
+            <div class="bib-pied-de-page__colonne" data-pliable-pied={i > 0 ? '' : undefined}>
+              <h3 class="bib-pied-de-page__sous-titre">{titre}</h3>
+              <ul class:list={['bib-pied-de-page__liste', { 'bib-pied-de-page__liste--sites': liens.some((l) => l.fonction) }]} id={`${prefixe}-liste-${i}`}>
+                {liens.map(({ libelle, href, rel, Icone, point, fonction }) => (
+                  <li>
+                    <a href={href} rel={rel}>
+                      {Icone && <Icone size={18} aria-hidden="true" />}
+                      {point && <span class="bib-pied-de-page__point" style={`--point: ${point}`} aria-hidden="true" />}
+                      {fonction ? (
+                        <span>
+                          {libelle}
+                          <span class="bib-pied-de-page__fonction">{fonction}</span>
+                        </span>
+                      ) : (
+                        libelle
+                      )}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              {i === 0 && (
+                <Fragment>
+                  {urgence && (
+                    <p class="bib-pied-de-page__urgence">
+                      <a href={urgence.href}>
+                        <span class="bib-pied-de-page__sirene">{IconeUrgence && <IconeUrgence size={18} aria-hidden="true" />}</span>
+                        {urgence.libelle}
+                      </a>
+                    </p>
+                  )}
+                  {reseaux.length > 0 && (
+                    <ul class="bib-pied-de-page__reseaux">
+                      {reseaux.map(({ libelle, href, Icone }) => (
+                        <li>
+                          <a href={href} aria-label={libelle}>
+                            <Icone size={24} aria-hidden="true" />
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </Fragment>
+              )}
+            </div>
+          ))
+        }
+
+        <div class="bib-pied-de-page__colonne bib-pied-de-page__colonne--logo">
+          <a href={accueil}>
+            <SceauBibliotheques />
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bib-pied-de-page__queue">
+    <div class="bib-pied-de-page__interieur bib-pied-de-page__rangee-queue">
+      <div class="bib-pied-de-page__groupe-queue">
+        <Licence {...licence} />
+      </div>
+      <div class="bib-pied-de-page__groupe-queue bib-pied-de-page__liens-queue">
+        {liensQueue.map(({ libelle, href }) => <a href={href}>{libelle}</a>)}
+        {parametresTemoins && <button type="button" class="bib-pied-de-page__parametres-temoins" data-parametres-temoins>{parametresTemoins}</button>}
+      </div>
+    </div>
+  </div>
+</footer>

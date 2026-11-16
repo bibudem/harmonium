@@ -1,0 +1,65 @@
+# Publie le mini-site de documentation (site/ → _site/) sur GitHub Pages à chaque poussée sur main.
+# Réglage requis une fois : Settings → Pages → Build and deployment → Source : « GitHub Actions ».
+name: Mini-site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Une seule publication à la fois ; celle en cours va au bout
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  construire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Tests unitaires
+        run: npm test
+
+      - name: Contenu Markdown et socle commun
+        run: npm run test:site
+
+      # Chrome est déjà installé sur les machines ubuntu-latest de GitHub
+      - name: Tests dans Chrome (reconstruit dist/)
+        run: npm run test:navigateur
+
+      # dist/ est versionné et servi par jsDelivr : il doit correspondre à src/
+      - name: dist/ à jour
+        run: |
+          git diff --exit-code -- dist/ || (echo "::error::dist/ ne correspond pas à src/ : lancer npm run build et committer dist/." && exit 1)
+
+      - name: Construction du mini-site (site/ → _site/)
+        run: node scripts/site.mjs --publication
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  publier:
+    needs: construire
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.publication.outputs.page_url }}
+    steps:
+      - id: publication
+        uses: actions/deploy-pages@v4

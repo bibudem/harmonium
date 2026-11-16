@@ -1,0 +1,25 @@
+---
+/*
+ * <PastilleFleche> : la pastille fléchée des cartes-liens (→ pour une page du site, ↗ pour un autre
+ * site). Produit le HTML documenté dans src/composants/carte-lien.css et importe cette feuille.
+ * Purement décorative : le lien de la carte porte le nom et les annonces.
+ *
+ *   <PastilleFleche externe />
+ */
+import '../src/composants/carte-lien.css'
+import { classes } from './styles.ts'
+
+interface Props {
+  externe?: boolean
+  petite?: boolean
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+const { externe = false, petite = false, class: classe, className } = Astro.props
+---
+
+<span class:list={['bib-pastille-fleche', { 'bib-pastille-fleche--externe': externe, 'bib-pastille-fleche--petite': petite }, classes(classe, className)]} aria-hidden="true">
+  <span class="bib-pastille-fleche__fleche"></span>
+</span>

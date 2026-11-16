@@ -1,0 +1,8 @@
+{
+  "verification": "2026-11-16",
+  "sites": [
+    { "id": "bibweb", "nom": "bibweb", "etat": "a-integrer" },
+    { "id": "studio", "nom": "Studio•bib", "etat": "a-integrer" }
+  ],
+  "composants": {}
+}

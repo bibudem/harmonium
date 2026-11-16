@@ -1,0 +1,106 @@
+---
+/*
+ * <Actualite> : un élément d'une liste « Quoi de neuf » (événement, nouvelle, formation). Produit le HTML
+ * documenté dans src/composants/actualite.css et importe cette feuille (et carte-lien.css). À mettre dans
+ * <ul class="bib-actualites"> (ou <ListeActualites>).
+ *
+ *   <Actualite href="/nouvelles/titre/" compact date="2026-11-02">
+ *     <span slot="ligne"><strong>Les bibliothèques</strong></span>
+ *     Titre de la nouvelle
+ *   </Actualite>
+ *
+ * Le slot par défaut est le titre ; le slot « ligne » est la ligne orange (date, source). `externe` : autre
+ * site, nouvel onglet annoncé. `vignette` (+ `image`) : réserve la case carrée. `date` (AAAA-MM-JJ) : la date en
+ * grand dans la case de la vignette. `calendrier` : icône de calendrier devant la ligne. `compact` : colonnes
+ * de l'accueil. `squelette` : barres à la place des textes. `lang` : langue du titre.
+ */
+import '../src/composants/actualite.css'
+import '../src/composants/carte-lien.css'
+import { lienCarte } from './liens.ts'
+import PastilleFleche from './PastilleFleche.astro'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Props {
+  href?: string
+  externe?: boolean
+  target?: string
+  rel?: string
+  /** Réserve la vignette carrée */
+  vignette?: boolean
+  /** Adresse de l'image de la vignette ; sans elle, un carré vide */
+  image?: string
+  /** AAAA-MM-JJ : la date en grand (jour, mois, année) dans la case de la vignette */
+  date?: string
+  calendrier?: boolean
+  compact?: boolean
+  squelette?: boolean
+  lang?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const { href, externe = false, target, rel, vignette = false, image, date, calendrier = false, compact = false, squelette = false, lang, class: classe, className, style, ...reste } = Astro.props
+const Titre = href !== undefined && !squelette ? 'a' : 'span'
+// Dates du frontmatter à minuit UTC : lues en UTC
+const jourDate = date ? new Date(`${date}T00:00:00Z`) : undefined
+const partiesDate = jourDate && {
+  jour: jourDate.getUTCDate(),
+  mois: new Intl.DateTimeFormat('fr-CA', { month: 'short', timeZone: 'UTC' }).format(jourDate),
+  annee: jourDate.getUTCFullYear(),
+}
+const lien = href ? lienCarte(href, target ?? (externe ? '_blank' : undefined), rel, Astro.site?.origin ?? Astro.url.origin) : undefined
+const attributsLien = Titre === 'a' ? { href, target: lien?.cible, rel: lien?.rel } : {}
+---
+
+<li
+  class:list={['bib-actualite', { 'bib-carte-lien': Titre === 'a', 'bib-actualite--compact': compact, 'bib-actualite--squelette': squelette }, classes(classe, className)]}
+  style={fusionnerStyles(style)}
+  aria-hidden={squelette ? 'true' : undefined}
+  {...reste}
+>
+  {
+    partiesDate && (
+      <time class="bib-actualite__vignette bib-actualite__vignette--date" datetime={date}>
+        <span class="bib-actualite__jour">{partiesDate.jour}</span>
+        <span class="bib-actualite__mois">{partiesDate.mois}</span>
+        <span class="bib-actualite__annee">{partiesDate.annee}</span>
+      </time>
+    )
+  }
+  {
+    vignette && !partiesDate && (
+      <span class="bib-actualite__vignette" data-champ="vignette">
+        {image && <img src={image} alt="" width="300" height="300" loading="lazy" decoding="async" />}
+      </span>
+    )
+  }
+  <div class="bib-actualite__texte">
+    <p class="bib-actualite__ligne">
+      {calendrier && !squelette && <span class="bib-actualite__calendrier" aria-hidden="true" />}
+      {squelette ? <span class="bib-actualite__barre bib-actualite__barre--courte" /> : <slot name="ligne" />}
+    </p>
+    <Titre class:list={['bib-actualite__titre', { 'bib-lien-etire': Titre === 'a' }]} {...attributsLien} data-champ="lien">
+      {
+        squelette ? (
+          <span class="bib-actualite__barre" />
+        ) : (
+          <>
+            <span lang={lang} data-champ="titre">
+              <slot />
+            </span>
+            {lien?.annonce && <span class="bib-masque">{lien.annonce}</span>}
+          </>
+        )
+      }
+    </Titre>
+  </div>
+  {
+    !squelette && (
+      <span class="bib-actualite__coin">
+        {lien?.afficherFleche && <PastilleFleche externe={lien.externe} petite />}
+      </span>
+    )
+  }
+</li>

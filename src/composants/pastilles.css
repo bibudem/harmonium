@@ -1,0 +1,110 @@
+/*
+ * Pastilles : une liste nommée de petites étiquettes arrondies, liens ou simple texte, avec une icône facultative
+ * devant. Caractéristiques d'un logiciel (« Logiciel libre », « Accès à distance », « Guides »), lieux où
+ * l'utiliser, nombre de postes d'une bibliothèque…
+ *
+ *   <ul class="bib-pastilles" aria-label="Caractéristiques">
+ *     <li class="bib-pastille bib-pastille--jaune"><svg width="16" height="16" aria-hidden="true" focusable="false">…</svg>Logiciel libre</li>
+ *     <li><a class="bib-pastille bib-pastille--rose" href="/informatique/connexion-distance">…Accès à distance<span class="bib-masque"> : Zotero</span></a></li>
+ *     <li><a class="bib-pastille bib-pastille--bleu" href="/informatique/logiciels/zotero">…Guides<span class="bib-masque"> : Zotero</span></a></li>
+ *   </ul>
+ *   <ul class="bib-pastilles" aria-label="Où l’utiliser">
+ *     <li><a class="bib-pastille bib-pastille--lieu" href="…"><svg …/>Hubert-Reeves</a></li>
+ *   </ul>
+ *
+ * - Couleurs : --jaune (teinte jaune), --rose (teinte rose), --bleu (teinte bleue forte), --lieu (teinte bleue,
+ *   bordure plus foncée), --neutre (gris neutre et bordure, plus petite : un compte, « 6 postes »). Sans
+ *   modificateur : teinte bleue pâle.
+ * - Un lien se souligne au survol ; une pastille en texte n'est pas un lien (ni curseur, ni soulignement).
+ * - Le nom de la liste (aria-label) dit ce qu'elle énumère. Des liens au même libellé (« Guides ») reçoivent en
+ *   texte masqué ce qui les distingue (WCAG 2.4.4).
+ * - Variables : --bib-pastille-fond, --bib-pastille-bordure, --bib-pastille-texte.
+ */
+.bib-pastilles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espace-1);
+  max-inline-size: none;
+  margin: 0.85rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bib-pastilles > li {
+  max-inline-size: none;
+  margin: 0;
+}
+
+.bib-pastille {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  box-sizing: border-box;
+  min-height: 24px;
+  padding: 0.3rem 0.72rem;
+  border: 1px solid var(--bib-pastille-bordure, transparent);
+  border-radius: var(--rayon-plein);
+  background: var(--bib-pastille-fond, var(--couleur-teinte));
+  color: var(--bib-pastille-texte, var(--couleur-texte));
+  font-size: 0.85rem;
+  font-weight: var(--graisse-forte);
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.bib-pastille > svg {
+  flex: 0 0 auto;
+}
+
+a.bib-pastille:hover {
+  color: var(--bib-pastille-texte, var(--couleur-texte));
+  text-decoration: underline;
+}
+
+.bib-pastille--jaune {
+  --bib-pastille-fond: var(--couleur-teinte-jaune);
+}
+
+.bib-pastille--rose {
+  --bib-pastille-fond: var(--couleur-teinte-rose-forte);
+}
+
+.bib-pastille--bleu {
+  --bib-pastille-fond: var(--couleur-teinte-forte);
+}
+
+.bib-pastille--lieu {
+  --bib-pastille-fond: var(--couleur-teinte);
+  --bib-pastille-bordure: var(--couleur-teinte-forte);
+}
+
+.bib-pastille--neutre {
+  --bib-pastille-fond: color-mix(in srgb, var(--couleur-bordure) 30%, var(--couleur-surface));
+  --bib-pastille-bordure: var(--couleur-bordure);
+
+  padding: 0.15rem 0.55rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+a.bib-pastille--neutre:hover {
+  border-color: var(--couleur-contour);
+}
+
+.bib-masque {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+@media (forced-colors: active) {
+  .bib-pastille {
+    border-color: CanvasText;
+  }
+}

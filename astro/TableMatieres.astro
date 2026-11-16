@@ -1,0 +1,23 @@
+---
+/* Table des matières d'une page : titres d'astro:content, navigation commune aux deux sites. */
+import '../src/composants/navigation-secondaire.css'
+import { rendreTableMatieres } from './table-matieres.ts'
+import '../src/composants/table-matieres.css'
+import { classes } from './styles.ts'
+import { idUnique } from './ids.ts'
+
+interface Props {
+  /** `headings` renvoyés par render() d'astro:content ; les ids existent dans le contenu. */
+  titres: { depth: number; slug: string; text: string }[]
+  niveauMax?: 2 | 3
+  /** Nombre minimal de sections h2, deux par défaut. */
+  minimum?: number
+  nom?: string
+  id?: string
+  class?: string
+  className?: string
+}
+const { titres = [], niveauMax = 2, minimum = 2, nom = 'Sur cette page', id = idUnique('table-matieres'), class: classe, className } = Astro.props
+const html = rendreTableMatieres({ titres, niveauMax, minimum, nom, id, classe: classes(classe, className) })
+---
+<Fragment set:html={html} />

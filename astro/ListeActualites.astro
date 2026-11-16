@@ -1,0 +1,57 @@
+---
+/*
+ * <ListeActualites> : une liste d'actualités lue à la construction du site (nouvelles, revue de presse). Produit
+ * des <Actualite> dans un <ul class="bib-actualites">.
+ *
+ *   <ListeActualites items={[{ titre: 'Titre', url: '/nouvelles/titre/', date: '2026-11-02', dateTexte: '2 novembre 2026' }]} />
+ *
+ * Un item : `titre`, `url`, `date` (AAAA-MM-JJ), `dateTexte` (la date écrite), et facultativement `source` (le
+ * média d'un article de presse ; « Les bibliothèques » sinon, voir `sourceParDefaut`), `externe` (autre site :
+ * nouvel onglet) et `lang`. `dateEnGrand` : la date passe dans la case de la vignette et la ligne orange ne garde
+ * que la source. `compact` : colonnes de l'accueil. `vide` : texte quand la liste est vide.
+ */
+import Actualite from './Actualite.astro'
+import { classes } from './styles.ts'
+
+interface Item {
+  titre: string
+  url: string
+  date: string
+  dateTexte: string
+  source?: string
+  externe?: boolean
+  lang?: string
+}
+
+interface Props {
+  items: Item[]
+  compact?: boolean
+  dateEnGrand?: boolean
+  sourceParDefaut?: string
+  vide?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+const { items, compact = false, dateEnGrand = false, sourceParDefaut = 'Les bibliothèques', vide = 'Aucune nouvelle pour le moment', class: classe, className } = Astro.props
+---
+
+{
+  items.length ? (
+    <ul class:list={['bib-actualites', classes(classe, className)]}>
+      {items.map((item) => (
+        <Actualite href={item.url} externe={item.externe} compact={compact} date={dateEnGrand ? item.date : undefined} lang={item.lang}>
+          {dateEnGrand ? (
+            <span slot="ligne"><strong>{item.source ?? sourceParDefaut}</strong></span>
+          ) : (
+            <span slot="ligne"><strong>{item.source ?? sourceParDefaut}</strong>&nbsp;·&nbsp;<time datetime={item.date}>{item.dateTexte}</time></span>
+          )}
+          {item.titre}
+        </Actualite>
+      ))}
+    </ul>
+  ) : (
+    <p>{vide}</p>
+  )
+}

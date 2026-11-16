@@ -1,0 +1,122 @@
+/*
+ * Image interactive : une capture d'écran commentée. Une liste de zones, et l'image dont la zone choisie
+ * reste éclairée, le reste passant sous un voile.
+ *
+ *   <div class="bib-image-interactive" data-image-interactive>
+ *     <ol class="bib-image-interactive__zones">
+ *       <li data-zone="media" data-position="top: 0%; left: 0%; width: 14.29%; height: 100%">Média – Importer sons, images, vidéos</li>
+ *       <li data-zone="cut" data-position="top: 0%; left: 14.29%; width: 14.29%; height: 100%">Cut – Montage rapide</li>
+ *     </ol>
+ *     <div class="bib-image-interactive__cadre">
+ *       <img src="resolve-barre-pages.webp" alt="Barre des pages de DaVinci Resolve : sept pages, de Média à Exportation">
+ *       <span class="bib-image-interactive__projecteur" aria-hidden="true" data-projecteur></span>
+ *       <span class="bib-image-interactive__cible" aria-hidden="true" data-cible="media" style="top: 0%; left: 0%; width: 14.29%; height: 100%"></span>
+ *       <span class="bib-image-interactive__cible" aria-hidden="true" data-cible="cut" style="top: 0%; left: 14.29%; width: 14.29%; height: 100%"></span>
+ *     </div>
+ *   </div>
+ *
+ * Positions en pour cent de l'image (haut, gauche, largeur, hauteur). Sans JavaScript : la liste en texte et
+ * l'image avec son alt ; rien ne manque, l'éclairage n'est qu'une aide visuelle. bib-image-interactive.min.js
+ * fait de chaque élément un bouton (aria-pressed, .bib-image-interactive__zone) : survol et focus éclairent
+ * la zone, un clic (ou un toucher) la garde éclairée. Les zones de l'image répondent à la souris seulement
+ * (aria-hidden) : le clavier passe par la liste. Une liste non numérotée (<ul>) convient aussi.
+ *
+ * Habillage : --bib-image-interactive-survol-fond (jaune), --bib-image-interactive-survol-texte (bleu
+ * foncé), --bib-image-interactive-choisi-fond et --bib-image-interactive-choisi-texte (zone fixée : fond fort
+ * du thème, texte clair), --bib-image-interactive-voile (60 % du voile).
+ */
+.bib-image-interactive {
+  margin-block: var(--espace-element) var(--espace-bloc);
+}
+
+.bib-image-interactive__zones {
+  margin: 0 0 var(--espace-element);
+  padding-left: 1.5rem;
+}
+
+.bib-image-interactive__zones li {
+  margin: 0.35rem 0;
+}
+
+/* Le bouton garde l'apparence du texte de la liste ; en bloc, la puce s'aligne sur sa première ligne */
+.bib-image-interactive__zone {
+  display: block;
+  width: calc(100% + 0.5rem);
+  margin-inline: -0.25rem;
+  padding: 0.1rem 0.25rem;
+  border: 0;
+  border-radius: var(--rayon-minuscule);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+}
+
+.bib-image-interactive__zone:hover,
+.bib-image-interactive__zone[data-actif] {
+  background: var(--bib-image-interactive-survol-fond, var(--jaune));
+  color: var(--bib-image-interactive-survol-texte, var(--bleu-fonce));
+}
+
+.bib-image-interactive__zone[aria-pressed='true'] {
+  background: var(--bib-image-interactive-choisi-fond, var(--couleur-fond-fort));
+  color: var(--bib-image-interactive-choisi-texte, var(--couleur-sur-fonce));
+  font-weight: var(--graisse-forte);
+}
+
+.bib-image-interactive__cadre {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: var(--rayon-tres-petit);
+}
+
+.bib-image-interactive__cadre > img,
+.bib-image-interactive__cadre > svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* La zone éclairée ; le reste de l'image passe sous un voile */
+.bib-image-interactive__projecteur {
+  position: absolute;
+  z-index: 1;
+  box-shadow: 0 0 0 100vmax var(--bib-image-interactive-voile, color-mix(in srgb, var(--couleur-voile) 60%, transparent));
+  opacity: 0;
+  pointer-events: none;
+  /* Exception voulue à « transform et opacity seulement » : le cadre glisse d'une zone à l'autre en
+     changeant de taille ; un scale déformerait son contour et son arrondi */
+  transition:
+    opacity var(--duree-moyenne-4) var(--courbe-standard),
+    top var(--duree-moyenne-2) var(--courbe-standard),
+    left var(--duree-moyenne-2) var(--courbe-standard),
+    width var(--duree-moyenne-2) var(--courbe-standard),
+    height var(--duree-moyenne-2) var(--courbe-standard);
+}
+
+.bib-image-interactive[data-eclaire] .bib-image-interactive__projecteur {
+  opacity: 1;
+}
+
+.bib-image-interactive__cible {
+  position: absolute;
+  z-index: 2;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bib-image-interactive__projecteur {
+    transition: opacity var(--duree-courte-3) linear;
+  }
+}
+
+@media (forced-colors: active) {
+  .bib-image-interactive__projecteur {
+    outline: 3px solid Highlight;
+    outline-offset: -3px;
+  }
+}

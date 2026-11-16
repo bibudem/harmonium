@@ -1,0 +1,34 @@
+---
+/*
+ * <LegendeIcones> : la légende des icônes ou des gestes d'une interface, une carte par icône. Produit le HTML
+ * documenté dans src/composants/legende-icones.css et importe cette feuille ; chaque icône est un
+ * <ElementLegende>.
+ *
+ *   <LegendeIcones>
+ *     <ElementLegende nom="Un doigt"><svg slot="visuel" …>…</svg>
+ *       <ElementLegende nom="Glisser" description="Faire tourner"><svg slot="visuel" …>…</svg></ElementLegende>
+ *     </ElementLegende>
+ *   </LegendeIcones>
+ *   <LegendeIcones forme="panneau">…</LegendeIcones>
+ *
+ * `forme="panneau"` : un seul cadre, une rangée par icône (longue série d'icônes simples).
+ */
+import '../src/composants/legende-icones.css'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Props {
+  forme?: 'cartes' | 'panneau'
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const { forme = 'cartes', class: classe, className, style } = Astro.props
+---
+
+<div class:list={['bib-legende-icones', { 'bib-legende-icones--panneau': forme === 'panneau' }, classes(classe, className)]} style={fusionnerStyles(style)}>
+  <ul class="bib-legende-icones__liste">
+    <slot />
+  </ul>
+</div>

@@ -1,0 +1,31 @@
+---
+/*
+ * <ChampListe> : une liste déroulante de filtre avec son libellé visible. Produit le HTML documenté dans
+ * src/composants/champ-liste.css et importe cette feuille. Le <select> vient du slot, avec ses id, name et
+ * data-* ; `pour` est son id.
+ *
+ *   <ChampListe pour="periode" libelle="Période">
+ *     <select id="periode" name="periode"><option value="">Toutes les périodes</option></select>
+ *   </ChampListe>
+ */
+import '../src/composants/champ-liste.css'
+import { classes } from './styles.ts'
+
+interface Props {
+  /** id du <select> du slot */
+  recherche?: boolean
+  pour: string
+  libelle: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+const { pour, libelle, recherche = false, class: classe, className } = Astro.props
+---
+
+<div class:list={['bib-champ-liste', { 'bib-champ-liste--recherche': recherche }, classes(classe, className)]}>
+  <label class="bib-champ-liste__etiquette" for={pour}>{libelle}</label>
+  <div class="bib-champ-liste__boite"><slot /></div>
+  <slot name="aide" />
+</div>

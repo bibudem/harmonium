@@ -1,0 +1,122 @@
+/*
+ * Tableau filtrable et triable : un tableau (tableau.css) précédé de listes de filtre (champ-liste.css), d'un
+ * compte annoncé et, dans les en-têtes, de boutons de tri. Le tableau est entièrement rendu dans le HTML : sans
+ * JavaScript, on le lit d'un trait (les filtres et les boutons de tri sont masqués). bib-tableau-filtrable.min.js
+ * (facultatif) les rend actifs.
+ *
+ *   <div class="bib-tableau-filtrable" data-tableau-filtrable data-unite="fonds ou collection" data-unites="fonds et collections" data-vide="Aucun fonds ne correspond à ces critères.">
+ *     <form class="bib-tableau-filtrable__filtres" aria-label="Filtrer" data-filtres>
+ *       <div class="bib-champ-liste">…<select id="f-cat" name="categorie" data-filtre="categorie">…</select>…</div>
+ *     </form>
+ *     <p class="bib-tableau-filtrable__compte" role="status" data-statut>38 fonds et collections</p>
+ *     <div class="bib-tableau-zone" role="region" aria-label="Fonds" tabindex="0" data-tableau-defilant>
+ *       <table class="bib-tableau" aria-label="Fonds">
+ *         <thead><tr class="bib-tableau__rangee">
+ *           <th scope="col" class="bib-tableau__cellule"><button type="button" class="bib-tableau-filtrable__tri" data-tri="nom">Nom<span class="bib-tableau-filtrable__fleche" aria-hidden="true"></span></button></th>
+ *           <th scope="col" class="bib-tableau__cellule">Catégorie</th>
+ *         </tr></thead>
+ *         <tbody data-corps>
+ *           <tr class="bib-tableau__rangee" data-nom="Gilles-Rioux" data-categorie="Histoire de l'art">…</tr>
+ *         </tbody>
+ *       </table>
+ *     </div>
+ *     <p class="bib-tableau-filtrable__aucun" hidden data-aucun>Aucun fonds ne correspond à ces critères.</p>
+ *   </div>
+ *
+ * - Filtre : un <select data-filtre="cle"> (valeur vide : tout) compare sa valeur à l'attribut data-<cle> de
+ *   chaque rangée ; si cet attribut est un tableau JSON (data-periodes='["20e siècle"]'), la valeur doit y
+ *   figurer. Les filtres se combinent (et).
+ * - Tri : un bouton [data-tri="cle"] dans un <th> trie sur data-<cle> de la rangée (ordre du français). Premier
+ *   clic : croissant ; deuxième : décroissant ; troisième : l'ordre d'origine. aria-sort est posé sur le <th>.
+ * - Compte : data-statut (role="status") dit « N <unité> » à chaque filtre (data-unite au singulier,
+ *   data-unites au pluriel) ou le message data-vide quand rien ne correspond, que data-aucun répète sous le
+ *   tableau.
+ *
+ * Le tri est un bouton dans l'en-tête, pas un clic sur le <th> : atteignable au clavier, annoncé comme bouton
+ * (WCAG 2.1.1, 4.1.2). La flèche (deux triangles au repos, un dans le sens du tri) double aria-sort (1.4.1).
+ */
+.bib-tableau-filtrable__filtres {
+  display: grid;
+  gap: var(--espace-element);
+  margin-block-end: var(--espace-element);
+}
+
+@media (width >= 600px) {
+  .bib-tableau-filtrable__filtres {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-inline-size: 40rem;
+  }
+}
+
+/* Sans JavaScript, les filtres et le tri ne feraient rien */
+@media (scripting: none) {
+  .bib-tableau-filtrable__filtres {
+    display: none;
+  }
+
+  .bib-tableau-filtrable__tri {
+    pointer-events: none;
+  }
+
+  .bib-tableau-filtrable__fleche {
+    display: none;
+  }
+}
+
+.bib-tableau-filtrable__compte {
+  margin-block: 0 var(--espace-element);
+  color: var(--couleur-texte-secondaire);
+  font-size: var(--texte-petit);
+}
+
+.bib-tableau-filtrable__tri {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: var(--taille-cible);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.bib-tableau-filtrable__tri:hover {
+  text-decoration: underline;
+}
+
+/* Deux triangles au repos, un seul dans le sens du tri */
+.bib-tableau-filtrable__fleche {
+  width: 0.625rem;
+  height: 0.875rem;
+  background-color: currentcolor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 14'%3E%3Cpath d='M5 0l5 6H0zM5 14L0 8h10z'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.6;
+}
+
+[aria-sort='ascending'] .bib-tableau-filtrable__fleche {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 14'%3E%3Cpath d='M5 0l5 6H0z'/%3E%3C/svg%3E");
+  opacity: 1;
+}
+
+[aria-sort='descending'] .bib-tableau-filtrable__fleche {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 14'%3E%3Cpath d='M5 14L0 8h10z'/%3E%3C/svg%3E");
+  opacity: 1;
+}
+
+.bib-tableau-filtrable tr[hidden] {
+  display: none;
+}
+
+.bib-tableau-filtrable__aucun {
+  margin-block: var(--espace-element) 0;
+}
+
+@media (forced-colors: active) {
+  .bib-tableau-filtrable__fleche {
+    background-color: ButtonText;
+  }
+}

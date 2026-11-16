@@ -1,0 +1,69 @@
+/*
+ * Fil d'Ariane : chemin de la page dans l'arborescence, de l'accueil à la page courante
+ * (motif Breadcrumb de l'APG WAI-ARIA).
+ *
+ *   <nav class="bib-fil-ariane" aria-label="Fil d'Ariane">
+ *     <ol>
+ *       <li><a href="/">Accueil</a></li>
+ *       <li><span>Groupe sans page</span></li>
+ *       <li><span aria-current="page">Page courante</span></li>
+ *     </ol>
+ *   </nav>
+ *
+ * Couleurs (facultatif) : --bib-fil-ariane-lien, --bib-fil-ariane-lien-survol,
+ * --bib-fil-ariane-transition. Le soulignement reste : un lien se reconnaît sans la couleur.
+ */
+.bib-fil-ariane {
+  margin-block-end: var(--espace-4, 2rem);
+  font-size: var(--texte-petit, 0.875rem);
+}
+
+.bib-fil-ariane ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem var(--espace-1, 0.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bib-fil-ariane li {
+  display: flex;
+  align-items: center;
+  gap: var(--espace-1, 0.5rem);
+  margin: 0;
+}
+
+.bib-fil-ariane li + li::before {
+  content: '';
+  width: 0.4em;
+  height: 0.4em;
+  border-block-start: 1.5px solid currentColor;
+  border-inline-end: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  opacity: 0.6;
+}
+
+/* Cible de 24 px de haut au moins (WCAG 2.5.8), le texte n'en faisait que 17 */
+.bib-fil-ariane a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  color: var(--bib-fil-ariane-lien, var(--couleur-lien));
+  transition: var(--bib-fil-ariane-transition, none);
+}
+
+.bib-fil-ariane a:hover {
+  color: var(--bib-fil-ariane-lien-survol, var(--bib-fil-ariane-lien, var(--couleur-lien-survol)));
+}
+
+.bib-fil-ariane [aria-current='page'] {
+  color: var(--couleur-texte);
+  font-weight: var(--graisse-forte, 600);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bib-fil-ariane a {
+    transition: none;
+  }
+}

@@ -1,0 +1,35 @@
+---
+/*
+ * <Surface> : produit le HTML documenté dans src/composants/surface.css et importe cette
+ * feuille. Aucun JavaScript.
+ *
+ *   <Surface variant="outlined" component="section">…</Surface>
+ */
+import '../src/composants/surface.css'
+import { classes, fusionnerStyles } from './styles.ts'
+
+interface Props {
+  /** 0 retire l'ombre ; toute autre valeur donne l'ombre légère du thème */
+  elevation?: number
+  variant?: 'elevation' | 'outlined'
+  /** Coins droits */
+  square?: boolean
+  /** Balise rendue (div par défaut) */
+  component?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: string | Record<string, string | number>
+  [attribut: string]: unknown
+}
+
+const { elevation = 1, variant = 'elevation', square = false, component = 'div', class: classe, className, style, ...reste } = Astro.props
+const Balise = (typeof component === 'string' ? component : 'div') as 'div' | 'section' | 'article' | 'aside' | 'li' | 'nav' | 'header' | 'footer'
+const contour = variant === 'outlined'
+---
+
+<Balise
+  class:list={['bib-surface', 'surface-claire', { 'bib-surface--contour': contour, 'bib-surface--sans-ombre': !contour && elevation <= 0, 'bib-surface--carre': square }, classes(classe, className)]}
+  style={fusionnerStyles(style)}
+  {...reste}><slot /></Balise
+>

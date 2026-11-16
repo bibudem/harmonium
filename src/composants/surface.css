@@ -1,0 +1,35 @@
+/*
+ * Surface : fond « papier » posé sur la page (fond et texte du thème, coins de 4 px), avec
+ * une ombre légère ou un contour. Une boîte neutre, qui ne dit rien de son contenu.
+ *
+ *   <div class="bib-surface">…</div>
+ *   <section class="bib-surface bib-surface--contour">…</section>
+ *
+ * Modificateurs : --contour (bordure de 1 px, sans ombre), --sans-ombre, --carre (coins droits).
+ */
+.bib-surface {
+  border-radius: var(--rayon-minuscule, 4px);
+  background-color: var(--couleur-fond, #fff);
+  color: var(--couleur-texte, inherit);
+  box-shadow: var(--ombre-1, 0 1px 3px rgb(0 0 0 / 20%));
+}
+
+.bib-surface--contour {
+  border: 1px solid var(--couleur-bordure, currentColor);
+  box-shadow: none;
+}
+
+.bib-surface--sans-ombre {
+  box-shadow: none;
+}
+
+.bib-surface--carre {
+  border-radius: 0;
+}
+
+/* L'ombre disparaît en couleurs forcées : un contour la remplace */
+@media (forced-colors: active) {
+  .bib-surface:not(.bib-surface--contour, .bib-surface--sans-ombre) {
+    border: 1px solid CanvasText;
+  }
+}

@@ -1,0 +1,45 @@
+---
+/*
+ * <Disponibilites> : une fiche d'état par bibliothèque, avec le nombre d'exemplaires disponibles d'un document
+ * (API Atrium), lu dans le navigateur par bib-disponibilites.min.js. Produit le HTML documenté dans
+ * src/composants/fiches-etat.css et importe cette feuille. Sans le script, chaque fiche est un lien vers la
+ * notice dans Sofia.
+ *
+ *   <Disponibilites fiches={[{ libelle: 'Aménagement', oclc: '1472198755' }, { libelle: 'Hubert-Reeves', oclc: '1246168952' }]} />
+ *
+ * `api` : une autre adresse de l'API Atrium (essais).
+ */
+import '../src/composants/fiches-etat.css'
+import { FLECHE_DIAGONALE } from './fiches-etat.ts'
+import { classes } from './styles.ts'
+
+interface Props {
+  fiches: { libelle: string; oclc: string }[]
+  api?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+const { fiches, api, class: classe, className } = Astro.props
+for (const { oclc } of fiches) if (!/^\d+$/.test(oclc)) throw new Error(`Disponibilites : numéro OCLC invalide (${oclc})`)
+const notice = (oclc: string) => `https://umontreal.on.worldcat.org/oclc/${oclc}`
+---
+
+<div class:list={['bib-fiches-etat', classes(classe, className)]} data-disponibilites data-api={api}>
+  <ul class="bib-fiches-etat__liste">
+    {
+      fiches.map(({ libelle, oclc }) => (
+        <li>
+          <a class="bib-fiches-etat__fiche" href={notice(oclc)} target="_blank" rel="noopener" data-oclc={oclc}>
+            <span class="bib-fiches-etat__libelle">{libelle}</span>
+            <span class="bib-fiches-etat__etat" data-etat>Vérifier la disponibilité dans Sofia</span>
+            <span class="bib-masque"> (nouvel onglet)</span>
+            <svg class="bib-fiches-etat__fleche" viewBox="0 0 256 256" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d={FLECHE_DIAGONALE} /></svg>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <p class="bib-masque" role="status" data-annonce></p>
+</div>

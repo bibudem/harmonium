@@ -1,0 +1,78 @@
+---
+/*
+ * <ListeFiltrable> : une liste de fiches rendue en entier, avec une recherche sans accents, un filtre par
+ * catégorie et un compte annoncé. Produit le HTML documenté dans src/composants/liste-filtrable.css et importe
+ * cette feuille (et celle des champs de liste) ; bib-liste-filtrable.min.js (facultatif) rend le formulaire
+ * actif. Le slot est la liste des fiches (<FicheFiltrable>) ; le slot `vide` complète le message « aucun
+ * résultat ».
+ *
+ *   <ListeFiltrable nom="Logiciels" total={73} unite="logiciel" unites="logiciels" categories={categories}
+ *     consigne="Recherchez un logiciel ou filtrez par catégorie :"
+ *     videRecherche="Aucun logiciel ne correspond à « {q} »." videCategorie="Aucun logiciel dans cette catégorie.">
+ *     {logiciels.map((l) => <FicheFiltrable nom={l.nom} lien={l.lien} categorie={l.categorie} description={l.description} />)}
+ *     <Fragment slot="vide">Vérifiez l’orthographe ou <a href="mailto:…">écrivez-nous</a> si vous cherchez un logiciel précis.</Fragment>
+ *   </ListeFiltrable>
+ */
+import '../src/composants/liste-filtrable.css'
+import ChampListe from './ChampListe.astro'
+import { idUnique } from './ids.ts'
+import { classes } from './styles.ts'
+
+interface Props {
+  /** Nom du formulaire de recherche (aria-label) */
+  nom: string
+  total: number
+  categories?: string[]
+  unite?: string
+  unites?: string
+  consigne?: string
+  placeholder?: string
+  toutes?: string
+  videRecherche?: string
+  videCategorie?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+const {
+  nom,
+  total,
+  categories = [],
+  unite = 'résultat',
+  unites = 'résultats',
+  consigne,
+  placeholder = 'Nom ou description',
+  toutes = 'Toutes',
+  videRecherche,
+  videCategorie,
+  class: classe,
+  className,
+} = Astro.props
+const id = idUnique('liste-filtrable')
+const tries = [...categories].sort((a, b) => a.localeCompare(b, 'fr'))
+---
+
+<div class:list={['bib-liste-filtrable', classes(classe, className)]} data-liste-filtrable data-unite={unite} data-unites={unites} data-vide-recherche={videRecherche} data-vide-categorie={videCategorie}>
+  <form class="bib-liste-filtrable__filtres" role="search" aria-label={nom} data-filtres hidden>
+    {consigne && <p class="bib-liste-filtrable__consigne">{consigne}</p>}
+    <div class="bib-liste-filtrable__champs">
+      <ChampListe pour={`${id}-recherche`} libelle="Rechercher" class="bib-champ-liste--recherche">
+        <input id={`${id}-recherche`} type="search" placeholder={placeholder} autocomplete="off" data-recherche />
+      </ChampListe>
+      {
+        tries.length > 0 && (
+          <ChampListe pour={`${id}-categorie`} libelle="Catégorie">
+            <select id={`${id}-categorie`} data-categorie>
+              <option value="">{toutes}</option>
+              {tries.map((c) => <option value={c}>{c}</option>)}
+            </select>
+          </ChampListe>
+        )
+      }
+    </div>
+  </form>
+  <p class="bib-liste-filtrable__compte" role="status" data-compte>{`${total} ${total > 1 ? unites : unite}`}</p>
+  <ul class="bib-liste-filtrable__liste" data-liste><slot /></ul>
+  <p class="bib-liste-filtrable__vide" data-vide hidden><span data-vide-texte></span> <slot name="vide" /></p>
+</div>

@@ -1,0 +1,29 @@
+---
+/*
+ * <GroupeBoutons> : des boutons côte à côte. Produit le HTML documenté dans src/composants/groupe-boutons.css
+ * et importe cette feuille. Les enfants sont des <Bouton>.
+ *
+ *   <GroupeBoutons>
+ *     <Bouton href="/salles/">Réserver une salle</Bouton>
+ *     <Bouton href="/regles/" secondary>Voir les règles</Bouton>
+ *   </GroupeBoutons>
+ *   <GroupeBoutons pied centre>…</GroupeBoutons>
+ */
+import '../src/composants/groupe-boutons.css'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Props {
+  /** En fin de bloc : écart régulier, espace de bloc avant la rangée */
+  pied?: boolean
+  /** Boutons centrés */
+  centre?: boolean
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const { pied = false, centre = false, class: classe, className, style, ...reste } = Astro.props
+---
+
+<div class:list={['bib-groupe-boutons', { 'bib-groupe-boutons--pied': pied, 'bib-groupe-boutons--centre': centre }, classes(classe, className)]} style={fusionnerStyles(style)} {...reste}><slot /></div>

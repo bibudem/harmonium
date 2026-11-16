@@ -1,0 +1,28 @@
+/*
+ * Séparateur : filet de la couleur des bordures entre deux parties d'un contenu.
+ *
+ *   <hr class="bib-separateur">
+ *   <hr class="bib-separateur bib-separateur--vertical" aria-orientation="vertical">
+ *
+ * Vertical, il s'étire sur la hauteur d'une rangée flex.
+ */
+.bib-separateur {
+  flex-shrink: 0;
+  margin: var(--espace-element, 1rem) 0;
+  border: 0;
+  border-bottom: 1px solid var(--bib-separateur-couleur, var(--couleur-bordure, currentColor));
+}
+
+.bib-separateur--vertical {
+  align-self: stretch;
+  height: auto;
+  margin: 0 var(--espace-2, 1rem);
+  border-bottom: 0;
+  border-right: 1px solid var(--bib-separateur-couleur, var(--couleur-bordure, currentColor));
+}
+
+@media (forced-colors: active) {
+  .bib-separateur {
+    border-color: CanvasText;
+  }
+}

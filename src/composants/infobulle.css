@@ -1,0 +1,106 @@
+/*
+ * Infobulle : une pilule bleu foncé au survol (après un court délai) et au focus clavier, dont le
+ * texte est dans data-infobulle. Texte d'appoint : le nom de l'élément est déjà porté par son texte ou
+ * son aria-label, d'où le texte de remplacement vide (pas de double lecture).
+ *
+ *   <button type="button" class="bib-infobulle bib-infobulle--gauche" aria-label="Retour en haut de la page" data-infobulle="Retour en haut">…</button>
+ *
+ * L'élément porte aussi le placement (--gauche, --dessous, --dessus). Il est relatif par
+ * défaut ; un positionnement propre au composant (fixed, absolute…) reste prioritaire. Une bande transparente (::before) relie la bulle à l'élément : le pointeur passe
+ * de l'un à l'autre sans la faire disparaître (WCAG 1.4.13). Échap la ferme (data-infobulle-fermee,
+ * posé par bib-infobulle.min.js, facultatif) ; elle revient au prochain survol ou focus. Un composant
+ * qui doit la taire dans un état (rangée ouverte, bouton masqué) y pose --infobulle-visibilite: hidden
+ * et --infobulle-opacite: 0.
+ */
+/* Ancrer les pseudo-éléments au déclencheur, sans écraser les boutons fixes. */
+:where(.bib-infobulle) {
+  position: relative;
+}
+
+.bib-infobulle::before {
+  content: '';
+  position: absolute;
+}
+
+.bib-infobulle::after {
+  content: attr(data-infobulle) / '';
+  position: absolute;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--rayon-tres-petit);
+  background: var(--bleu-fonce);
+  /* Liseré clair : la bulle reste détachée sur les bandes bleu foncé */
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--couleur-surface) 35%, transparent);
+  color: var(--couleur-sur-fonce);
+  font-size: var(--texte-petit);
+  font-weight: var(--graisse-moyenne);
+  line-height: 1.4;
+  white-space: nowrap;
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity var(--duree-courte-4) var(--courbe-standard),
+    visibility 0s linear var(--duree-courte-4);
+}
+
+.bib-infobulle:is(:hover, :focus-visible):not([data-infobulle-fermee])::after {
+  visibility: var(--infobulle-visibilite, visible);
+  opacity: var(--infobulle-opacite, 1);
+  transition:
+    opacity var(--duree-courte-4) var(--courbe-standard) 80ms,
+    visibility 0s linear 80ms;
+}
+
+.bib-infobulle:focus-visible:not([data-infobulle-fermee])::after {
+  transition: none;
+}
+
+/* À gauche de l'élément, centrée en hauteur (boutons du bord droit) */
+.bib-infobulle--gauche::before {
+  top: 0;
+  right: 100%;
+  bottom: 0;
+  width: 8px;
+}
+
+.bib-infobulle--gauche::after {
+  top: 50%;
+  right: calc(100% + 8px);
+  translate: 0 -50%;
+}
+
+/* Au-dessus de l'élément, centrée */
+.bib-infobulle--dessus::before {
+  right: 0;
+  bottom: 100%;
+  left: 0;
+  height: 8px;
+}
+
+.bib-infobulle--dessus::after {
+  bottom: calc(100% + 8px);
+  left: 50%;
+  translate: -50% 0;
+}
+
+/* Sous l'élément, alignée à gauche (liens d'en-tête) */
+.bib-infobulle--dessous::before {
+  top: 100%;
+  right: 0;
+  left: 0;
+  height: 8px;
+}
+
+.bib-infobulle--dessous::after {
+  top: calc(100% + 8px);
+  left: 0;
+}
+
+@media (forced-colors: active) {
+  .bib-infobulle::after {
+    border: 1px solid CanvasText;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bib-infobulle::after { transition: none; }
+}

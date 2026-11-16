@@ -1,0 +1,565 @@
+/*
+ * Pied de page des sites des bibliothèques : le titre, deux colonnes de liens séparées par un filet
+ * (« Besoin d'aide? », « Sites connexes »), le sceau à droite derrière un filet lui aussi, puis une
+ * barre du bas, bleue, avec la licence et les liens légaux.
+ *
+ *   <footer class="bib-pied-de-page theme-clair">
+ *     <div class="bib-pied-de-page__local"><div class="bib-pied-de-page__interieur">
+ *       <div class="bib-pied-de-page__signature">
+ *         <a class="bib-pied-de-page__signature-sceau" href="/"><img src="logo-horizontal-blanc.svg" alt="Les bibliothèques, Université de Montréal – Accueil" width="1080" height="350"></a>
+ *         <h2 class="bib-pied-de-page__titre">Les bibliothèques de l'Université de Montréal</h2>
+ *       </div>
+ *       <div class="bib-pied-de-page__colonnes">
+ *         <div class="bib-pied-de-page__colonne" data-pliable-pied>
+ *           <h3 class="bib-pied-de-page__sous-titre">Sites connexes</h3>
+ *           <ul class="bib-pied-de-page__liste bib-pied-de-page__liste--sites" id="pied-liste-1">
+ *             <li><a href="https://…"><span class="bib-pied-de-page__point" style="--point: var(--jaune)" aria-hidden="true"></span><span>Studio•bib<span class="bib-pied-de-page__fonction">Informatique et création numérique</span></span></a></li>
+ *           </ul>
+ *         </div>
+ *         <div class="bib-pied-de-page__colonne bib-pied-de-page__colonne--logo"><a href="/"> …sceau… </a></div>
+ *       </div>
+ *     </div></div>
+ *     <div class="bib-pied-de-page__queue"><div class="bib-pied-de-page__interieur bib-pied-de-page__rangee-queue">
+ *       <div class="bib-pied-de-page__groupe-queue"> …licence… </div>
+ *       <div class="bib-pied-de-page__groupe-queue bib-pied-de-page__liens-queue">
+ *         <a href="/accessibilite/">Accessibilité</a>
+ *         <button type="button" class="bib-pied-de-page__parametres-temoins" data-parametres-temoins>Paramètres des témoins</button>
+ *       </div>
+ *     </div></div>
+ *   </footer>
+ *
+ * Variantes de colonne : « Besoin d'aide? » : liens à pictogramme (svg de 18 px dans le lien), puis
+ * l'urgence (<p class="bib-pied-de-page__urgence">), puis les réseaux (<ul class="bib-pied-de-page__reseaux">).
+ * « Sites connexes » : une pastille de la couleur du service devant son nom (--point).
+ *
+ * Sous 900 px : tout est centré et empilé, le sceau en dernier. Le pied reste court : la colonne
+ * « Besoin d'aide? » reste ouverte, les autres colonnes (attribut data-pliable-pied) deviennent un
+ * volet replié (motif Disclosure de l'APG) quand bib-pied-de-page.min.js est chargé ; sans lui, les
+ * listes sont visibles. Le bouton « Paramètres des témoins » (data-parametres-temoins) émet
+ * l'événement window « bib:parametres-temoins ». La classe theme-clair garde les couleurs du pied
+ * sur les différentes bandes (il est déjà foncé).
+ */
+.bib-pied-de-page {
+  /* Poussé au bas de l'écran sur une page courte (body en colonne,
+     global.css) */
+  margin-top: auto;
+  font-size: var(--texte-courant);
+}
+
+.bib-pied-de-page__interieur {
+  width: 100%;
+  max-width: var(--largeur-max);
+  margin-inline: auto;
+}
+
+.bib-pied-de-page ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bib-pied-de-page a,
+.bib-pied-de-page button {
+  color: inherit;
+  text-decoration: none;
+}
+
+.bib-pied-de-page a:hover,
+.bib-pied-de-page button:hover {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* Le bleu du focus global se perd sur les fonds bleus du pied de page
+   (:global : les boutons des volets sont créés par le script, sans
+   l'attribut de portée d'Astro) */
+.bib-pied-de-page :focus-visible {
+  outline-color: var(--couleur-surface);
+}
+
+/* ---- Partie locale ---- */
+.bib-pied-de-page__local {
+  padding: 32px 24px 24px;
+  background-color: var(--bleu-fonce);
+  color: var(--couleur-sur-fonce);
+}
+
+.bib-pied-de-page__titre {
+  margin: 0 0 24px;
+  font-family: var(--police-sans);
+  font-size: var(--texte-grand);
+  font-weight: var(--graisse-forte);
+  line-height: 1.3;
+  text-align: center;
+}
+
+.bib-pied-de-page__colonnes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.bib-pied-de-page__colonne {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  text-align: center;
+}
+
+.bib-pied-de-page__sous-titre {
+  margin: 0 0 12px;
+  font-family: var(--police-sans);
+  font-size: var(--texte-courant);
+  font-weight: var(--graisse-forte);
+  line-height: 1.3;
+}
+
+.bib-pied-de-page__liste {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Liens resserrés : 36 px de haut, au-dessus des 24 px de WCAG 2.5.8 */
+.bib-pied-de-page__colonne a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  font-size: var(--texte-petit);
+  font-weight: var(--graisse-normale);
+  line-height: 1.4;
+}
+
+.bib-pied-de-page__colonne svg {
+  flex-shrink: 0;
+}
+
+/* Sites connexes : des tuiles, chacune avec sa pastille, son nom et ce que
+   fait le site ; une par ligne, deux dès 1200 px (plus bas) */
+.bib-pied-de-page__liste--sites {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+
+.bib-pied-de-page__liste--sites a {
+  align-items: flex-start;
+  width: 100%;
+  height: 100%;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  border-radius: var(--rayon-petit);
+  background-color: color-mix(in srgb, var(--couleur-surface) 7%, transparent);
+  font-weight: var(--graisse-moyenne);
+  text-decoration: none;
+  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+}
+
+/* La tuile qui s'éclaircit suffit à signaler le survol : pas de soulignement */
+.bib-pied-de-page__liste--sites a:hover {
+  text-decoration: none;
+}
+
+.bib-pied-de-page__liste--sites .bib-pied-de-page__point {
+  margin-top: 0.3em;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bib-pied-de-page__liste--sites a:hover {
+    background-color: color-mix(in srgb, var(--couleur-surface) 14%, transparent);
+  }
+}
+
+.bib-pied-de-page__fonction {
+  display: block;
+  color: color-mix(in srgb, currentColor 78%, transparent);
+  margin-top: 2px;
+  font-size: var(--texte-tres-petit);
+  font-weight: var(--graisse-normale);
+  line-height: 1.3;
+}
+
+/* Pastille de la couleur du service ; un liseré clair la garde visible sur
+   le bleu foncé, même pour les teintes sombres (Papyrus) */
+.bib-pied-de-page__point {
+  flex-shrink: 0;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background-color: var(--point);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--couleur-surface) 45%, transparent);
+}
+
+.bib-pied-de-page__urgence {
+  margin: 12px 0 0;
+}
+
+.bib-pied-de-page__sirene {
+  display: inline-flex;
+  color: var(--rouge-orange);
+}
+
+/* YouTube et Instagram, sous les liens de la première colonne */
+.bib-pied-de-page__reseaux {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* Cibles de 40 px autour des icônes sociales (WCAG 2.5.8 demande 24 px) */
+.bib-pied-de-page__reseaux a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 50%;
+  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bib-pied-de-page__reseaux a:hover {
+    background-color: color-mix(in srgb, var(--couleur-surface) 14%, transparent);
+    text-decoration: none;
+  }
+}
+
+.bib-pied-de-page__colonne--logo {
+  order: 5;
+}
+
+.bib-pied-de-page__colonne--logo .bib-sceau {
+  display: block;
+  width: 120px;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Téléphone : le sceau et le titre signent le pied en tête, puis tout
+   s'aligne à gauche dessous : « Besoin d'aide? » sur toute la largeur,
+   « Sites connexes » dessous. Le sceau des grands
+   écrans (dans les colonnes) est masqué : un seul est rendu visible, et
+   display: none le retire aussi de l'arbre d'accessibilité. */
+/* Peut rétrécir : à 320 px, le lien gardait la largeur de son image
+   (300 px pour 272 disponibles) et la page défilait de 4 px (WCAG 1.4.10) */
+.bib-pied-de-page__signature-sceau {
+  flex-shrink: 1;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.bib-pied-de-page__signature-sceau img {
+  display: block;
+  width: min(100%, 16rem);
+  height: auto;
+}
+
+@media (width < 900px) {
+  /* Le titre passe sous le sceau s'il ne tient plus à côté (texte
+     agrandi à 200 % sur 320 px, WCAG 1.4.4 et 1.4.10) */
+  .bib-pied-de-page__signature {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  /* Le logo horizontal porte déjà le nom : le titre n'est plus affiché, mais il reste lu par les
+     lecteurs d'écran (repère de titre du pied de page) */
+  .bib-pied-de-page__signature .bib-pied-de-page__titre {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* « Besoin d'aide? » ouvert, puis le volet « Sites connexes » entre
+     deux filets */
+  .bib-pied-de-page__colonnes {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .bib-pied-de-page__colonne:first-child {
+    margin-bottom: 24px;
+  }
+
+  .bib-pied-de-page__colonne[data-pliable-pied] {
+    align-items: stretch;
+    border-top: 1px solid color-mix(in srgb, var(--couleur-surface) 25%, transparent);
+  }
+
+  .bib-pied-de-page [data-pliable-pied]:last-of-type {
+    border-bottom: 1px solid color-mix(in srgb, var(--couleur-surface) 25%, transparent);
+  }
+
+  [data-pliable-pied] .bib-pied-de-page__sous-titre {
+    margin: 0;
+  }
+
+  /* Tout le titre est la cible (48 px de haut, WCAG 2.5.8) */
+  .bib-pied-de-page__sous-titre .bib-pied-de-page__bascule {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espace-2);
+    width: 100%;
+    min-height: 3rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .bib-pied-de-page__sous-titre .bib-pied-de-page__chevron {
+    flex-shrink: 0;
+    transition: rotate var(--duree-courte-4) var(--courbe-standard);
+  }
+
+  .bib-pied-de-page__sous-titre [aria-expanded='true'] .bib-pied-de-page__chevron {
+    rotate: 180deg;
+  }
+
+  [data-pliable-pied] .bib-pied-de-page__liste {
+    padding-bottom: 16px;
+  }
+
+  /* display: flex de .bib-pied-de-page__liste l'emporterait sur l'attribut hidden */
+  [data-pliable-pied] .bib-pied-de-page__liste[hidden] {
+    display: none;
+  }
+
+  /* Avant le script (data-pret), les listes sont déjà repliées et le titre
+     a la hauteur du bouton qu'il deviendra : le pied ne saute plus au
+     chargement. Sans JavaScript, rien ne change. */
+  @media (scripting: enabled) {
+    [data-pliable-pied]:not([data-pret]) .bib-pied-de-page__liste {
+      display: none;
+    }
+
+    [data-pliable-pied]:not([data-pret]) .bib-pied-de-page__sous-titre {
+      display: flex;
+      align-items: center;
+      min-height: 3rem;
+    }
+  }
+
+  /* Ouverture en hauteur, comme les accordéons du contenu ; display en
+     allow-discrete : la liste reste visible jusqu'à la fin de la fermeture */
+  @supports (interpolate-size: allow-keywords) {
+    [data-pliable-pied] .bib-pied-de-page__liste[data-anime] {
+      interpolate-size: allow-keywords;
+      overflow-y: clip;
+      transition:
+        block-size var(--duree-moyenne-1) var(--courbe-emphase),
+        padding-bottom var(--duree-moyenne-1) var(--courbe-emphase),
+        opacity var(--duree-moyenne-1) var(--courbe-emphase),
+        display var(--duree-moyenne-1) allow-discrete;
+    }
+
+    [data-pliable-pied] .bib-pied-de-page__liste[data-anime][hidden] {
+      block-size: 0;
+      padding-bottom: 0;
+      opacity: 0;
+    }
+
+    @starting-style {
+      [data-pliable-pied] .bib-pied-de-page__liste[data-anime]:not([hidden]) {
+        block-size: 0;
+        padding-bottom: 0;
+        opacity: 0;
+      }
+    }
+  }
+
+  .bib-pied-de-page__colonne a {
+    overflow-wrap: anywhere;
+  }
+
+  .bib-pied-de-page__colonne {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .bib-pied-de-page__colonne--logo {
+    display: none;
+  }
+}
+
+@media (width >= 900px) {
+  .bib-pied-de-page__signature-sceau {
+    display: none;
+  }
+}
+
+@media (width >= 900px) {
+  .bib-pied-de-page__local {
+    padding-inline: 64px;
+  }
+
+  .bib-pied-de-page__colonnes {
+    display: grid;
+    /* Les deux colonnes extérieures de même largeur : le sceau fait
+       pendant à « Besoin d'aide? » de part et d'autre des sites */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 0;
+  }
+
+  .bib-pied-de-page__colonne {
+    align-items: flex-start;
+    padding-inline: 32px;
+    text-align: left;
+  }
+
+  .bib-pied-de-page__colonne:first-child {
+    padding-left: 0;
+  }
+
+  /* Filet entre chaque colonne, sceau compris (~ et non + : le <template>
+     du chevron sépare la dernière colonne de liens du sceau) */
+  .bib-pied-de-page__colonne ~ .bib-pied-de-page__colonne {
+    align-self: stretch;
+    border-left: 1px solid color-mix(in srgb, var(--couleur-surface) 20%, transparent);
+  }
+
+  .bib-pied-de-page__colonne--logo {
+    order: 0;
+    align-items: center;
+    justify-content: center;
+    padding-right: 0;
+  }
+
+  .bib-pied-de-page__colonne--logo .bib-sceau {
+    width: 220px;
+  }
+}
+
+/* Deux tuiles par ligne ; la dernière, si elle est seule, prend toute la
+   largeur plutôt que de laisser une case vide */
+@media (width >= 1200px) {
+  .bib-pied-de-page__liste--sites {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bib-pied-de-page__liste--sites li:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---- Barre du bas ---- */
+.bib-pied-de-page__queue {
+  background-color: var(--bleu-principal);
+  color: var(--couleur-sur-fonce);
+}
+
+/* Pas de traits entre les éléments : quand la barre passe à la ligne, un
+   trait se retrouverait seul en bout de ligne */
+.bib-pied-de-page__rangee-queue,
+.bib-pied-de-page__groupe-queue {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 24px;
+}
+
+.bib-pied-de-page__rangee-queue {
+  /* Marge de chaque côté : le bouton « Retour en haut », fixé en bas à
+     droite (4,5 rem du bord sur mobile, 7 rem dès 900 px, à gauche de la
+     poignée des liens rapides), ne recouvre jamais le texte de la barre */
+  padding: 12px 4.5rem;
+  /* 13 px au texte par défaut, comme la source ; suit le réglage de
+     texte du navigateur */
+  font-size: var(--texte-minuscule);
+  line-height: 1.2;
+  letter-spacing: 0.14px;
+}
+
+/* Cibles de 24 px de haut au moins (WCAG 2.5.8) */
+.bib-pied-de-page__groupe-queue > a,
+.bib-pied-de-page__groupe-queue > .bib-licence a,
+.bib-pied-de-page__rangee-queue button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+}
+
+/* Sur petit écran, « Paramètres des témoins » est une commande : cible de
+   44 px de haut (--taille-cible) sans changer son apparence. La zone déborde
+   de 10 px en haut et en bas. */
+.bib-pied-de-page__rangee-queue button {
+  position: relative;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: var(--graisse-normale);
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+
+.bib-pied-de-page__rangee-queue button::after {
+  content: '';
+  position: absolute;
+  inset: calc((24px - var(--taille-cible)) / 2) 0;
+}
+
+/* Petit écran : une colonne centrée */
+@media (width < 900px) {
+  .bib-pied-de-page__rangee-queue,
+  .bib-pied-de-page__groupe-queue {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  /* Les liens légaux à la suite, centrés, plutôt qu'un par ligne */
+  .bib-pied-de-page__liens-queue {
+    flex-direction: row;
+    gap: 4px 20px;
+  }
+
+  .bib-pied-de-page__rangee-queue {
+    padding-block: 16px;
+    text-align: center;
+  }
+}
+
+@media (width >= 900px) {
+  /* Même marge que le bloc du dessus (64 px sur .bib-pied-de-page__local) : la licence
+     commence à l'aplomb de « Besoin d'aide? ». À droite, 7,5 rem du bord
+     au total, pour le bouton « Retour en haut » */
+  .bib-pied-de-page__queue {
+    padding-inline: 64px;
+  }
+
+  .bib-pied-de-page__rangee-queue {
+    justify-content: space-between;
+    padding-inline: 0 calc(7.5rem - 64px);
+  }
+
+  .bib-pied-de-page__rangee-queue button::after {
+    content: none;
+  }
+}
+
+/* Chevron des volets (CaretDown de Phosphor), créé par le script */
+.bib-pied-de-page__chevron {
+  display: block;
+  width: 18px;
+  height: 18px;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20256%20256'%3E%3Cpath%20d='M213.66%2C101.66l-80%2C80a8%2C8%2C0%2C0%2C1-11.32%2C0l-80-80A8%2C8%2C0%2C0%2C1%2C53.66%2C90.34L128%2C164.69l74.34-74.35a8%2C8%2C0%2C0%2C1%2C11.32%2C11.32Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}

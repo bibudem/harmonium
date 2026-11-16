@@ -1,0 +1,29 @@
+---
+/*
+ * <RetourHaut> : le bouton « Retour en haut de la page », fixé en bas à droite. Produit le HTML
+ * documenté dans src/composants/retour-haut.css et importe cette feuille (et infobulle.css). Il
+ * n'apparaît qu'avec bib-retour-haut.min.js.
+ *
+ *   <RetourHaut />
+ *   <RetourHaut libelle="Retour en haut" />
+ */
+import '../src/composants/infobulle.css'
+import '../src/composants/retour-haut.css'
+import { classes } from './styles.ts'
+
+interface Props {
+  /** Nom accessible du bouton */
+  nom?: string
+  /** Texte de l'infobulle */
+  libelle?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+const { nom = 'Retour en haut de la page', libelle = 'Retour en haut', class: classe, className } = Astro.props
+---
+
+<button type="button" class:list={['bib-retour-haut', 'bib-infobulle', 'bib-infobulle--gauche', classes(classe, className)]} data-retour-haut aria-label={nom} data-infobulle={libelle}>
+  <span class="bib-retour-haut__fleche" aria-hidden="true"></span>
+</button>

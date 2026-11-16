@@ -1,0 +1,20 @@
+<div class="demo-cadre">
+  <p class="etiquette">Formulaire «&nbsp;Nous écrire&nbsp;» (widget LibAnswers simulé)</p>
+  <div class="contenu">
+    <div class="ex-int-commandes" data-ex-int="formulaire">
+      <button type="button" data-ex-int-action="succes">Recharger le formulaire</button>
+      <button type="button" data-ex-int-action="echec">Simuler un échec</button>
+      <label><input type="checkbox" data-ex-int-sans-reserve> Sans place réservée</label>
+      <p class="ex-int-journal" aria-live="polite" data-ex-int-journal></p>
+    </div>
+    <h3 style="margin-top: 0">Nous écrire</h3>
+    <div class="bib-integration" style="--bib-integration-hauteur: 860px; --bib-integration-hauteur-large: 650px" data-integration data-src="data:text/javascript,setTimeout(function(){exIntegration.formulaire('ex-int-widget')},1200)" data-message-erreur="Le formulaire n’a pas pu être chargé. Rechargez la page ou réessayez plus tard.">
+      <div id="ex-int-widget" class="bib-integration__cible"></div>
+      <p class="bib-integration__chargement">Chargement du formulaire…</p>
+      <p class="bib-integration__erreur" role="status"></p>
+      <noscript><p>Ce formulaire a besoin de JavaScript pour s’afficher.</p></noscript>
+    </div>
+    <p class="ex-int-apres">Vous pouvez aussi nous joindre au 514 343-6111, poste 3963. Ce paragraphe ne bouge pas quand le formulaire arrive.</p>
+  </div>
+  <p class="legende">Le vrai composant et son script&nbsp;: <code>data-src</code> désigne ici un faux script tiers qui injecte une imitation du widget LibAnswers après 1,2&nbsp;s (rien n’est envoyé). La place réservée vaut 860&nbsp;px sur téléphone, 650&nbsp;px dès 1200&nbsp;px. «&nbsp;Simuler un échec&nbsp;» pointe <code>data-src</code> vers une adresse introuvable&nbsp;; «&nbsp;Sans place réservée&nbsp;» montre le saut que le composant évite.</p>
+</div>

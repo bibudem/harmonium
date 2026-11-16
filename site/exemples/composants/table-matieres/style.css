@@ -1,0 +1,4 @@
+.ex-table-matieres__texte { min-width: 0; }
+  .ex-table-matieres__texte section { padding-block-end: var(--espace-4); }
+  .ex-table-matieres__texte h2 { margin-block-start: 0; font-size: var(--texte-tres-grand); }
+  .ex-table-matieres__texte h3 { font-size: var(--texte-grand); }

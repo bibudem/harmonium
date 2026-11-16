@@ -1,0 +1,124 @@
+---
+/*
+ * <TableauFonds> : un répertoire de fonds et de collections, filtrable par période et par catégorie et triable
+ * par nom ou par catégorie. Produit le HTML documenté dans src/composants/tableau-fonds.css, dans un
+ * <TableauFiltrable> ; bib-tableau-filtrable.min.js (facultatif) rend les filtres et le tri actifs. Tout le
+ * tableau est dans le HTML : sans JavaScript, on lit tous les fonds d'un trait.
+ *
+ *   <TableauFonds
+ *     titre="Fonds et collections de la Bibliothèque des livres rares"
+ *     periodes={['Moyen Âge', 'Renaissance', '20e siècle']}
+ *     fonds={[{ nom: 'Gilles-Rioux – Surréalisme', genre: 'Collection', categorie: "Histoire de l'art", periodes: ['20e siècle'], sofia: 'https://…' }]}
+ *   />
+ *
+ * Un fonds : `nom`, `genre` (« Fonds » ou « Collection »), `periodes`, et facultativement `categorie`, `sofia`
+ * (la recherche de ses documents) et `numerisations`. `periodes` : les périodes du filtre, dans l'ordre voulu
+ * (celles qu'aucun fonds ne couvre sont omises). Les catégories du filtre sont tirées des fonds.
+ */
+import '../src/composants/tableau-fonds.css'
+import '../src/composants/lien.css'
+import TableauFiltrable from './TableauFiltrable.astro'
+
+interface Fonds {
+  nom: string
+  genre: string
+  categorie?: string
+  periodes: string[]
+  /** Recherche des documents du fonds */
+  sofia?: string
+  /** Documents numérisés */
+  numerisations?: string
+}
+
+interface Props {
+  titre: string
+  fonds: Fonds[]
+  periodes: string[]
+  /** Nom du lien vers les documents (« Consulter ») */
+  libelleLien?: string
+  class?: string
+}
+
+const { titre, fonds, periodes, libelleLien = 'Consulter', class: classe } = Astro.props
+const categories = [...new Set(fonds.flatMap((f) => (f.categorie ? [f.categorie] : [])))].sort((a, b) => a.localeCompare(b, 'fr'))
+const periodesUtiles = periodes.filter((p) => fonds.some((f) => f.periodes.includes(p)))
+---
+
+<TableauFiltrable
+  titre={titre}
+  total={fonds.length}
+  unite="fonds ou collection"
+  unites="fonds et collections"
+  vide="Aucun fonds ne correspond à ces critères."
+  nomFiltres="Filtrer les fonds et collections"
+  filtres={[
+    { cle: 'periodes', libelle: 'Période', toutes: 'Toutes les périodes', options: periodesUtiles },
+    { cle: 'categorie', libelle: 'Catégorie', toutes: 'Toutes les catégories', options: categories },
+  ]}
+  class={classe}
+>
+  <thead>
+    <tr class="bib-tableau__rangee">
+      <th class="bib-tableau__cellule" scope="col">
+        <button type="button" class="bib-tableau-filtrable__tri" data-tri="nom">Fonds ou collection<span class="bib-tableau-filtrable__fleche" aria-hidden="true"></span></button>
+      </th>
+      <th class="bib-tableau__cellule" scope="col">
+        <button type="button" class="bib-tableau-filtrable__tri" data-tri="categorie">Catégorie<span class="bib-tableau-filtrable__fleche" aria-hidden="true"></span></button>
+      </th>
+      <th class="bib-tableau__cellule" scope="col">Périodes couvertes</th>
+      <th class="bib-tableau__cellule" scope="col">Sofia</th>
+      <th class="bib-tableau__cellule" scope="col">Numérisations</th>
+    </tr>
+  </thead>
+  <tbody data-corps>
+    {
+      fonds.map((f) => (
+        <tr class="bib-tableau__rangee" data-nom={f.nom} data-categorie={f.categorie ?? ''} data-periodes={JSON.stringify(f.periodes)}>
+          <th class="bib-tableau__cellule" scope="row">
+            <span class="bib-tableau-fonds__nom">{f.nom}</span>
+            <span class="bib-tableau-fonds__genre">{f.genre}</span>
+          </th>
+          <td class="bib-tableau__cellule">
+            {f.categorie ?? (
+              <Fragment>
+                <span aria-hidden="true">—</span>
+                <span class="bib-masque">Aucune</span>
+              </Fragment>
+            )}
+          </td>
+          <td class="bib-tableau__cellule">
+            <ul class="bib-tableau-fonds__periodes">
+              {f.periodes.map((p) => (
+                <li>{p}</li>
+              ))}
+            </ul>
+          </td>
+          <td class="bib-tableau__cellule">
+            {f.sofia ? (
+              <a class="bib-lien" href={f.sofia}>
+                {libelleLien}<span class="bib-masque"> {f.nom} dans Sofia</span>
+              </a>
+            ) : (
+              <Fragment>
+                <span aria-hidden="true">—</span>
+                <span class="bib-masque">Aucun lien</span>
+              </Fragment>
+            )}
+          </td>
+          <td class="bib-tableau__cellule">
+            {f.numerisations ? (
+              <a class="bib-lien" href={f.numerisations}>
+                {libelleLien}<span class="bib-masque"> les numérisations de {f.nom}</span>
+              </a>
+            ) : (
+              <Fragment>
+                <span aria-hidden="true">—</span>
+                <span class="bib-masque">Aucune numérisation</span>
+              </Fragment>
+            )}
+          </td>
+        </tr>
+      ))
+    }
+  </tbody>
+</TableauFiltrable>

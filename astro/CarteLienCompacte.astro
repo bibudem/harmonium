@@ -1,0 +1,78 @@
+---
+/*
+ * <CarteLienCompacte> : une carte-lien compacte en rangée. Produit le HTML documenté dans
+ * src/composants/carte-compacte.css et importe cette feuille (et carte-lien.css).
+ *
+ *   <CarteLienCompacte titre="Nous joindre" description="Par téléphone, courriel ou clavardage." href="/nous-joindre/" Icone={PaperPlaneTiltIcon} />
+ *
+ * `element` : `li` dans une liste de cartes (par défaut), `div` dans une grille. `niveauTitre` : 2 à 6, ou
+ * null pour un <div>. `etiquette` : libellé sous le titre. Couleur : neutre (par défaut), bleuPrincipal, vertFonce, rose300, jaune.
+ */
+import '../src/composants/carte-compacte.css'
+import '../src/composants/carte-lien.css'
+import PastilleFleche from './PastilleFleche.astro'
+import { lienCarte } from './liens.ts'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+type Couleur = 'neutre' | 'bleuPrincipal' | 'vertFonce' | 'rose300' | 'jaune'
+
+interface Props {
+  titre: string
+  description?: string
+  /** Libellé collé sous le titre, hors du lien (« Méthode recommandée ») */
+  etiquette?: string
+  href?: string
+  target?: string
+  rel?: string
+  Icone?: any
+  niveauTitre?: 2 | 3 | 4 | 5 | 6 | null
+  couleur?: Couleur
+  /** `li` dans une liste de cartes (par défaut), `div` dans une grille */
+  element?: 'li' | 'div'
+  id?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const { titre, description, etiquette, href, target, rel, Icone, niveauTitre = 3, couleur = 'neutre', element = 'li', class: classe, className, style, ...reste } = Astro.props
+const { externe, afficherFleche, cible, rel: relFinal, annonce } = href ? lienCarte(href, target, rel, Astro.site?.origin ?? Astro.url.origin) : { externe: false, afficherFleche: false, cible: undefined, rel: undefined, annonce: '' }
+const Titre = (niveauTitre === null ? 'div' : `h${niveauTitre}`) as 'h3'
+const Element = element as 'li'
+const COULEUR_CSS: Record<Couleur, string> = { neutre: 'neutre', bleuPrincipal: 'bleu-principal', vertFonce: 'vert-fonce', rose300: 'rose-300', jaune: 'jaune' }
+const claire = couleur === 'neutre' || couleur === 'rose300' || couleur === 'jaune'
+// Sans les attributs de portée des composants parents : CarteIcone lui
+// délègue sa variante pleine largeur, et ses règles .carte (grande carte de
+// 400 px) s'appliqueraient sinon à cette rangée
+const attributs = Object.fromEntries(Object.entries(reste).filter(([cle]) => !cle.startsWith('data-astro-cid')))
+---
+
+<Element
+  class:list={['bib-carte-compacte', 'bib-carte-lien', 'bib-anneau-carte', `bib-carte-compacte--${COULEUR_CSS[couleur]}`, { 'surface-claire': claire, 'bib-carte-compacte--sans-icone': !Icone, 'bib-carte-compacte--sans-description': !description, 'bib-carte-compacte--sans-lien': !href }, classes(classe, className)]}
+  style={fusionnerStyles(style)}
+  {...attributs}
+>
+  {
+    Icone && (
+      <span class="bib-carte-compacte__icone" aria-hidden="true">
+        <Icone size={32} aria-hidden="true" focusable="false" />
+      </span>
+    )
+  }
+  <Titre class="bib-carte-compacte__titre">
+    {
+      href ? (
+        <a class="bib-lien-etire" href={href} target={cible} rel={relFinal}>
+          {titre}
+          {annonce && <span class="bib-masque">{annonce}</span>}
+        </a>
+      ) : (
+        titre
+      )
+    }
+    {etiquette && <span class="bib-carte-compacte__etiquette">{etiquette}</span>}
+  </Titre>
+  {description && <p class="bib-carte-compacte__description">{description}</p>}
+  {href && afficherFleche && <PastilleFleche class="bib-carte-compacte__pastille" externe={externe} petite />}
+</Element>

@@ -1,0 +1,15 @@
+{
+  "styles": [
+    "@@/exemples/composants/pied-de-page/style.css"
+  ],
+  "scripts": [
+    {
+      "src": "@@dist/bib-pied-de-page.min.js",
+      "attributs": "type=\"module\""
+    },
+    {
+      "src": "@@dist/bib-sceau.min.js",
+      "attributs": "type=\"module\""
+    }
+  ]
+}

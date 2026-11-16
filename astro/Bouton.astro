@@ -1,0 +1,106 @@
+---
+/*
+ * <Bouton> : produit le HTML documenté dans src/composants/bouton.css et importe cette feuille.
+ * Un <a> si `href` est fourni, sinon un <button>.
+ *
+ *   <Bouton href="/services/">Réserver une salle</Bouton>
+ *   <Bouton secondary>Annuler</Bouton>
+ *
+ * - primary (par défaut) : plein ; secondary : contour. `variant` (contained, outlined ; text est un alias du contour) et
+ *   `color` (bleuFonce, bleuPrincipal) précisent.
+ * - Avec href : flèche de fin → (autre page des bibliothèques) ou ↗ (autre site, nouvel onglet) ;
+ *   jamais pour un PDF, un courriel ni un téléphone. Un PDF s'ouvre dans un nouvel onglet ; PDF
+ *   et nouvel onglet sont annoncés en texte masqué.
+ * - `retour` : flèche vers la gauche avant le texte, au lieu de la flèche de fin.
+ * - `light` : variante pour fond foncé. `disableEndIcon` retire la flèche.
+ * - Les classes `blueOutlineNoIcon`, `whiteOutlineNoIcon`, `mt1`, `mt4`, `right`, `center`, `left` (directive ::bouton du
+ *   contenu) sont reconnues.
+ */
+import '../src/composants/bouton.css'
+import { analyserLien, annonceLien, relDuLien, versAilleurs } from './liens.ts'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Props {
+  primary?: boolean
+  secondary?: boolean
+  href?: string
+  /** bleuFonce ou bleuPrincipal (blue et primary aussi) */
+  color?: string
+  variant?: 'contained' | 'text' | 'outlined'
+  disabled?: boolean
+  size?: 'small' | 'medium' | 'large'
+  light?: boolean
+  disableEndIcon?: boolean
+  retour?: boolean
+  target?: string
+  rel?: string
+  type?: 'button' | 'submit' | 'reset'
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+  [attribut: string]: unknown
+}
+
+const {
+  primary,
+  secondary,
+  href,
+  color,
+  variant,
+  size = 'medium',
+  disabled = false,
+  light = false,
+  disableEndIcon = false,
+  retour = false,
+  target,
+  rel,
+  type = 'button',
+  class: classe,
+  className,
+  style,
+  // Propriétés de MUI acceptées sans effet
+  disableElevation: _elevation,
+  endIcon: _icone,
+  sx: _sx,
+  ...reste
+} = Astro.props
+
+const estPrimaire = !secondary || primary === true
+const variante = variant ?? (estPrimaire ? 'contained' : 'outlined')
+const couleur = color ?? (estPrimaire ? 'bleuFonce' : 'bleuPrincipal')
+const VARIANTES: Record<string, string> = { contained: 'plein', text: 'contour', outlined: 'contour' }
+const COULEURS: Record<string, string> = { bleuFonce: 'bleu-fonce', bleuPrincipal: 'bleu-principal', blue: 'bleu-principal', primary: 'bleu-principal' }
+const CLASSES_AUTEUR: Record<string, string> = { blueOutlineNoIcon: 'bib-bouton--contour-bleu', mt1: 'bib-bouton--mt1', mt4: 'bib-bouton--mt4', whiteOutlineNoIcon: 'bib-bouton--contour-blanc', right: 'bib-bouton--droite', center: 'bib-bouton--centre', left: 'bib-bouton--gauche' }
+
+const estLien = typeof href === 'string'
+if (estLien && !href.trim()) throw new Error('Bouton : une adresse non vide est requise.')
+const analyse = analyserLien(href, Astro.site?.origin ?? Astro.url.origin)
+const cible = analyse.pdf ? '_blank' : target
+const nouvelOnglet = cible === '_blank'
+const relFinal = estLien ? relDuLien(rel, analyse.interne, nouvelOnglet) : rel
+const annonce = estLien ? annonceLien({ pdf: analyse.pdf, nouvelOnglet }) : ''
+const externe = versAilleurs(analyse, nouvelOnglet)
+const avecFin = estLien && !analyse.pdf && !analyse.courrielOuTelephone && !disableEndIcon && !retour
+const classeAuteur = classes(classe, className)
+  ?.split(/\s+/)
+  .map((c) => CLASSES_AUTEUR[c] ?? (c === 'no-pdf-icon' || c === 'sans-icone-pdf' ? '' : c))
+  .join(' ')
+const TAILLES: Record<string, string> = { small: 'bib-bouton--petit', large: 'bib-bouton--grand' }
+const listeClasses = ['bib-bouton', TAILLES[size], `bib-bouton--${VARIANTES[variante] ?? 'plein'}`, `bib-bouton--${COULEURS[couleur] ?? 'bleu-fonce'}`, { 'bib-bouton--clair': light }, classeAuteur]
+---
+
+{
+  estLien ? (
+    <a {...reste} href={disabled ? undefined : href} role={disabled ? 'link' : undefined} aria-disabled={disabled ? 'true' : undefined} target={disabled ? undefined : cible} rel={relFinal} class:list={listeClasses} style={fusionnerStyles(style)}>
+      {retour && <span class="bib-bouton__debut" aria-hidden="true" />}
+      <span class="bib-bouton__libelle"><slot /></span>
+      {annonce && <span class="bib-masque">{annonce}</span>}
+      {avecFin && <span class:list={['bib-bouton__fin', { 'bib-bouton__fin--externe': externe }]} aria-hidden="true" />}
+    </a>
+  ) : (
+    <button {...reste} type={type} disabled={disabled} class:list={listeClasses} style={fusionnerStyles(style)}>
+      <span class="bib-bouton__libelle"><slot /></span>
+    </button>
+  )
+}

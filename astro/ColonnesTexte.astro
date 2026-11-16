@@ -1,0 +1,50 @@
+---
+/*
+ * <ColonnesTexte> : deux colonnes de texte avec un pied sous chacune. Produit le HTML documenté dans
+ * src/composants/colonnes-texte.css et importe cette feuille.
+ *
+ * `rapport` : "3-8" ou "6-6". Slots : gauche, droite, piedGauche, piedDroit ; `avecPiedGauche` et
+ * `avecPiedDroit` disent si le pied est rempli.
+ */
+import '../src/composants/colonnes-texte.css'
+import ColonneDecalee from './ColonneDecalee.astro'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Props {
+  rapport: '3-8' | '6-6'
+  avecPiedGauche?: boolean
+  avecPiedDroit?: boolean
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+  [attribut: string]: unknown
+}
+
+const { rapport, avecPiedGauche = false, avecPiedDroit = false, class: classe, className, style, ...reste } = Astro.props
+---
+
+<ColonneDecalee offset={0.5} class={classes('bib-colonnes-texte', classe, className)} style={fusionnerStyles(style)} {...reste}>
+  <div class:list={['bib-colonnes-texte__rangee', `bib-colonnes-texte__rangee--${rapport}`]} data-revelation="groupe">
+    <div class="bib-colonnes-texte__colonne">
+      <div class="bib-colonnes-texte__contenu"><slot name="gauche" /></div>
+      {
+        avecPiedGauche && (
+          <div class="bib-colonnes-texte__pied">
+            <slot name="piedGauche" />
+          </div>
+        )
+      }
+    </div>
+    <div class="bib-colonnes-texte__colonne">
+      <div class="bib-colonnes-texte__contenu"><slot name="droite" /></div>
+      {
+        avecPiedDroit && (
+          <div class="bib-colonnes-texte__pied">
+            <slot name="piedDroit" />
+          </div>
+        )
+      }
+    </div>
+  </div>
+</ColonneDecalee>

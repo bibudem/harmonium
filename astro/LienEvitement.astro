@@ -1,0 +1,14 @@
+---
+/* Premier lien du body : évite la navigation répétée, sans script. */
+import '../src/composants/lien-evitement.css'
+import { classes } from './styles.ts'
+
+interface Props {
+  /** id de la cible, sans # ; le main porte aussi tabindex="-1" */
+  cible?: string
+  class?: string
+  className?: string
+}
+const { cible = 'contenu', class: classe, className } = Astro.props
+---
+<a class:list={['bib-lien-evitement', classes(classe, className)]} href={`#${cible}`}><slot>Aller au contenu</slot></a>

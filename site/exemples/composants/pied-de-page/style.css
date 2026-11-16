@@ -1,0 +1,8 @@
+/* Le pied est un composant de pleine largeur : l’aperçu utilise toute la colonne disponible. */
+  .page:has(.ex-pied-page) .page-contenu { max-width: none; }
+  .page:has(.ex-pied-page) .page-contenu > p,
+  .page:has(.ex-pied-page) .page-introduction > p { max-width: 65ch; }
+  @media (width >= 1200px) {
+    .page:has(.ex-pied-page) > .page-contenu { grid-column: 1 / -1; }
+    .page:has(.ex-pied-page) > .table-matieres-doc { grid-row: 1; position: static; }
+  }

@@ -1,0 +1,21 @@
+---
+/*
+ * <GrilleElargissable> : une grille de cartes compactes. Produit le HTML documenté dans
+ * src/composants/grille-elargissable.css et importe cette feuille.
+ *
+ *   <GrilleElargissable><CarteIcone fullWidth … /><CarteIcone fullWidth … /></GrilleElargissable>
+ */
+import '../src/composants/grille-elargissable.css'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+
+interface Props {
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const { class: classe, className, style, ...reste } = Astro.props
+---
+
+<div class:list={['bib-grille-elargissable', classes(classe, className)]} style={fusionnerStyles(style)} data-revelation="groupe" {...reste}><slot /></div>

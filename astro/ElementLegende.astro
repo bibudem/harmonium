@@ -1,0 +1,46 @@
+---
+/*
+ * <ElementLegende> : une icône de <LegendeIcones> (un élément de sa liste). Produit le HTML documenté dans
+ * src/composants/legende-icones.css.
+ *
+ *   <ElementLegende nom="Accueil" description="Ouvre le menu principal." image={capture} />
+ *   <ElementLegende nom="Un doigt"><svg slot="visuel" …>…</svg>
+ *     <ElementLegende nom="Glisser" description="Faire tourner"><svg slot="visuel" …>…</svg></ElementLegende>
+ *   </ElementLegende>
+ *
+ * Visuel : `image` (image importée ou adresse ; `alt` vide par défaut, le nom suffit) ou le slot « visuel »
+ * (une icône SVG, décorative). Les enfants (d'autres <ElementLegende>) sont les sous-menus, dans une liste
+ * imbriquée. `nom` est le nom affiché en gras ; `description` (ou le slot « description ») le suit.
+ */
+import '../src/composants/legende-icones.css'
+import type { ImageMetadata } from 'astro'
+import { Image as ImageAstro } from 'astro:assets'
+
+interface Props {
+  nom: string
+  description?: string
+  image?: ImageMetadata | string
+  alt?: string
+}
+
+const { nom, description, image, alt = '' } = Astro.props
+const sous = Astro.slots.has('default') ? (await Astro.slots.render('default')).trim() : ''
+---
+
+<li>
+  <span class="bib-legende-icones__visuel">
+    {
+      image ? (
+        typeof image === 'string' ? (
+          <img src={image} alt={alt} loading="lazy" decoding="async" />
+        ) : (
+          <ImageAstro src={image} alt={alt} widths={[200, 400].filter((w) => w <= image.width)} sizes="104px" loading="lazy" />
+        )
+      ) : (
+        <slot name="visuel" />
+      )
+    }
+  </span>
+  <span class="bib-legende-icones__texte"><strong>{nom}</strong>{(description || Astro.slots.has('description')) && ' '}<slot name="description">{description}</slot></span>
+  {sous && <ul class="bib-legende-icones__sous" set:html={sous} />}
+</li>

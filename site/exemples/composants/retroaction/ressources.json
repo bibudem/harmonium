@@ -1,0 +1,13 @@
+{
+  "styles": [],
+  "scripts": [
+    {
+      "src": "@@/libwizard-simule.js",
+      "attributs": ""
+    },
+    {
+      "src": "@@dist/bib-retroaction-usager.min.js",
+      "attributs": "type=\"module\""
+    }
+  ]
+}

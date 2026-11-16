@@ -1,0 +1,1 @@
+.bib-grille-elargissable{display:grid;grid-template-columns:1fr;gap:var(--espace-grille);margin:0;padding:0;list-style:none}.bib-grille-elargissable>*{min-width:0;margin:0}@media(min-width:600px){.bib-grille-elargissable{grid-template-columns:1fr 1fr}}

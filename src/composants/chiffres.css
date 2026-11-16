@@ -1,0 +1,291 @@
+/*
+ * Chiffres clés, en deux formes :
+ *
+ *   barres  un groupe par titre (« Livres »), son total et une barre de répartition entre ses 2 ou
+ *           3 parts (imprimé, électronique). Une barre à 100 % plutôt qu'un axe commun : les
+ *           groupes vont de 36 000 à 1,5 million, les petites parts disparaîtraient ; ce qui compte
+ *           est la proportion. Chaque part est nommée sous la barre avec sa valeur et son
+ *           pourcentage : la couleur n'est jamais seule à porter l'identité.
+ *   tuiles  un chiffre par tuile ; des unités différentes ne se comparent pas sur un même axe.
+ *
+ *   <div class="bib-chiffres bib-chiffres--barres" data-chiffres>
+ *     <figure class="bib-chiffres__groupe" data-chiffres-unite>
+ *       <figcaption class="bib-chiffres__entete">
+ *         <span class="bib-chiffres__titre">Livres</span>
+ *         <span class="bib-chiffres__total bib-chiffres__nombre">
+ *           <span class="bib-chiffres__reserve">1 500 000</span>
+ *           <span class="bib-chiffres__compteur" aria-hidden="true" data-compteur="1500000">1 500 000</span>
+ *         </span>
+ *       </figcaption>
+ *       <div class="bib-chiffres__barre" aria-hidden="true" data-chiffres-barre>
+ *         <span class="bib-chiffres__part" style="--couleur: var(--bleu-principal); flex-grow: 900000" data-part="0"></span>…
+ *       </div>
+ *       <ul class="bib-chiffres__parts"><li>…</li></ul>
+ *     </figure>
+ *   </div>
+ *
+ * Couleurs des parts (palette validée : écart sous daltonisme, contraste de 3:1 au moins sur le
+ * blanc) : bleu principal, rouge orangé, violet. Les nombres restent dans les couleurs du texte.
+ *
+ * Le nombre : la valeur dans .bib-chiffres__reserve pour tous, sa copie animée par-dessus
+ * (.bib-chiffres__compteur, masquée aux lecteurs d'écran). L'état par défaut est l'état final.
+ * Facultatif : bib-chiffres.min.js anime les barres (elles se remplissent de gauche à droite) et
+ * les nombres (de 0 à leur valeur), une seule fois, quand le bloc entre à l'écran. Sans lui,
+ * avec le mouvement réduit ou à l'impression, tout est affiché tel quel.
+ */
+.bib-chiffres {
+  margin-block: var(--espace-3);
+}
+
+/* Les nombres ne changent pas de largeur en montant, et ne se coupent
+   pas (espaces insécables entre les groupes de chiffres). Seul le grand
+   total se coupe, en dernier recours, s'il ne tient pas dans sa carte
+   (320 px avec le texte agrandi). */
+.bib-chiffres__nombre {
+  display: inline-grid;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.bib-chiffres__total {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* La valeur réelle (lue par les lecteurs d'écran) réserve la place ; la
+   copie animée se pose dessus, alignée à droite comme un nombre */
+.bib-chiffres__reserve,
+.bib-chiffres__compteur {
+  grid-area: 1 / 1;
+  text-align: end;
+}
+
+/* Opacité et non visibility : la valeur reste lue par les lecteurs
+   d'écran pendant que sa copie défile */
+.bib-chiffres__nombre:has([data-compte]) .bib-chiffres__reserve {
+  opacity: 0;
+}
+
+.bib-chiffres__compteur {
+  visibility: hidden;
+}
+
+[data-compte] {
+  visibility: visible;
+}
+
+/* ---- Barres de répartition ---- */
+
+/* minmax(0, …) : sans lui, une colonne de grille ne rétrécit pas sous la
+   largeur de son contenu, et le bloc débordait à 320 px (WCAG 1.4.10) */
+.bib-chiffres--barres {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--espace-3);
+}
+
+.bib-chiffres__legende,
+.bib-chiffres__parts {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bib-chiffres__legende {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem var(--espace-3);
+  color: var(--couleur-texte-secondaire);
+  font-size: var(--texte-reduit);
+}
+
+.bib-chiffres__legende li {
+  display: flex;
+  align-items: center;
+  gap: var(--espace-1);
+}
+
+.bib-chiffres__pastille {
+  flex: none;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: var(--rayon-minuscule);
+  background-color: var(--couleur);
+}
+
+.bib-chiffres__groupe {
+  container-type: inline-size;
+  margin: 0;
+  padding: var(--espace-carte);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+  background-color: var(--couleur-surface);
+}
+
+.bib-chiffres__entete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem var(--espace-2);
+}
+
+.bib-chiffres__entete .bib-chiffres__titre {
+  font-size: var(--texte-moyen);
+  font-weight: var(--graisse-forte);
+}
+
+.bib-chiffres__total {
+  font-size: 1.75rem;
+  font-weight: var(--graisse-forte);
+  line-height: 1.2;
+}
+
+/* Parts séparées d'un filet de 2 px de la surface ; bouts arrondis de 4 px.
+   Une part minuscule garde 4 px pour rester visible. */
+.bib-chiffres__barre {
+  display: flex;
+  gap: 2px;
+  height: 1rem;
+  margin-block: var(--espace-2) var(--espace-element);
+  overflow: hidden;
+  border-radius: var(--rayon-minuscule);
+}
+
+.bib-chiffres__part {
+  flex-basis: 0;
+  min-width: 4px;
+  background-color: var(--couleur);
+}
+
+.bib-chiffres__parts {
+  display: grid;
+  gap: var(--espace-1);
+}
+
+/* Pastille, libellé, valeur, pourcentage sur une ligne */
+.bib-chiffres__parts li {
+  display: grid;
+  grid-template-columns: 0.75rem minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--espace-1);
+}
+
+/* Carte étroite (téléphone, texte agrandi : la largeur est en rem) : le
+   libellé sur sa ligne, la valeur et le pourcentage dessous */
+@container (width <= 20rem) {
+  .bib-chiffres__parts li {
+    grid-template-columns: 0.75rem minmax(0, 1fr) auto;
+    row-gap: 0;
+  }
+
+  .bib-chiffres__parts .bib-chiffres__libelle {
+    grid-column: 2 / -1;
+  }
+
+  .bib-chiffres__parts .bib-chiffres__valeur {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .bib-chiffres__parts .bib-chiffres__valeur .bib-chiffres__reserve,
+  .bib-chiffres__parts .bib-chiffres__valeur .bib-chiffres__compteur {
+    text-align: start;
+  }
+}
+
+.bib-chiffres__parts .bib-chiffres__valeur {
+  font-weight: var(--graisse-forte);
+}
+
+.bib-chiffres__proportion {
+  min-width: 3.5em;
+  color: var(--couleur-texte-secondaire);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+@media (width >= 900px) {
+  .bib-chiffres--barres:has(.bib-chiffres__groupe + .bib-chiffres__groupe) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bib-chiffres__legende {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---- Tuiles ---- */
+
+.bib-chiffres--tuiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr));
+  gap: var(--espace-element);
+  padding: 0;
+  list-style: none;
+}
+
+.bib-chiffres__tuile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0;
+  padding: var(--espace-element);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+  background-color: var(--couleur-surface);
+}
+
+.bib-chiffres__tuile .bib-chiffres__valeur {
+  justify-self: start;
+  font-size: 1.75rem;
+  font-weight: var(--graisse-forte);
+  line-height: 1.2;
+}
+
+.bib-chiffres__tuile .bib-chiffres__reserve,
+.bib-chiffres__tuile .bib-chiffres__compteur {
+  text-align: start;
+}
+
+.bib-chiffres__tuile .bib-chiffres__libelle {
+  color: var(--couleur-texte-secondaire);
+  font-size: var(--texte-reduit);
+  line-height: 1.4;
+}
+
+/* ---- Animation (chiffres.ts pose les classes) ---- */
+
+/* La barre se dévoile de gauche à droite, toutes parts ensemble */
+.bib-chiffres--a-animer [data-chiffres-barre] {
+  clip-path: inset(0 100% 0 0);
+}
+
+.bib-chiffres--a-animer.bib-chiffres--anime [data-chiffres-barre] {
+  clip-path: inset(0);
+  transition: clip-path var(--duree-chiffres) var(--courbe-emphase-deceleree);
+  transition-delay: calc(var(--rang, 0) * var(--duree-courte-1));
+}
+
+/* Contraste élevé : les couleurs sont remplacées, les parts se
+   distinguent par leur motif (plein, hachures à 45°, à 135°), dans la
+   barre comme dans la légende */
+@media (forced-colors: active) {
+  .bib-chiffres__part,
+  .bib-chiffres__pastille {
+    forced-color-adjust: none;
+    background: CanvasText;
+  }
+
+  [data-part='1'] {
+    background: repeating-linear-gradient(45deg, CanvasText 0 2px, Canvas 2px 5px);
+    outline: 1px solid CanvasText;
+    outline-offset: -1px;
+  }
+
+  [data-part='2'] {
+    background: repeating-linear-gradient(135deg, CanvasText 0 2px, Canvas 2px 5px);
+    outline: 1px solid CanvasText;
+    outline-offset: -1px;
+  }
+}

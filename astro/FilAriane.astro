@@ -1,0 +1,48 @@
+---
+/*
+ * <FilAriane> : produit le HTML documenté dans src/composants/fil-ariane.css et importe cette
+ * feuille. Aucun JavaScript. Le site calcule les maillons (cela dépend de son contenu) :
+ *
+ *   <FilAriane maillons={[{ url: '/', libelle: 'Accueil' }, { libelle: 'Services' }]} />
+ *
+ * Le dernier maillon est la page courante ; un maillon sans `url` est du texte, sans lien.
+ */
+import '../src/composants/fil-ariane.css'
+import { classes } from './styles.ts'
+
+interface Maillon {
+  url?: string
+  libelle: string
+  /** Langue du libellé, s'il diffère de celle de la page */
+  lang?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+interface Props {
+  maillons: Maillon[]
+  /** Langue du fil lui-même (le remet en français sur une page étrangère) */
+  lang?: string
+}
+
+const { maillons, lang, class: classe, className } = Astro.props
+---
+
+<nav class:list={['bib-fil-ariane', classes(classe, className)]} aria-label="Fil d'Ariane" lang={lang}>
+  <ol>
+    {
+      maillons.map((m, i) => (
+        <li>
+          {i === maillons.length - 1 ? (
+            <span aria-current="page" lang={m.lang}>{m.libelle}</span>
+          ) : m.url ? (
+            <a href={m.url} lang={m.lang}>{m.libelle}</a>
+          ) : (
+            <span lang={m.lang}>{m.libelle}</span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>

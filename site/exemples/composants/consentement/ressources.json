@@ -1,0 +1,15 @@
+{
+  "styles": [
+    "@@/exemples/composants/consentement/style.css"
+  ],
+  "scripts": [
+    {
+      "src": "@@dist/bib-consentement.min.js",
+      "attributs": "type=\"module\""
+    },
+    {
+      "src": "@@/exemples/composants/consentement/script-1.js",
+      "attributs": ""
+    }
+  ]
+}

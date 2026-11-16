@@ -1,0 +1,210 @@
+/*
+ * Vidéo : une vidéo d'une plateforme (YouTube, Loom, autre adresse d'intégration) derrière une façade, ou un
+ * fichier du site, en 16:9.
+ *
+ *   <div class="bib-video" data-video data-lecteur="https://www.youtube-nocookie.com/embed/IApth7W-yzw?autoplay=1&amp;rel=0" data-titre-video="Configurer le Proxy">
+ *     <a class="bib-video__lecture" href="https://www.youtube.com/watch?v=IApth7W-yzw">
+ *       <span class="bib-video__pastille" aria-hidden="true"><svg viewBox="0 0 256 256" width="32" height="32" fill="currentColor">…</svg></span>
+ *       <span class="bib-video__texte">
+ *         <span class="bib-video__action">Lire la vidéo</span>
+ *         <span class="bib-video__titre">Configurer le Proxy</span>
+ *         <span class="bib-video__plateforme">YouTube</span>
+ *       </span>
+ *     </a>
+ *   </div>
+ *
+ *   <figure class="bib-video bib-video--fichier">
+ *     <video class="bib-video__cadre" controls preload="metadata" aria-label="Démonstration du prompteur">
+ *       <source src="/videos/prompteur.mp4">
+ *       <a href="/videos/prompteur.mp4">Télécharger la vidéo « Démonstration du prompteur »</a>
+ *     </video>
+ *     <figcaption class="bib-video__legende">Démonstration du prompteur</figcaption>
+ *   </figure>
+ *
+ * Façade : rien ne vient de la plateforme avant le clic (ni lecteur, ni vignette, ni témoin). Le bouton de
+ * lecture est un lien vers la vidéo sur la plateforme, qui fonctionne sans JavaScript ; bib-video.min.js le
+ * remplace au clic (ou Entrée) par le lecteur (iframe data-lecteur, nommée par data-titre-video), qui reçoit
+ * le focus. Ctrl, Cmd ou Maj-clic ouvrent la plateforme comme tout lien. Sous 600 px, le titre seul : les
+ * mentions « Lire la vidéo » et la plateforme ne tiendraient pas en 16:9. Le cadre n'a pas d'overflow caché :
+ * si le texte agrandi ne tient pas, il grandit au lieu de couper le titre.
+ *
+ * Fichier (--fichier) : <video controls> natif, qui ne charge que ses métadonnées, et sa légende.
+ *
+ * Photo (--photo) : <img class="bib-video__image" alt=""> avant le lien, décorative, sous un voile bleu foncé
+ * qui garde le texte blanc lisible. Transcription : <p class="bib-video__transcription"><a href="…">Lire la
+ * transcription de la vidéo</a></p> juste après la vidéo, avec --avec-transcription sur celle-ci.
+ *
+ * Habillage : --bib-video-fond (bleu foncé), --bib-video-texte (blanc), --bib-video-pastille (rouge orangé :
+ * icône blanche à 3,4:1, assez pour un élément graphique, WCAG 1.4.11), --bib-video-largeur (45 rem).
+ */
+.bib-video {
+  box-sizing: border-box;
+  width: 100%;
+  max-inline-size: var(--bib-video-largeur, 45rem);
+  margin-block: var(--espace-element) var(--espace-bloc);
+}
+
+/* Le cadre 16:9 : la façade elle-même, ou le <video> d'un fichier */
+.bib-video:not(.bib-video--fichier),
+.bib-video__cadre {
+  position: relative;
+  display: grid;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--rayon-carte);
+  background-color: var(--bib-video-fond, var(--bleu-fonce));
+}
+
+.bib-video__cadre {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Le lecteur posé par le script prend tout le cadre */
+.bib-video > iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: inherit;
+}
+
+/* :hover compris : la règle des liens ne doit pas recolorer ni souligner la façade */
+.bib-video__lecture,
+.bib-video__lecture:hover {
+  color: var(--bib-video-texte, var(--couleur-sur-fonce));
+  text-decoration: none;
+}
+
+.bib-video__lecture {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espace-2);
+  align-items: center;
+  justify-content: center;
+  padding: var(--espace-2);
+  border-radius: inherit;
+  color: var(--bib-video-texte, var(--couleur-sur-fonce));
+  text-align: center;
+  text-decoration: none;
+}
+
+/* Le contour du focus, à l'intérieur du cadre : blanc sur le bleu foncé */
+.bib-video__lecture:focus-visible {
+  outline: 3px solid var(--bib-video-texte, var(--couleur-sur-fonce));
+  outline-offset: -6px;
+  box-shadow: none;
+}
+
+.bib-video__pastille {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: var(--rayon-plein);
+  background-color: var(--bib-video-pastille, var(--rouge-orange));
+  color: var(--bib-video-texte, var(--couleur-sur-fonce));
+  transition: transform var(--duree-courte-4) var(--courbe-standard);
+}
+
+.bib-video__pastille svg {
+  display: block;
+  width: 2rem;
+  height: 2rem;
+}
+
+.bib-video__lecture:focus-visible .bib-video__pastille {
+  transform: scale(1.08);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bib-video__lecture:hover .bib-video__pastille {
+    transform: scale(1.08);
+  }
+}
+
+.bib-video__texte {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+/* Téléphone : le titre seul, sans les mentions, pour tenir en 16:9 */
+.bib-video__action,
+.bib-video__plateforme {
+  display: none;
+  font-size: 0.8333rem;
+  font-weight: var(--graisse-moyenne);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.bib-video__titre {
+  max-inline-size: 36ch;
+  font-size: 1.1111rem;
+  font-weight: var(--graisse-forte);
+  line-height: 1.3;
+  overflow-wrap: break-word;
+}
+
+@media (width >= 600px) {
+  .bib-video__action,
+  .bib-video__plateforme {
+    display: block;
+  }
+}
+
+.bib-video__legende {
+  margin-top: var(--espace-1);
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.9444rem;
+}
+
+/* Photo derrière la façade, voilée de bleu foncé (texte blanc lisible, WCAG 1.4.3) */
+.bib-video__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+}
+
+.bib-video--photo .bib-video__lecture {
+  position: relative;
+  background: color-mix(in srgb, var(--bib-video-fond, var(--bleu-fonce)) 55%, transparent);
+  text-shadow: 0 1px 8px rgb(0 0 0 / 50%);
+}
+
+/* Transcription : liée sous la vidéo, centrée sur sa largeur */
+.bib-video--avec-transcription {
+  margin-block-end: var(--espace-element);
+}
+
+.bib-video__transcription {
+  box-sizing: border-box;
+  width: 100%;
+  max-inline-size: var(--bib-video-largeur, 45rem);
+  margin-block: 0 var(--espace-bloc);
+  text-align: center;
+}
+
+@media (forced-colors: active) {
+  .bib-video--photo .bib-video__lecture {
+    background: Canvas;
+  }
+
+  .bib-video:not(.bib-video--fichier),
+  .bib-video__cadre {
+    border: 1px solid CanvasText;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bib-video__pastille {
+    transition: none;
+  }
+}

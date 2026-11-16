@@ -1,0 +1,293 @@
+/*
+ * Texte typographié : `bib-typographie` plus une variante, sur la balise de son choix. Les variantes suivent
+ * les noms de MUI.
+ *
+ *   <h2 class="bib-typographie bib-typographie--h2">Titre</h2>
+ *   <h1 class="bib-typographie bib-typographie--h2">Un h1 qui a l'apparence d'un h2</h1>
+ *   <p class="bib-typographie bib-typographie--body1">Texte courant.</p>
+ *
+ * Variantes : --display1 à --display5, --titreSuperHero, --titreSuperHeroSmall, --h1 à --h6,
+ * --h4Figtree, --subtitle1, --subtitle2, --body1, --body2, --button, --caption, --overline,
+ * --legal, --inherit, --carteProfilLink, --textWhite. Modificateurs : --marge-bas, --paragraphe,
+ * --sans-retour (une seule ligne, tronquée). Les tailles se resserrent aux seuils de 600, 900 et
+ * 1200 px.
+ */
+.bib-typographie {
+  margin: 0;
+  font-family: var(--police-sans);
+  font-style: normal;
+  overflow-wrap: anywhere;
+  font-feature-settings: 'liga' off, 'clig' off;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.bib-typographie--marge-bas {
+  margin-bottom: 0.35em;
+}
+
+.bib-typographie--paragraphe {
+  margin-bottom: 16px;
+}
+
+.bib-typographie--sans-retour {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- Titres (tailles mobiles, puis dès 900 px) ---- */
+.bib-typographie--h1,
+.bib-typographie--h2,
+.bib-typographie--h3,
+.bib-typographie--h4,
+.bib-typographie--h4Figtree,
+.bib-typographie--h5,
+.bib-typographie--h6 {
+  margin-block: 0.5em;
+  text-wrap: pretty;
+}
+
+.bib-typographie--h1 {
+  font-size: 3rem;
+  font-weight: var(--graisse-forte);
+  line-height: 1.1;
+}
+
+.bib-typographie--h2 {
+  font-size: 2.5rem;
+  font-weight: var(--graisse-forte);
+  line-height: 1.1;
+}
+
+.bib-typographie--h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.bib-typographie--h4,
+.bib-typographie--h4Figtree {
+  font-size: 1.25rem;
+  font-weight: var(--graisse-moyenne);
+  line-height: 1.2;
+}
+
+.bib-typographie--h4 {
+  font-family: var(--police-serif);
+  font-weight: var(--graisse-normale);
+  /* Chiffres tabulaires désactivés : dans Lora, ils élargissent aussi
+     l'espace entre les mots (16,7 px au lieu de 10,5 px à 40 px). */
+  font-variant-numeric: lining-nums proportional-nums;
+}
+
+.bib-typographie--h5 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.bib-typographie--h6 {
+  font-size: 1rem;
+  font-weight: var(--graisse-normale);
+  line-height: 1.2;
+}
+
+@media (min-width: 900px) {
+  .bib-typographie--h1 {
+    font-size: 6.875rem;
+  }
+
+  .bib-typographie--h2 {
+    font-size: 3.5rem;
+  }
+
+  .bib-typographie--h3 {
+    font-size: 2.25rem;
+    font-weight: var(--graisse-forte);
+  }
+
+  .bib-typographie--h4,
+  .bib-typographie--h4Figtree {
+    font-size: 1.875rem;
+  }
+
+  .bib-typographie--h6 {
+    font-size: 1.125rem;
+  }
+}
+
+/* ---- Texte ---- */
+.bib-typographie--body1,
+.bib-typographie--subtitle1 {
+  font-size: 1rem;
+  font-weight: var(--graisse-moyenne);
+  line-height: 1.5;
+}
+
+.bib-typographie--body2,
+.bib-typographie--subtitle2,
+.bib-typographie--button {
+  font-size: 0.875rem;
+  font-weight: var(--graisse-moyenne);
+  line-height: 1.5;
+}
+
+.bib-typographie--caption {
+  font-size: 0.75rem;
+  font-weight: var(--graisse-normale);
+  line-height: 1.5;
+}
+
+.bib-typographie--overline {
+  font-size: 0.75rem;
+  font-weight: var(--graisse-moyenne);
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.bib-typographie--legal {
+  font-size: 0.857rem;
+  font-weight: var(--graisse-moyenne);
+  line-height: 1.2;
+}
+
+.bib-typographie--inherit {
+  font: inherit;
+}
+
+/* ---- Titres de bannière ---- */
+.bib-typographie--titreSuperHero,
+.bib-typographie--titreSuperHeroSmall {
+  font-weight: var(--graisse-forte);
+  line-height: 1.1;
+}
+
+.bib-typographie--titreSuperHero {
+  padding-bottom: 1rem;
+  font-size: 2.5rem;
+}
+
+.bib-typographie--titreSuperHeroSmall {
+  padding-bottom: 2.5rem;
+  font-size: 2.1rem;
+}
+
+/* ---- Affichage ---- */
+.bib-typographie--display1 {
+  font-size: 2.5rem;
+  font-weight: var(--graisse-forte);
+  line-height: 1;
+}
+
+.bib-typographie--display2 {
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+.bib-typographie--display3 {
+  font-size: 1.65rem;
+  line-height: 1.2;
+}
+
+.bib-typographie--display4 {
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.bib-typographie--display5 {
+  font-size: 1.375rem;
+  line-height: 1.2;
+}
+
+@media (min-width: 600px) {
+  .bib-typographie--titreSuperHero {
+    font-size: 3.75rem;
+  }
+
+  .bib-typographie--titreSuperHeroSmall {
+    font-size: 3rem;
+  }
+
+  .bib-typographie--display1 {
+    font-size: 4rem;
+  }
+
+  .bib-typographie--display2 {
+    font-size: 3rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .bib-typographie--titreSuperHero {
+    font-size: 4.5rem;
+  }
+
+  .bib-typographie--titreSuperHeroSmall {
+    font-size: 3.5rem;
+  }
+
+  .bib-typographie--display1 {
+    font-size: 6.5rem;
+  }
+
+  .bib-typographie--display2 {
+    font-size: 3.5rem;
+  }
+
+  .bib-typographie--display3 {
+    font-size: 2.125rem;
+  }
+
+  .bib-typographie--display4 {
+    font-size: 1.625rem;
+  }
+
+  .bib-typographie--display5 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .bib-typographie--titreSuperHeroSmall {
+    font-size: 4rem;
+  }
+}
+
+/* ---- Variantes spéciales ---- */
+.bib-typographie--carteProfilLink {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  overflow: hidden;
+  color: var(--couleur-accent);
+  font-size: 0.875rem;
+  font-weight: var(--graisse-normale);
+  text-decoration: underline solid;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.bib-typographie--textWhite {
+  color: var(--couleur-sur-fonce);
+}
+
+/* Procédures : numérotation native, commandes en gras, variables en italique.
+   <ol class="bib-procedure"><li>Saisir <code class="bib-saisie">rapport-<var>nom</var>.pdf</code>.</li></ol>
+   Le texte à saisir utilise Courier ; les interfaces conservent leur police habituelle. */
+.bib-procedure {
+  padding-inline-start: var(--espace-3);
+  font-family: var(--police-sans);
+  color: var(--couleur-texte);
+  line-height: 1.6;
+}
+.bib-procedure > li { margin-block: var(--espace-element); padding-inline-start: 0.25em; }
+.bib-procedure strong { font-weight: var(--graisse-grasse); }
+.bib-procedure var { font-style: italic; }
+.bib-procedure a[href] { text-decoration: underline; text-underline-offset: 0.15em; }
+.bib-procedure code,
+.bib-saisie {
+  font-family: var(--police-saisie, 'Courier New', Courier, monospace);
+  font-variant-numeric: normal;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

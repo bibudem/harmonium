@@ -1,0 +1,88 @@
+# Publie une version d'Harmonium, à lancer à la main : onglet Actions → « Publier une version ».
+# Tests, numéro de version dans package.json, étiquette vX.Y.Z, Release GitHub, puis purge du
+# cache jsDelivr pour que les sites qui suivent @X reçoivent la version tout de suite.
+# Une version « majeure » (attribut renommé, texte légal changé…) crée @X+1 : les sites migrent un à un.
+name: Publier une version
+
+on:
+  workflow_dispatch:
+    inputs:
+      niveau:
+        description: "Type de version"
+        type: choice
+        required: true
+        default: patch
+        options:
+          - patch   # correctif : 1.0.0 → 1.0.1
+          - minor   # ajout compatible : 1.0.0 → 1.1.0
+          - major   # changement qui casse l'usage : 1.0.0 → 2.0.0
+          - actuelle # étiquette la version déjà inscrite dans package.json (première version)
+
+permissions:
+  contents: write
+
+concurrency:
+  group: version
+  cancel-in-progress: false
+
+jobs:
+  publier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Tests unitaires
+        run: npm test
+
+      - name: Contenu Markdown et socle commun
+        run: npm run test:site
+
+      - name: Tests dans Chrome (reconstruit dist/)
+        run: npm run test:navigateur
+
+      # jsDelivr sert dist/ tel qu'il est dans le dépôt : il doit correspondre à src/
+      - name: dist/ à jour
+        run: |
+          git diff --exit-code -- dist/ || (echo "::error::dist/ ne correspond pas à src/ : lancer npm run build et committer dist/." && exit 1)
+
+      - name: Numéro de version et étiquette
+        id: version
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ "${{ inputs.niveau }}" = "actuelle" ]; then
+            version="v$(node -p "require('./package.json').version")"
+            git tag -a "$version" -m "$version"
+          else
+            version=$(npm version "${{ inputs.niveau }}" -m "Version %s")
+          fi
+          if git ls-remote --exit-code --tags origin "refs/tags/$version" > /dev/null; then
+            echo "::error::L'étiquette $version existe déjà." && exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "majeure=$(echo "$version" | sed -E 's/^v([0-9]+).*/\1/')" >> "$GITHUB_OUTPUT"
+          git push origin HEAD:main "$version"
+
+      - name: Release GitHub
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${{ steps.version.outputs.version }}" --generate-notes --title "${{ steps.version.outputs.version }}"
+
+      # Sans purge, @X peut servir l'ancienne version jusqu'à environ 12 h
+      - name: Purge du cache jsDelivr
+        run: |
+          base="https://purge.jsdelivr.net/gh/${{ github.repository }}@${{ steps.version.outputs.majeure }}/dist"
+          for fichier in dist/*; do
+            nom=$(basename "$fichier")
+            curl -fsS --retry 3 "$base/$nom" > /dev/null && echo "purgé : $nom" || echo "::warning::purge échouée : $nom"
+          done

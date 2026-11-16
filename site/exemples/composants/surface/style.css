@@ -1,0 +1,5 @@
+.ex-surface { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: var(--espace-3); }
+  .ex-surface .bib-surface { padding: var(--espace-2); font-size: var(--texte-petit); }
+  .ex-surface h3 { margin: 0 0 0.25rem; font-size: var(--texte-courant); }
+  .ex-surface p { margin: 0; }
+  .ex-surface .variante { display: block; margin-top: var(--espace-1); color: var(--couleur-texte-secondaire); font-size: var(--texte-tres-petit); }

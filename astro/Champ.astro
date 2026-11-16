@@ -1,0 +1,34 @@
+---
+/** Champ natif : le libellé, l’aide et l’erreur sont toujours reliés au contrôle. */
+import '../src/composants/champ.css'
+import { classes } from './styles.ts'
+import { idUnique } from './ids.ts'
+interface Props {
+  libelle: string
+  name: string
+  id?: string
+  type?: 'text' | 'email' | 'tel' | 'search' | 'url' | 'number' | 'date' | 'time'
+  valeur?: string
+  aide?: string
+  erreur?: string
+  required?: boolean
+  disabled?: boolean
+  multiligne?: boolean
+  options?: { valeur: string; libelle: string }[]
+  class?: string
+  className?: string
+  [attribut: string]: unknown
+}
+const { libelle, name, id = idUnique('champ'), type = 'text', valeur = '', aide, erreur, required = false, disabled = false, multiligne = false, options, class: classe, className, ...reste } = Astro.props
+if (!libelle?.trim() || !name?.trim()) throw new Error('Champ : libellé et name sont requis.')
+const description = [reste['aria-describedby'], aide && `${id}-aide`, erreur && `${id}-erreur`].filter(Boolean).join(' ') || undefined
+const attributs = { ...reste, id, name, required, disabled, 'aria-describedby': description, 'aria-invalid': erreur ? 'true' : undefined }
+---
+<div class:list={['bib-champ', classes(classe, className)]}>
+  <label for={id}>{libelle}{required && <span> (obligatoire)</span>}</label>
+  {options ? <select {...attributs}>{options.map((option) => <option value={option.valeur} selected={option.valeur === valeur}>{option.libelle}</option>)}</select>
+    : multiligne ? <textarea {...attributs}>{valeur}</textarea>
+    : <input {...attributs} type={type} value={valeur} />}
+  {aide && <p class="bib-champ__aide" id={`${id}-aide`}>{aide}</p>}
+  {erreur && <p class="bib-champ__erreur" id={`${id}-erreur`}><strong>Erreur : </strong>{erreur}</p>}
+</div>

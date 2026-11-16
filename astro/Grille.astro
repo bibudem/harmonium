@@ -1,0 +1,108 @@
+---
+/*
+ * <Grille> : une grille de 12 colonnes, sans JavaScript. Produit le HTML documenté dans
+ * src/composants/grille.css et importe cette feuille.
+ *
+ *   <Grille container spacing={2}>
+ *     <Grille size={{ xs: 12, md: 6 }}>…</Grille>
+ *     <Grille size={{ xs: 12, md: 6 }}>…</Grille>
+ *   </Grille>
+ *
+ * `container` : le parent des blocs (boîte flex) ; `spacing` (× 8 px, ou chaîne CSS), `rowSpacing` et
+ * `columnSpacing` : ses écarts (la valeur xs seulement). `size` : colonnes du bloc (0 à 12, `grow`, `auto`),
+ * seuil par seuil. `offset` : colonnes de marge à gauche, ou `auto`. `direction`, `wrap`, `alignItems`,
+ * `justifyContent`, `gap` : réglages flex du conteneur. `component` : la balise (div par défaut).
+ */
+import '../src/composants/grille.css'
+import { classes, espacement, fusionnerStyles, parPoint, type Responsive, type Style } from './styles.ts'
+
+type Taille = number | string | boolean
+type Decalage = number | string
+
+interface Props {
+  container?: boolean
+  size?: Responsive<Taille>
+  offset?: Responsive<Decalage>
+  spacing?: Responsive<number | string>
+  rowSpacing?: Responsive<number | string>
+  columnSpacing?: Responsive<number | string>
+  direction?: 'row' | 'row-reverse' | 'column' | 'column-reverse'
+  wrap?: 'wrap' | 'nowrap' | 'wrap-reverse'
+  alignItems?: string
+  justifyContent?: string
+  /** Écart CSS direct ; ne change pas le calcul des largeurs */
+  gap?: number | string
+  component?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+  [attribut: string]: unknown
+}
+
+const {
+  container = false,
+  size,
+  offset,
+  spacing,
+  rowSpacing,
+  columnSpacing,
+  direction,
+  wrap,
+  alignItems,
+  justifyContent,
+  gap,
+  component = 'div',
+  class: classe,
+  className,
+  style,
+  // Ancienne API de grille : acceptée et ignorée
+  item: _item,
+  ...reste
+} = Astro.props
+
+const Balise = component
+const attributs: Record<string, string> = {}
+const variables: Record<string, string> = {}
+
+const nombre = (v: unknown) => (typeof v === 'number' ? v : typeof v === 'string' && /^\d*\.?\d+$/.test(v.trim()) ? Number(v) : NaN)
+
+for (const [point, valeur] of Object.entries(parPoint(size))) {
+  if (valeur === 'grow' || valeur === true) attributs[`data-taille-${point}`] = 'grow'
+  else if (valeur === 'auto') attributs[`data-taille-${point}`] = 'auto'
+  else if (!Number.isNaN(nombre(valeur))) {
+    attributs[`data-taille-${point}`] = 'n'
+    // Une valeur hors bornes (14) ne déborde pas de la rangée
+    variables[`--bib-grille-taille-${point}`] = String(Math.min(Math.max(nombre(valeur), 0), 12))
+  }
+}
+
+for (const [point, valeur] of Object.entries(parPoint(offset))) {
+  if (valeur === 'auto') attributs[`data-decalage-${point}`] = 'auto'
+  else if (!Number.isNaN(nombre(valeur))) {
+    attributs[`data-decalage-${point}`] = 'n'
+    variables[`--bib-grille-decalage-${point}`] = String(nombre(valeur))
+  }
+}
+
+// L'espacement responsive n'est pas pris en charge : on garde la valeur xs
+const premier = (v: Responsive<number | string> | undefined) => (v !== null && typeof v === 'object' ? (parPoint(v).xs ?? Object.values(v)[0]) : v)
+if (container) {
+  variables['--bib-grille-ecart-lig'] = espacement(premier(rowSpacing ?? spacing)) ?? '0px'
+  variables['--bib-grille-ecart-col'] = espacement(premier(columnSpacing ?? spacing)) ?? '0px'
+}
+
+const styleFinal = fusionnerStyles(
+  variables,
+  {
+    flexDirection: direction,
+    flexWrap: wrap,
+    alignItems,
+    justifyContent,
+    gap: espacement(gap as number | string | undefined),
+  },
+  style,
+)
+---
+
+<Balise class:list={['bib-grille', { 'bib-grille--conteneur': container }, classes(classe, className)]} style={styleFinal} {...attributs} {...reste}><slot /></Balise>

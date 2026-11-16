@@ -1,0 +1,143 @@
+/*
+ * Liste filtrable : une liste de fiches rendue en entier dans le HTML (un catalogue de logiciels, de ressources…),
+ * avec une recherche sans accents, un filtre par catégorie, un compte annoncé et un message quand rien ne
+ * correspond. Sans JavaScript, le formulaire reste masqué et la liste complète se lit telle quelle ;
+ * bib-liste-filtrable.min.js (facultatif) le montre et le rend actif.
+ *
+ *   <div class="bib-liste-filtrable" data-liste-filtrable data-unite="logiciel" data-unites="logiciels">
+ *     <form class="bib-liste-filtrable__filtres" role="search" aria-label="Logiciels" data-filtres hidden>
+ *       <p class="bib-liste-filtrable__consigne">Recherchez un logiciel ou filtrez par catégorie :</p>
+ *       <div class="bib-liste-filtrable__champs">
+ *         <div class="bib-champ-liste bib-champ-liste--recherche">
+ *           <label class="bib-champ-liste__etiquette" for="lf-q">Rechercher</label>
+ *           <div class="bib-champ-liste__boite"><input id="lf-q" type="search" placeholder="Nom ou description" autocomplete="off" data-recherche></div>
+ *         </div>
+ *         <div class="bib-champ-liste">
+ *           <label class="bib-champ-liste__etiquette" for="lf-cat">Catégorie</label>
+ *           <div class="bib-champ-liste__boite"><select id="lf-cat" data-categorie><option value="">Toutes</option><option>Bureautique</option></select></div>
+ *         </div>
+ *       </div>
+ *     </form>
+ *     <p class="bib-liste-filtrable__compte" role="status" data-compte>73 logiciels</p>
+ *     <ul class="bib-liste-filtrable__liste" data-liste>
+ *       <li class="bib-liste-filtrable__fiche" data-categorie="Gestion bibliographique" data-texte="Zotero Gestionnaire de références bibliographiques">
+ *         <h3 class="bib-liste-filtrable__nom"><a href="/informatique/logiciels/zotero">Zotero</a></h3>
+ *         <p class="bib-liste-filtrable__categorie">Gestion bibliographique</p>
+ *         <p class="bib-liste-filtrable__description">Gestionnaire de références bibliographiques</p>
+ *         <ul class="bib-pastilles" aria-label="Caractéristiques">…</ul>   (pastilles.css)
+ *       </li>
+ *     </ul>
+ *     <p class="bib-liste-filtrable__vide" data-vide hidden><span data-vide-texte></span> Vérifiez l’orthographe ou <a href="mailto:…">écrivez-nous</a>.</p>
+ *   </div>
+ *
+ * - La recherche ignore la casse et les accents et porte sur data-texte de chaque fiche ; la liste porte sur
+ *   data-categorie. Les champs sont des champs de liste d'Harmonium (champ-liste.css).
+ * - Compte : « N <unité> » (data-unite au singulier, data-unites au pluriel), puis « N <unités> trouvés »,
+ *   annoncé 400 ms après la dernière touche. data-vide-recherche et data-vide-categorie : messages quand rien ne
+ *   correspond (« {q} » est remplacé par la recherche).
+ * - Deux colonnes de fiches dès que le composant a 36rem de large (requête de conteneur) : la page peut avoir une
+ *   colonne de navigation.
+ */
+.bib-liste-filtrable {
+  container-type: inline-size;
+  max-width: 960px;
+  margin-block: var(--espace-element) var(--espace-bloc);
+}
+
+.bib-liste-filtrable__filtres[hidden] {
+  display: none;
+}
+
+.bib-liste-filtrable__consigne {
+  max-inline-size: none;
+  margin: 0 0 var(--espace-1);
+  font-weight: var(--graisse-forte);
+}
+
+.bib-liste-filtrable__champs {
+  display: grid;
+  gap: var(--espace-element);
+}
+
+.bib-liste-filtrable__compte {
+  max-inline-size: none;
+  margin: var(--espace-element) 0 0.75rem;
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.9rem;
+}
+
+.bib-liste-filtrable__liste {
+  display: grid;
+  gap: var(--espace-element);
+  max-inline-size: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bib-liste-filtrable__fiche {
+  box-sizing: border-box;
+  min-width: 0;
+  max-inline-size: none;
+  margin: 0;
+  padding: var(--espace-element);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+  background: var(--couleur-surface);
+  box-shadow: var(--ombre-1);
+  color: var(--couleur-texte);
+}
+
+.bib-liste-filtrable__fiche[hidden] {
+  display: none;
+}
+
+.bib-liste-filtrable__nom {
+  margin: 0 0 0.2rem;
+  font-size: 1.2rem;
+  font-weight: var(--graisse-forte);
+  line-height: 1.3;
+  overflow-wrap: break-word;
+}
+
+.bib-liste-filtrable__nom a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.bib-liste-filtrable__nom a:hover {
+  color: var(--couleur-lien);
+  text-decoration: underline;
+}
+
+.bib-liste-filtrable__categorie {
+  max-inline-size: none;
+  margin: 0 0 0.55rem;
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.9rem;
+}
+
+.bib-liste-filtrable__description {
+  max-inline-size: none;
+  margin: 0;
+}
+
+.bib-liste-filtrable__vide {
+  max-inline-size: none;
+  margin: 0;
+  padding: var(--espace-element);
+  border: 1px dashed var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+  color: var(--couleur-texte-secondaire);
+}
+
+.bib-liste-filtrable__vide[hidden] {
+  display: none;
+}
+
+@container (width >= 36rem) {
+  .bib-liste-filtrable__champs,
+  .bib-liste-filtrable__liste {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}

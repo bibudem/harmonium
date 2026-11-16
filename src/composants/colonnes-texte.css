@@ -1,0 +1,88 @@
+/*
+ * Colonnes de texte : deux colonnes, avec un pied sous chacune. --3-8 : 3/12 et 8/12, en haut (icône et texte) ;
+ * --6-6 : 6/12 et 6/12, centrées, gouttière de 64 px (texte et icônes). Dans une colonne décalée d'une demi-colonne
+ * (colonne-decalee.css, à charger aussi).
+ *
+ *   <div class="bib-colonne-decalee bib-colonnes-texte" style="--bib-decalage: 0.5"><div class="bib-colonne-decalee__colonne">
+ *     <div class="bib-colonnes-texte__rangee bib-colonnes-texte__rangee--6-6">
+ *       <div class="bib-colonnes-texte__colonne">
+ *         <div class="bib-colonnes-texte__contenu">…</div>
+ *         <div class="bib-colonnes-texte__pied">…boutons…</div>
+ *       </div>
+ *       <div class="bib-colonnes-texte__colonne">…</div>
+ *     </div>
+ *   </div></div>
+ *
+ * Sous 900 px : une colonne, et les pieds passent sous les deux colonnes (chaque pied n'est rendu qu'une fois :
+ * sa colonne devient display: contents et il descend par order). Mêmes écarts que la bande image-texte :
+ * --espace-titre sous le titre, --espace-bloc avant les boutons et entre les parties empilées, --espace-element
+ * entre les boutons.
+ */
+.bib-colonnes-texte__rangee {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espace-bloc);
+  width: 100%;
+}
+
+.bib-colonnes-texte__colonne {
+  display: contents;
+}
+
+/* Colonnes à minmax(0, …) : un mot long (texte agrandi à 200 %) ne les
+   élargit plus au-delà de la rangée ; il passe à la ligne au besoin
+   (WCAG 1.4.4 et 1.4.10) */
+.bib-colonnes-texte__contenu :is(h2, .bib-colonnes-texte h3, .bib-colonnes-texte h4, .bib-colonnes-texte p, .bib-colonnes-texte li) {
+  overflow-wrap: break-word;
+}
+
+.bib-colonnes-texte__contenu > :first-child {
+  margin-top: 0;
+}
+
+.bib-colonnes-texte__contenu > :is(h2, .bib-colonnes-texte h3, .bib-colonnes-texte h4):first-child {
+  margin-block: 0 var(--espace-titre);
+}
+
+.bib-colonnes-texte__contenu > :last-child {
+  margin-bottom: 0;
+}
+
+.bib-colonnes-texte__pied {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espace-element);
+  order: 1;
+}
+
+.bib-colonnes-texte__pied > *,
+.bib-colonnes-texte__pied .bib-bouton {
+  margin: 0;
+}
+
+@media (width >= 900px) {
+  .bib-colonnes-texte__rangee {
+    display: grid;
+  }
+
+  .bib-colonnes-texte__colonne {
+    display: block;
+  }
+
+  .bib-colonnes-texte__pied {
+    padding-top: var(--espace-bloc);
+  }
+
+  .bib-colonnes-texte__rangee--3-8 {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 8fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 0;
+  }
+
+  .bib-colonnes-texte__rangee--6-6 {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: var(--espace-8);
+  }
+}

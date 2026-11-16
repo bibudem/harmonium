@@ -1,0 +1,44 @@
+---
+/*
+ * <CarteTexte> : une carte-lien bleue avec icône. Produit le HTML documenté dans src/composants/carte-texte.css
+ * et importe cette feuille (et carte-lien.css).
+ *
+ *   <CarteTexte title="Services" Icon={BooksIcon} href="/services/" />
+ */
+import '../src/composants/carte-texte.css'
+import '../src/composants/carte-lien.css'
+import PastilleFleche from './PastilleFleche.astro'
+import { classes, fusionnerStyles, type Style } from './styles.ts'
+import { lienCarte } from './liens.ts'
+
+interface Props {
+  title: string
+  Icon?: any
+  href: string
+  target?: string
+  rel?: string
+  id?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+  style?: Style
+}
+
+const { title, Icon, href, target, rel, class: classe, className, style, ...reste } = Astro.props
+
+if (typeof href !== 'string') throw new Error('CarteTexte : la propriété `href` doit être une chaîne.')
+
+const { externe, afficherFleche, cible, rel: relFinal, annonce } = lienCarte(href, target, rel, Astro.site?.origin ?? Astro.url.origin)
+---
+
+<div class:list={['bib-carte-texte', 'bib-carte-lien', 'bib-anneau-carte', classes(classe, className)]} style={fusionnerStyles(style)} {...reste}>
+  <div class="bib-carte-texte__icone">{Icon && <Icon size={55} aria-hidden="true" focusable="false" />}</div>
+  <div class="bib-carte-texte__titre">
+    <a class="bib-lien-etire" href={href} target={cible} rel={relFinal}
+      >{title}{annonce && <span class="bib-masque">{annonce}</span>}</a
+    >
+  </div>
+  <div class="bib-carte-texte__pied">
+    {afficherFleche && <PastilleFleche externe={externe} />}
+  </div>
+</div>

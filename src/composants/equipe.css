@@ -1,0 +1,115 @@
+/*
+ * Équipe : une grille de vignettes de personnes (photo ronde, nom, fonction). Chaque vignette est une carte-lien
+ * (carte-lien.css, à charger aussi) qui mène à la fiche complète de la personne. Deux par rangée sur un
+ * téléphone, puis autant que la largeur en permet.
+ *
+ *   <ul class="bib-equipe" aria-label="Équipe : Bibliothèque de droit">
+ *     <li class="bib-equipe__vignette bib-carte-lien">
+ *       <img class="bib-equipe__photo" src="marie.jpg" alt="" width="160" height="160" loading="lazy">
+ *       <h3 class="bib-equipe__nom"><a class="bib-lien-etire" href="/equipe/?q=Marie%20Tremblay">Marie Tremblay</a></h3>
+ *       <p class="bib-equipe__fonction">Bibliothécaire</p>
+ *     </li>
+ *   </ul>
+ *
+ * Un seul lien par vignette, sur le nom : son ::after couvre la vignette. La photo est décorative (alt vide), le
+ * nom est juste dessous. Largeur minimale en rem : avec le texte agrandi, une seule colonne plutôt que des noms
+ * qui débordent (WCAG 1.4.10). Le focus du lien s'affiche sur toute la vignette (contour de 3 px).
+ */
+.bib-equipe {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
+  gap: var(--espace-grille);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bib-equipe__vignette {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espace-1);
+  padding: var(--espace-carte) var(--espace-element);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+  background-color: var(--couleur-surface);
+  text-align: center;
+  transition:
+    border-color var(--duree-courte-4) var(--courbe-standard),
+    box-shadow var(--duree-courte-4) var(--courbe-standard);
+}
+
+@media (width >= 600px) {
+  .bib-equipe {
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  }
+
+  .bib-equipe__photo {
+    width: 7.5rem;
+    height: 7.5rem;
+  }
+}
+
+.bib-equipe__vignette:hover {
+  border-color: var(--couleur-lien);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--bleu-fonce) 12%, transparent);
+}
+
+.bib-equipe__vignette:has(a:focus-visible) {
+  outline: 3px solid var(--couleur-focus);
+  outline-offset: 2px;
+}
+
+.bib-equipe__photo {
+  width: 5.5rem;
+  height: 5.5rem;
+  margin-block-end: 0.25rem;
+  border-radius: var(--rayon-plein);
+  object-fit: cover;
+}
+
+.bib-equipe__nom,
+.bib-equipe__fonction {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.bib-equipe__nom {
+  margin: 0;
+  font-size: var(--texte-courant);
+  font-weight: var(--graisse-forte);
+  line-height: 1.3;
+}
+
+.bib-equipe__nom a {
+  color: var(--couleur-texte);
+}
+
+.bib-equipe__nom a:focus-visible {
+  outline: none;
+}
+
+.bib-equipe__vignette:hover .bib-equipe__nom a {
+  color: var(--couleur-lien);
+  text-decoration: underline;
+}
+
+.bib-equipe__fonction {
+  margin: 0;
+  color: var(--couleur-texte-secondaire);
+  font-size: var(--texte-reduit);
+  line-height: 1.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bib-equipe__vignette {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .bib-equipe__vignette:has(a:focus-visible) {
+    outline-color: Highlight;
+  }
+}

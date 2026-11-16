@@ -1,0 +1,45 @@
+---
+/*
+ * <PostesDisponibles> : les postes de connexion à distance libres d'une zone de logiciels, en fiches d'état,
+ * lus et relus dans le navigateur par bib-postes-disponibles.min.js. Produit le HTML documenté dans
+ * src/composants/fiches-etat.css (groupe à en-tête) et importe cette feuille, avec celle de l'état d'erreur.
+ *
+ *   <PostesDisponibles zone="AdobePro" titre="Adobe Acrobat Pro" />
+ *
+ * `titre` : nom du groupe, en titre (h3 par défaut, `niveau`), avec le nombre de postes libres à droite.
+ * `procedure` : ancre ou adresse de la procédure de connexion, où renvoie le texte sans JavaScript.
+ * `api` : une autre adresse de l'API des ordinateurs (essais).
+ */
+import '../src/composants/fiches-etat.css'
+import EtatErreur from './EtatErreur.astro'
+import { classes } from './styles.ts'
+
+interface Props {
+  zone: string
+  titre?: string
+  niveau?: 2 | 3 | 4 | 5 | 6
+  procedure?: string
+  api?: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+const { zone, titre, niveau = 3, procedure = '#procedure-de-connexion', api, class: classe, className } = Astro.props
+const Titre = `h${niveau}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+---
+
+<div class:list={['bib-fiches-etat', classes(classe, className)]} data-postes={zone} data-api={api} aria-busy="true">
+  {
+    titre && (
+      <div class="bib-fiches-etat__entete">
+        <Titre class="bib-fiches-etat__titre">{titre}</Titre>
+        <span class="bib-fiches-etat__compte" data-compte />
+      </div>
+    )
+  }
+  <p class="bib-fiches-etat__message" data-message>La liste des postes libres s’affiche avec JavaScript. Voyez la <a href={procedure}>procédure de connexion</a>.</p>
+  <p class="bib-masque" role="status" data-annonce></p>
+  <ul class="bib-fiches-etat__liste" style="--bib-fiches-etat-min: 11rem" data-liste hidden></ul>
+  <EtatErreur message="La liste des postes n’est pas disponible pour le moment." etat="" />
+</div>

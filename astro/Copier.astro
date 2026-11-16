@@ -1,0 +1,22 @@
+---
+/*
+ * <Copier> : un texte à saisir tel quel, en code, suivi d'un bouton « Copier ». Produit le HTML documenté
+ * dans src/composants/copier.css et importe cette feuille ; bib-copier.min.js affiche et branche le bouton.
+ *
+ *   Saisir <Copier texte="https://proxy.umontreal.ca" /> dans la case.
+ */
+import '../src/composants/copier.css'
+import { classes } from './styles.ts'
+
+interface Props {
+  texte: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+const { texte, class: classe, className } = Astro.props
+if (!texte) throw new Error('Copier : la propriété `texte` est obligatoire.')
+---
+
+<span class:list={['bib-copier', classes(classe, className)]} data-copier><code class="bib-copier__code">{texte}</code><button type="button" class="bib-copier__bouton" data-texte={texte} aria-label={`Copier ${texte}`} hidden><svg class="bib-copier__icone" viewBox="0 0 256 256" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M216,32H88a8,8,0,0,0-8,8V80H40a8,8,0,0,0-8,8V216a8,8,0,0,0,8,8H168a8,8,0,0,0,8-8V176h40a8,8,0,0,0,8-8V40A8,8,0,0,0,216,32ZM160,208H48V96H160Zm48-48H176V88a8,8,0,0,0-8-8H96V48H208Z"></path></svg><svg class="bib-copier__icone-copie" viewBox="0 0 256 256" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"></path></svg><span class="bib-copier__libelle" aria-hidden="true">Copier</span></button><span class="bib-masque" role="status"></span></span>

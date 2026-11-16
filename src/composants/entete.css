@@ -1,0 +1,1003 @@
+/*
+ * En-tête et menu : deux marques séparées d'un filet (l'institution, puis le site), la navigation
+ * principale, une action facultative (ex. « Je donne ») et deux commandes, Rechercher (loupe) et Menu.
+ * Les deux commandes ouvrent le même rideau, qui descend de derrière la barre :
+ *   - mode « complet » (Menu) : la recherche, « Explorer » (Accueil et les pages principales, en grand),
+ *     les groupes propres au site, puis l'action ;
+ *   - mode « recherche » (loupe) : la recherche seule, le focus dans le champ, et « Afficher le menu »,
+ *     qui déplie le reste.
+ * La loupe devient un X tant que le mode recherche est ouvert, le burger une fois le menu entier affiché.
+ *
+ * Sous 1200 px : barre compacte collante, loupe et burger ; le rideau couvre la fenêtre et se ferme par la
+ * poignée du bas (tapotement, ou glissé vers le haut au doigt). Dès 1200 px : la navigation dans la barre,
+ * la loupe seule ; le rideau se réduit à la recherche. `bib-entete--menu-bureau` garde le bouton Menu à
+ * toutes les largeurs, pour un site dont le menu porte plus que ses pages principales.
+ *
+ * Sans JavaScript : pas de commandes ; la navigation reste dans la barre, sur plusieurs lignes au besoin.
+ * Le script bib-entete.min.js pose data-entete-pret (la ligne en ligne qui suit l'en-tête le pose dès
+ * l'analyse, pour éviter que la barre ne change de forme à l'affichage).
+ *
+ *   <header class="bib-entete" data-entete>
+ *     <div class="bib-entete__barre">
+ *       <div class="bib-entete__marque">
+ *         <a class="bib-entete__institution" href="https://www.umontreal.ca/"><img src="…/logo-universite-montreal.svg" alt="Université de Montréal" width="135" height="59"></a>
+ *         <a class="bib-entete__site" href="/">Les bibliothèques<span class="bib-entete__masque"> – Accueil</span></a>
+ *       </div>
+ *       <nav class="bib-entete__navigation" aria-label="Navigation principale">
+ *         <ul><li><a href="/espaces/" aria-current="page">Espaces</a></li>…</ul>
+ *       </nav>
+ *       <a class="bib-entete__action" href="/nous-soutenir/">Je donne <svg …/></a>
+ *       <div class="bib-entete__outils" data-entete-outils hidden>
+ *         <button type="button" class="bib-entete__bouton bib-entete__bouton--recherche" aria-label="Rechercher" aria-expanded="false" aria-controls="menu" data-entete-recherche>…loupe…</button>
+ *         <button type="button" class="bib-entete__bouton bib-entete__bouton--menu" aria-label="Menu" aria-expanded="false" aria-controls="menu" data-entete-menu>…burger…</button>
+ *       </div>
+ *     </div>
+ *     <div class="bib-entete__voile" data-entete-voile hidden></div>
+ *     <div class="bib-entete__rideau" id="menu" data-entete-rideau data-mode="complet" hidden>
+ *       <div class="bib-entete__feuille">
+ *         <div class="bib-entete__groupe bib-entete__groupe--recherche">…formulaire bib-recherche…</div>
+ *         <div class="bib-entete__deplier"><button type="button" data-entete-deplier>Afficher le menu …</button></div>
+ *         <nav class="bib-entete__groupe bib-entete__explorer" aria-labelledby="menu-explorer">
+ *           <p class="bib-entete__surtitre" id="menu-explorer">Explorer</p>
+ *           <ul class="bib-entete__pages"><li><a href="/"><span>Accueil</span> <svg …/></a></li>…</ul>
+ *         </nav>
+ *         <div class="bib-entete__groupe bib-entete__supplement">…groupes propres au site…</div>
+ *         <div class="bib-entete__donner"><a class="bib-entete__action" href="/nous-soutenir/">Je donne …</a></div>
+ *         <div class="bib-entete__pied"><button type="button" class="bib-entete__poignee" aria-label="Fermer le menu" data-entete-poignee><span></span></button></div>
+ *       </div>
+ *     </div>
+ *   </header>
+ *   <script>document.querySelector('[data-entete]:not([data-entete-pret])')?.setAttribute('data-entete-pret', '')</script>
+ *
+ * Variantes :
+ *   - bib-entete--bandeau : un bandeau de couleur au-dessus de la barre (--bib-entete-bandeau, jaune par
+ *     défaut) ; dès 1200 px, la barre devient une carte aux coins hauts arrondis posée sur le bandeau ;
+ *   - bib-entete--superpose : dès 1200 px, la barre se pose sur la bannière de la page (voile bleu foncé
+ *     dégradé, texte et logos blancs) et devient blanche et ombrée après 50 px de défilement ou menu ouvert ;
+ *   - bib-entete--soulignement : liens de la barre soulignés au survol et pour la page courante, plutôt
+ *     qu'une pastille.
+ *
+ * Habillage : --bib-entete-accent (surtitres, « Afficher le menu », flèches ; --couleur-accent),
+ * --bib-entete-survol (fond des commandes au survol ; --couleur-teinte), --bib-entete-bandeau,
+ * --bib-entete-courante (pastille de la page courante dans « Explorer » ; rouge orangé).
+ */
+
+.bib-entete {
+  --_accent: var(--bib-entete-accent, var(--couleur-accent));
+  --_survol: var(--bib-entete-survol, var(--couleur-teinte));
+  position: relative;
+  z-index: var(--z-entete);
+  color: var(--couleur-texte);
+  font-family: var(--police-sans);
+}
+
+.bib-entete[data-entete-pret] {
+  position: sticky;
+  top: 0;
+}
+
+.bib-entete[data-ouvert] {
+  z-index: calc(var(--z-tiroir) + 1);
+}
+
+.bib-entete__masque {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.bib-entete ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bib-entete li {
+  max-inline-size: none;
+}
+
+/* ---- Barre (compacte d'abord) ---- */
+.bib-entete__barre {
+  position: relative;
+  z-index: var(--z-dessus-3);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espace-1) var(--espace-3);
+  min-height: 56px;
+  padding: 0.5rem 0.5rem 0.5rem var(--espace-2);
+  border-bottom: 1px solid color-mix(in srgb, var(--couleur-texte) 12%, transparent);
+  background: var(--couleur-surface);
+}
+
+.bib-entete[data-entete-pret] .bib-entete__barre {
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+}
+
+.bib-entete__marque {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-width: 0;
+}
+
+.bib-entete__institution,
+.bib-entete__site {
+  display: flex;
+  flex: none;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+  transition: opacity var(--duree-courte-4) var(--courbe-standard);
+}
+
+.bib-entete__institution img {
+  display: block;
+  width: clamp(72px, 24vw, 120px);
+  height: auto;
+}
+
+/* Le filet sépare les deux marques ; le nom du site se coupe plutôt que de passer sous les commandes
+   (texte agrandi à 200 % sur un écran étroit) */
+.bib-entete__site {
+  flex: 0 1 auto;
+  min-width: 0;
+  padding-block: 4px;
+  padding-inline-start: 0.625rem;
+  border-inline-start: 1px solid currentColor;
+  font-size: clamp(0.8125rem, 3.8vw, 1.0625rem);
+  font-weight: var(--graisse-normale);
+  line-height: 1.2;
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+
+.bib-entete__site img {
+  display: block;
+  width: min(5.5rem, 24vw);
+  height: auto;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bib-entete__institution:hover,
+  .bib-entete__site:has(img):hover {
+    opacity: 0.75;
+  }
+
+  .bib-entete__site:not(:has(img)):hover {
+    text-decoration: underline;
+  }
+}
+
+/* Navigation de la barre : visible sans JavaScript à toutes les largeurs ; avec le script, dès 1200 px */
+.bib-entete__navigation ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--espace-1);
+}
+
+.bib-entete__navigation a {
+  --_marge: 22px;
+  display: inline-flex;
+  position: relative;
+  isolation: isolate;
+  align-items: center;
+  min-height: var(--taille-cible);
+  padding-inline: var(--_marge);
+  color: inherit;
+  font-size: var(--texte-courant);
+  line-height: 1.2;
+  text-decoration: none;
+  transition: color var(--duree-courte-4) var(--courbe-standard);
+}
+
+/* Pastille derrière le libellé : survol, focus et page courante (plus marquée) */
+.bib-entete__navigation a::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset-block: 6px;
+  inset-inline: max(0px, calc(var(--_marge) - 12px));
+  border-radius: var(--rayon-plein);
+  background-color: var(--couleur-teinte);
+  opacity: 0;
+  scale: 0.92;
+  transition:
+    opacity var(--duree-courte-4) var(--courbe-standard),
+    scale var(--duree-courte-4) var(--courbe-emphase-deceleree);
+}
+
+.bib-entete__navigation a:is(:hover, :focus-visible) {
+  color: var(--couleur-lien);
+}
+
+.bib-entete__navigation a:is(:hover, :focus-visible, [aria-current])::before {
+  opacity: 1;
+  scale: 1;
+}
+
+.bib-entete__navigation a[aria-current] {
+  color: var(--couleur-lien-survol);
+  font-weight: var(--graisse-grasse);
+}
+
+.bib-entete__navigation a[aria-current]::before {
+  background-color: var(--couleur-teinte-forte);
+}
+
+/* Variante soulignement : navigation neutre, plus petite, soulignée */
+.bib-entete--soulignement .bib-entete__navigation a {
+  --_marge: 0px;
+  font-size: var(--texte-petit);
+  white-space: nowrap;
+}
+
+.bib-entete--soulignement .bib-entete__navigation ul {
+  gap: 0 var(--espace-2);
+}
+
+.bib-entete--soulignement .bib-entete__navigation a::before {
+  display: none;
+}
+
+.bib-entete--soulignement .bib-entete__navigation a:is(:hover, :focus-visible, [aria-current]) {
+  color: inherit;
+  font-weight: var(--graisse-normale);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.35em;
+}
+
+/* Action (ex. « Je donne ») : capsule à contour dans la barre de bureau */
+.bib-entete__action {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  min-height: 56px;
+  padding: 0 21px;
+  border: 1px solid currentColor;
+  border-radius: var(--rayon-plein);
+  color: inherit;
+  font-size: var(--texte-petit);
+  font-weight: var(--graisse-moyenne);
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--duree-courte-4) var(--courbe-standard-deceleree),
+    color var(--duree-courte-4) var(--courbe-standard-deceleree),
+    border-color var(--duree-courte-4) var(--courbe-standard-deceleree);
+}
+
+.bib-entete__action svg {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  color: var(--rouge-orange);
+}
+
+.bib-entete__action:hover {
+  border-color: var(--bleu-fonce);
+  background-color: var(--bleu-fonce);
+  color: var(--couleur-sur-fonce);
+}
+
+.bib-entete__action:hover svg {
+  color: currentColor;
+}
+
+/* ---- Commandes : loupe et burger ---- */
+.bib-entete__outils {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.bib-entete__outils[hidden],
+.bib-entete__voile[hidden],
+.bib-entete__rideau[hidden] {
+  display: none;
+}
+
+.bib-entete[data-entete-pret] .bib-entete__navigation {
+  display: none;
+}
+
+.bib-entete__bouton {
+  display: inline-flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  width: var(--taille-cible);
+  height: var(--taille-cible);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+}
+
+.bib-entete__bouton--menu {
+  width: 50px;
+  height: 50px;
+}
+
+.bib-entete__bouton svg {
+  display: block;
+  flex: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bib-entete__bouton:hover {
+    background-color: var(--_survol);
+  }
+}
+
+/* Libellé visible au-dessus du burger (barre de bureau, menu-bureau) ; le nom accessible le suit */
+.bib-entete__libelle-menu {
+  display: none;
+  position: absolute;
+  right: 4px;
+  bottom: calc(50% + 17px);
+  font-size: var(--texte-minuscule);
+  line-height: 1;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.bib-entete__libelle-menu .si-ouvert,
+.bib-entete__bouton[aria-expanded='true'] .bib-entete__libelle-menu .si-ferme {
+  display: none;
+}
+
+.bib-entete__bouton[aria-expanded='true'] .bib-entete__libelle-menu .si-ouvert {
+  display: inline;
+}
+
+/* Icône Menu de la norme (trait du milieu plein, traits du haut et du bas plus courts, alignés à droite).
+   Burger → croix : les traits du haut et du bas se recentrent et s'allongent, puis pivotent pendant que celui du
+   milieu s'efface ; à la fermeture, l'ordre s'inverse */
+.bib-entete__burger .trait {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    translate var(--duree-courte-3) var(--courbe-icone) var(--duree-courte-1),
+    rotate var(--duree-courte-3) var(--courbe-icone),
+    scale var(--duree-courte-2) var(--courbe-icone) var(--duree-courte-1),
+    opacity var(--duree-courte-2) var(--courbe-standard) var(--duree-courte-1);
+}
+
+[aria-expanded='true'] > .bib-entete__burger .trait {
+  transition-delay: 0ms, var(--duree-courte-2), 0ms, 0ms;
+}
+
+[aria-expanded='true'] > .bib-entete__burger .haut {
+  translate: -2.875px 7px;
+  rotate: 45deg;
+  scale: 1.354 1;
+}
+
+[aria-expanded='true'] > .bib-entete__burger .bas {
+  translate: -2.875px -7px;
+  rotate: -45deg;
+  scale: 1.354 1;
+}
+
+[aria-expanded='true'] > .bib-entete__burger .milieu {
+  scale: 0 1;
+  opacity: 0;
+}
+
+/* Loupe → croix : le manche s'allonge en première diagonale, le verre s'efface, la seconde se trace */
+.bib-entete__loupe * {
+  transition-duration: var(--duree-courte-3);
+  transition-timing-function: var(--courbe-icone);
+}
+
+.bib-entete__loupe .verre {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition-property: scale, opacity;
+  transition-delay: var(--duree-courte-2);
+}
+
+.bib-entete__loupe .diag-a {
+  stroke-dasharray: 0.365 2;
+  stroke-dashoffset: -0.635;
+  transition-property: stroke-dasharray, stroke-dashoffset;
+  transition-delay: var(--duree-courte-2);
+}
+
+.bib-entete__loupe .diag-b {
+  stroke-dasharray: 0 2;
+  opacity: 0;
+  transition-property: stroke-dasharray, opacity;
+}
+
+[aria-expanded='true'] > .bib-entete__loupe .verre {
+  scale: 0.2;
+  opacity: 0;
+  transition-delay: 0ms;
+}
+
+[aria-expanded='true'] > .bib-entete__loupe .diag-a {
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 0;
+  transition-delay: 0ms;
+}
+
+[aria-expanded='true'] > .bib-entete__loupe .diag-b {
+  stroke-dasharray: 1 2;
+  opacity: 1;
+  transition-delay: var(--duree-courte-2);
+}
+
+/* ---- Voile et rideau ---- */
+html:has(.bib-entete[data-ouvert]) {
+  overflow: hidden;
+}
+
+.bib-entete__voile {
+  position: fixed;
+  z-index: var(--z-dessus-1);
+  inset: 0;
+  background-color: color-mix(in srgb, var(--bleu-fonce) 50%, transparent);
+}
+
+.bib-entete__rideau {
+  /* Bas de l'en-tête dans la fenêtre, posé par le script à l'ouverture */
+  --haut-menu: var(--hauteur-entete);
+  position: absolute;
+  z-index: var(--z-dessus-2);
+  top: 100%;
+  inset-inline: 0;
+  /* La feuille sort de derrière la barre : seul le haut est rogné (les suggestions de recherche peuvent
+     dépasser le bas) */
+  clip-path: inset(0 -100vw -200vh -100vw);
+}
+
+.bib-entete__feuille {
+  display: grid;
+  gap: var(--espace-4);
+  align-content: start;
+  height: calc(100dvh - var(--haut-menu));
+  padding: var(--espace-3) var(--espace-2) 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background-color: var(--couleur-surface);
+  box-shadow: var(--ombre-2);
+}
+
+.bib-entete__groupe {
+  min-width: 0;
+}
+
+.bib-entete__surtitre {
+  margin: 0 0 var(--espace-1);
+  color: var(--_accent);
+  font-size: var(--texte-tres-petit);
+  font-weight: var(--graisse-forte);
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+/* « Explorer » : Accueil et les pages principales, en grand */
+.bib-entete__pages a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espace-2);
+  min-height: 3.5rem;
+  padding-block: var(--espace-1);
+  border-bottom: 1px solid var(--couleur-bordure);
+  color: var(--couleur-texte);
+  font-size: var(--texte-tres-grand);
+  line-height: 1.2;
+  text-decoration: none;
+  transition: color var(--duree-courte-4) var(--courbe-standard);
+}
+
+.bib-entete__pages svg {
+  flex: none;
+  color: var(--_accent);
+  transition: translate var(--duree-courte-4) var(--courbe-standard);
+}
+
+.bib-entete__pages a:focus-visible svg {
+  translate: 4px 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bib-entete__pages a:hover {
+    color: var(--couleur-lien);
+  }
+
+  .bib-entete__pages a:hover svg {
+    translate: 4px 0;
+  }
+}
+
+/* Page courante : graisse et pastille, pas la seule couleur */
+.bib-entete__pages a[aria-current] {
+  font-weight: var(--graisse-forte);
+}
+
+.bib-entete__pages a[aria-current] > span::before {
+  content: '';
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: 0.625rem;
+  border-radius: 50%;
+  background-color: var(--bib-entete-courante, var(--rouge-orange));
+  vertical-align: 0.2em;
+}
+
+/* Action en fin de menu (sous 1200 px) : capsule pleine */
+.bib-entete__donner .bib-entete__action {
+  display: flex;
+  justify-content: space-between;
+  border-color: var(--bleu-fonce);
+  background-color: var(--bleu-fonce);
+  color: var(--couleur-sur-fonce);
+  font-size: var(--texte-courant);
+  font-weight: var(--graisse-forte);
+}
+
+.bib-entete__donner .bib-entete__action:hover {
+  background-color: var(--bleu-fonce-survol);
+}
+
+.bib-entete__donner .bib-entete__action:hover svg {
+  color: var(--rouge-orange);
+}
+
+/* « Afficher le menu » : mode recherche seulement */
+.bib-entete__deplier {
+  display: none;
+  justify-content: center;
+}
+
+.bib-entete__deplier button {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  min-height: var(--taille-cible);
+  padding: 0.375rem 1.25rem;
+  border: 0;
+  border-radius: var(--rayon-plein);
+  background: transparent;
+  color: var(--_accent);
+  font: inherit;
+  font-size: var(--texte-reduit);
+  font-weight: var(--graisse-forte);
+  cursor: pointer;
+  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+}
+
+.bib-entete__deplier svg {
+  transition: translate var(--duree-courte-4) var(--courbe-standard-deceleree);
+}
+
+.bib-entete__deplier button:focus-visible svg {
+  translate: 0 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bib-entete__deplier button:hover {
+    background-color: var(--_survol);
+  }
+
+  .bib-entete__deplier button:hover svg {
+    translate: 0 3px;
+  }
+}
+
+/* Poignée collée au bas de la feuille : un tapotement ferme ; au doigt, un glissé vers le haut aussi */
+.bib-entete__pied {
+  position: sticky;
+  bottom: 0;
+  margin-inline: calc(var(--espace-2) * -1);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  border-top: 1px solid var(--couleur-bordure);
+  background-color: var(--couleur-surface);
+}
+
+.bib-entete__poignee {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: var(--taille-cible);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.bib-entete__poignee span {
+  width: 2.5rem;
+  height: 0.3125rem;
+  border-radius: var(--rayon-plein);
+  background-color: var(--couleur-texte-secondaire);
+  transition: scale var(--duree-courte-4) var(--courbe-standard);
+}
+
+.bib-entete__poignee:active span {
+  scale: 1.2 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bib-entete__poignee:hover span {
+    scale: 1.2 1;
+  }
+}
+
+/* Mode recherche : la recherche seule, puis « Afficher le menu » et la poignée */
+.bib-entete__rideau[data-mode='recherche'] .bib-entete__feuille > :not(.bib-entete__groupe--recherche, .bib-entete__deplier, .bib-entete__pied) {
+  display: none;
+}
+
+.bib-entete__rideau[data-mode='recherche'] .bib-entete__feuille {
+  gap: var(--espace-1);
+  height: auto;
+  overflow: visible;
+}
+
+.bib-entete__rideau[data-mode='recherche'] .bib-entete__deplier {
+  display: flex;
+}
+
+/* ---- Focus ---- */
+.bib-entete :is(a, button):focus-visible {
+  outline: var(--focus-epaisseur) solid var(--couleur-focus);
+  outline-offset: var(--focus-retrait);
+}
+
+.bib-entete__pages a:focus-visible,
+.bib-entete__poignee:focus-visible {
+  outline-offset: calc(var(--focus-epaisseur) * -1);
+}
+
+/* ---- Largeurs ---- */
+@media (width >= 600px) {
+  .bib-entete__barre {
+    min-height: 64px;
+    padding-inline-start: 24px;
+  }
+
+  .bib-entete__feuille {
+    padding-inline: 24px;
+  }
+
+  .bib-entete__pied {
+    margin-inline: -24px;
+  }
+
+  .bib-entete__donner .bib-entete__action {
+    justify-self: center;
+    gap: var(--espace-4);
+    min-width: 20rem;
+  }
+}
+
+@media (width >= 900px) {
+  .bib-entete__institution img {
+    width: 140px;
+  }
+
+  .bib-entete__site img {
+    width: 6.5rem;
+  }
+
+  .bib-entete__feuille {
+    padding-inline: 40px;
+  }
+
+  .bib-entete__pied {
+    margin-inline: -40px;
+  }
+}
+
+/* Barre de bureau : la navigation et l'action dans la barre, la loupe seule ; le rideau se réduit à la
+   recherche (le bouton Menu reste avec bib-entete--menu-bureau) */
+@media (width >= 1200px) {
+  .bib-entete__barre,
+  .bib-entete[data-entete-pret] .bib-entete__barre {
+    flex-wrap: wrap;
+    gap: var(--espace-1);
+    min-height: 5rem;
+    padding-inline: 1.25rem;
+  }
+
+  .bib-entete__barre > * {
+    max-width: var(--largeur-max);
+  }
+
+  .bib-entete__marque {
+    flex: none;
+    gap: 16px;
+    margin-inline-end: auto;
+  }
+
+  .bib-entete__institution img {
+    width: 8.5rem;
+  }
+
+  .bib-entete__site {
+    padding-inline-start: 16px;
+    font-size: var(--texte-moyen);
+    line-height: 1.5;
+  }
+
+  .bib-entete__site img {
+    width: 7rem;
+  }
+
+  .bib-entete[data-entete-pret] .bib-entete__navigation {
+    display: block;
+  }
+
+  .bib-entete__navigation {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .bib-entete__navigation ul {
+    justify-content: flex-end;
+  }
+
+  .bib-entete__barre > .bib-entete__action {
+    display: inline-flex;
+  }
+
+  .bib-entete__bouton--menu,
+  .bib-entete__explorer,
+  .bib-entete__donner,
+  .bib-entete__pied,
+  .bib-entete__supplement {
+    display: none;
+  }
+
+  html:has(.bib-entete[data-ouvert]) {
+    overflow: visible;
+  }
+
+  .bib-entete__feuille {
+    gap: var(--espace-2);
+    height: auto;
+    max-height: calc(100dvh - var(--haut-menu));
+    padding: var(--espace-3) var(--gouttiere) var(--espace-4);
+  }
+
+  .bib-entete__feuille > * {
+    width: 100%;
+    max-width: 48rem;
+    margin-inline: auto;
+  }
+
+  /* Menu de bureau : le bouton Menu reste, et les groupes propres au site s'affichent sous la recherche */
+  .bib-entete--menu-bureau .bib-entete__bouton--menu {
+    display: inline-flex;
+  }
+
+  .bib-entete--menu-bureau .bib-entete__libelle-menu {
+    display: block;
+  }
+
+  .bib-entete--menu-bureau .bib-entete__supplement {
+    display: block;
+  }
+
+  .bib-entete--menu-bureau .bib-entete__feuille {
+    padding-inline: 64px;
+  }
+
+  .bib-entete--menu-bureau .bib-entete__feuille > * {
+    max-width: var(--largeur-max);
+  }
+
+  .bib-entete:not(.bib-entete--menu-bureau) .bib-entete__rideau[data-mode='recherche'] .bib-entete__deplier {
+    display: none;
+  }
+}
+
+/* ---- Variante bandeau : bandeau de couleur au-dessus de la barre ---- */
+.bib-entete--bandeau {
+  padding-block-start: var(--espace-1);
+  background: var(--bib-entete-bandeau, var(--jaune));
+}
+
+@media (width >= 1200px) {
+  .bib-entete--bandeau {
+    padding-block-start: var(--espace-2);
+  }
+
+  .bib-entete--bandeau .bib-entete__barre {
+    width: calc(100% - 2 * var(--gouttiere));
+    max-width: calc(var(--largeur-max) - 2 * var(--gouttiere));
+    margin-inline: auto;
+    padding-inline: var(--espace-3);
+    border-bottom: 0;
+    border-radius: var(--rayon-petit) var(--rayon-petit) 0 0;
+  }
+}
+
+/* ---- Variante superposée : sur la bannière de la page, dès 1200 px ---- */
+@media (width >= 1200px) {
+  .bib-entete--superpose .bib-entete__barre {
+    border-bottom: 0;
+    background-color: transparent;
+    color: var(--blanc-casse);
+    transition:
+      background-color var(--duree-moyenne-4) var(--courbe-emphase-deceleree),
+      box-shadow var(--duree-moyenne-4) var(--courbe-emphase-deceleree),
+      color var(--duree-courte-4) var(--courbe-emphase-deceleree);
+  }
+
+  /* Voile en pseudo-élément pour s'effacer en fondu : jamais sous 70 % derrière le texte (blanc à 6,6:1
+     environ même sur une photo blanche) */
+  .bib-entete--superpose .bib-entete__barre::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background-image: linear-gradient(to bottom, color-mix(in srgb, var(--bleu-fonce) 84%, transparent), color-mix(in srgb, var(--bleu-fonce) 70%, transparent));
+    pointer-events: none;
+    transition: opacity var(--duree-moyenne-4) var(--courbe-emphase-deceleree);
+  }
+
+  .bib-entete--superpose .bib-entete__institution img,
+  .bib-entete--superpose .bib-entete__site img {
+    filter: brightness(0) invert(1);
+    transition: filter var(--duree-moyenne-2) var(--courbe-standard);
+  }
+
+  .bib-entete--superpose:not([data-defile]) .bib-entete__navigation a {
+    color: inherit;
+  }
+
+  .bib-entete--superpose:not([data-defile]) .bib-entete__navigation a::before {
+    background-color: color-mix(in srgb, currentColor 14%, transparent);
+  }
+
+  .bib-entete--superpose:not([data-defile]) .bib-entete__navigation a[aria-current]::before {
+    background-color: color-mix(in srgb, currentColor 20%, transparent);
+  }
+
+  .bib-entete--superpose:not([data-defile]) .bib-entete__bouton:hover {
+    background-color: color-mix(in srgb, currentColor 14%, transparent);
+  }
+
+  .bib-entete--superpose:not([data-defile]) .bib-entete__barre > .bib-entete__action svg {
+    color: inherit;
+  }
+
+  /* Le bleu du focus se perd sur le voile sombre */
+  .bib-entete--superpose:not([data-defile]) .bib-entete__barre :focus-visible {
+    outline-color: currentColor;
+  }
+
+  .bib-entete--superpose[data-defile] .bib-entete__barre {
+    background-color: var(--couleur-surface);
+    box-shadow: var(--ombre-1);
+    color: var(--couleur-neutre-700);
+  }
+
+  .bib-entete--superpose[data-defile] .bib-entete__barre::before {
+    opacity: 0;
+  }
+
+  .bib-entete--superpose[data-defile] :is(.bib-entete__institution, .bib-entete__site) img {
+    filter: none;
+  }
+}
+
+/* ---- Mouvement : la feuille descend de derrière la barre, ses groupes suivent en léger décalage ;
+   fermeture plus brève, par le même chemin ---- */
+@media (prefers-reduced-motion: no-preference) {
+  .bib-entete__rideau,
+  .bib-entete__voile {
+    transition: display var(--duree-moyenne-1) allow-discrete;
+  }
+
+  .bib-entete__rideau[hidden] {
+    transition-duration: var(--duree-courte-4);
+  }
+
+  .bib-entete__feuille {
+    transition: translate var(--duree-moyenne-1) var(--courbe-emphase-deceleree);
+  }
+
+  .bib-entete__rideau[hidden] .bib-entete__feuille {
+    translate: 0 -100%;
+    transition-duration: var(--duree-courte-4);
+    transition-timing-function: var(--courbe-standard);
+  }
+
+  .bib-entete__feuille > :not(.bib-entete__pied) {
+    transition:
+      opacity var(--duree-moyenne-1) var(--courbe-emphase-deceleree),
+      translate var(--duree-moyenne-1) var(--courbe-emphase-deceleree);
+    transition-delay: var(--duree-courte-2);
+  }
+
+  .bib-entete__feuille > :nth-child(n + 2):not(.bib-entete__pied) {
+    transition-delay: calc(var(--duree-courte-2) + var(--duree-courte-1));
+  }
+
+  .bib-entete__rideau[hidden] .bib-entete__feuille > * {
+    opacity: 0;
+    transition-delay: 0s;
+    transition-duration: var(--duree-courte-3);
+  }
+
+  .bib-entete__voile {
+    transition:
+      opacity var(--duree-moyenne-1) var(--courbe-emphase-deceleree),
+      display var(--duree-moyenne-1) allow-discrete;
+  }
+
+  .bib-entete__voile[hidden] {
+    opacity: 0;
+    transition-duration: var(--duree-courte-4);
+  }
+
+  @starting-style {
+    .bib-entete__rideau:not([hidden]) .bib-entete__feuille {
+      translate: 0 -100%;
+    }
+
+    .bib-entete__rideau:not([hidden]) .bib-entete__feuille > :not(.bib-entete__pied) {
+      opacity: 0;
+      translate: 0 -0.5rem;
+    }
+
+    .bib-entete__voile:not([hidden]) {
+      opacity: 0;
+    }
+  }
+}
+
+/* ---- Couleurs forcées ---- */
+@media (forced-colors: active) {
+  .bib-entete__barre {
+    border-bottom: 1px solid CanvasText;
+  }
+
+  .bib-entete__navigation a[aria-current],
+  .bib-entete__pages a[aria-current] {
+    text-decoration: underline;
+  }
+
+  .bib-entete__navigation a:hover::before,
+  .bib-entete__navigation a[aria-current]::before {
+    border: 1px solid LinkText;
+  }
+
+  .bib-entete__donner .bib-entete__action {
+    border: 1px solid CanvasText;
+  }
+
+  /* Logos noirs sur fond système noir : plaque claire gardée telle quelle */
+  .bib-entete__institution,
+  .bib-entete__site:has(img) {
+    forced-color-adjust: none;
+    background-color: #fff;
+  }
+
+  .bib-entete :is(.bib-entete__institution, .bib-entete__site) img {
+    filter: none !important;
+  }
+}

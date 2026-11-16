@@ -1,0 +1,31 @@
+/*
+ * Sceau des bibliothèques de l'UdeM (le « U » entouré du nom en cercle) : deux images SVG
+ * empilées, le U et l'anneau de texte, plutôt qu'un SVG en ligne (l'anneau pèse 21 Ko : en fichier,
+ * le navigateur le garde en cache). Couleurs figées dans les fichiers (texte blanc : à poser sur
+ * fond foncé).
+ *
+ *   <span class="bib-sceau" role="img" aria-label="Les bibliothèques, Université de Montréal – Accueil">
+ *     <img class="bib-sceau__u" src="…/dist/bib-sceau-u.svg" alt="" width="302" height="302" loading="lazy">
+ *     <img class="bib-sceau__anneau" src="…/dist/bib-sceau-anneau.svg" alt="" width="302" height="302" loading="lazy">
+ *   </span>
+ *
+ * Le sceau est une image à nom accessible : le lien qui le contient n'a pas d'autre texte ; les
+ * deux <img> sont décoratives (alt vide). Facultatif : bib-sceau.min.js fait tourner le texte
+ * autour du U au survol ou au focus du lien qui contient le sceau.
+ */
+.bib-sceau {
+  display: block;
+  position: relative;
+}
+
+.bib-sceau img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* L'anneau par-dessus le U, au même endroit */
+.bib-sceau__anneau {
+  position: absolute;
+  inset: 0;
+}

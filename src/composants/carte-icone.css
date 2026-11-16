@@ -1,0 +1,212 @@
+/*
+ * Carte-lien pleine couleur avec icône : 353 × 400 px au moins (--petite : 290 × 332), s'élargit de 10 % au
+ * survol ; les textes gardent leur largeur de repos (max-width calculée en CSS, sans saut). Construite sur le
+ * motif de carte-lien.css (à charger aussi).
+ *
+ *   <div class="bib-carte-icone bib-carte-icone--bleu-principal bib-carte-lien bib-anneau-carte">
+ *     <div class="bib-carte-icone__icone"><svg width="55" height="55" aria-hidden="true">…</svg></div>
+ *     <div class="bib-carte-icone__titre"><a class="bib-lien-etire" href="/services/" aria-describedby="plus-1">Services</a></div>
+ *     <div class="bib-carte-icone__pied">
+ *       <div class="bib-carte-icone__plus" id="plus-1" aria-hidden="true">Voir les services</div>
+ *       <span class="bib-pastille-fleche bib-carte-icone__pastille" aria-hidden="true"><span class="bib-pastille-fleche__fleche"></span></span>
+ *     </div>
+ *   </div>
+ *
+ * Couleurs : --bleu-principal, --vert-fonce, --rose-300, --jaune, --neutre (blanc à contour ; ajouter surface-claire sur les trois
+ * dernières : fonds clairs). Contrastes calculés (WCAG 2.x) : texte blanc 7,10:1 sur bleu principal, 11,26:1
+ * sur vert foncé, plus au survol ; bleu foncé ≥ 11:1 sur rose 300 et sur jaune ; la flèche, qui distingue
+ * lien interne et externe, passe au rouge orangé foncé (3,74:1) sur la pastille rose 500.
+ *
+ * Un seul lien, sur le titre ; le texte d'appel (.bib-carte-icone__plus) devient sa description
+ * (aria-describedby) et est masqué du parcours des lecteurs d'écran, pour ne pas être lu deux fois. Sans
+ * lien (tuile d'une page à venir) : ni lien ni pastille, la carte ne s'élargit pas au survol, et le texte
+ * d'appel (« Bientôt ») reste lu. Sous 600 px, en carrousel : carte plus petite (78vw, 17rem de haut) qui
+ * laisse voir la suivante. La variante pleine largeur est la carte compacte (carte-compacte.css).
+ */
+.bib-carte-icone {
+  --_largeur: min(78vw, 353px);
+  --_hauteur: 17rem;
+  --_marge: 1.25rem;
+  /* Largeur de repos des textes, hors marges (et hors pastille pour moreText) */
+  --_texte: calc(var(--_largeur) - 2 * var(--_marge));
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: var(--_largeur);
+  /* Hauteur minimale : avec le texte agrandi à 200 % (WCAG 1.4.4), le titre
+     et l'appel sortaient de la carte et chevauchaient le bloc suivant */
+  min-height: var(--_hauteur);
+  padding: var(--_marge);
+  border-radius: var(--rayon-carte);
+  background-color: var(--_fond);
+  color: var(--_encre);
+  /* Exception voulue à « transform et opacity seulement » : l'élargissement
+     de la source déplace les cartes voisines, ce que transform ne fait pas.
+     La règle globale de mouvement réduit coupe cette transition. */
+  transition: width var(--duree-moyenne-1) var(--courbe-emphase);
+}
+
+.bib-carte-icone.bib-carte-icone--petite {
+  --_largeur: min(78vw, 290px);
+  --_hauteur: 16rem;
+}
+
+@media (width >= 600px) {
+  .bib-carte-icone {
+    --_largeur: 353px;
+    --_hauteur: 400px;
+    --_marge: var(--espace-carte);
+  }
+
+  .bib-carte-icone.bib-carte-icone--petite {
+    --_largeur: 290px;
+    --_hauteur: 332px;
+  }
+}
+
+.bib-carte-icone:not(.bib-carte-icone--sans-lien):hover,
+.bib-carte-icone:not(.bib-carte-icone--sans-lien):focus-within {
+  width: calc(var(--_largeur) * 1.1);
+}
+
+/* Fond de survol en calque : on anime son opacité plutôt que la couleur */
+.bib-carte-icone::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-dessous);
+  border-radius: inherit;
+  background-color: var(--_survol);
+  opacity: 0;
+  transition: opacity var(--duree-moyenne-2) var(--courbe-standard);
+}
+
+.bib-carte-icone:not(.bib-carte-icone--sans-lien):hover::before {
+  opacity: 1;
+}
+
+.bib-carte-icone--bleu-principal,
+.bib-carte-icone--bleu-principal {
+  --_fond: var(--bleu-principal);
+  --_survol: var(--bleu-principal-fonce);
+  --_encre: var(--couleur-sur-fonce);
+  --_icone: color-mix(in srgb, var(--couleur-sur-fonce) 53%, transparent);
+  --_fleche: var(--couleur-sur-fonce);
+}
+
+.bib-carte-icone--vert-fonce {
+  --_fond: var(--vert-fonce);
+  --_survol: color-mix(in srgb, var(--vert-fonce) 70%, var(--couleur-voile));
+  --_encre: var(--couleur-sur-fonce);
+  --_icone: color-mix(in srgb, var(--couleur-sur-fonce) 53%, transparent);
+  --_fleche: var(--couleur-sur-fonce);
+}
+
+.bib-carte-icone--rose-300 {
+  --_fond: var(--rose-300);
+  --_survol: var(--rose-500);
+  --_encre: var(--couleur-texte);
+  --_icone: color-mix(in srgb, var(--rouge-orange) 53%, transparent);
+  --_fleche: var(--rouge-orange-texte-sur-clair);
+}
+
+/* Le #ffdb81 et le #bc8800 que la source écrivait en dur, dérivés du jaune */
+.bib-carte-icone--jaune {
+  --_fond: var(--jaune);
+  --_survol: color-mix(in srgb, var(--jaune) 68%, var(--couleur-surface));
+  --_encre: var(--couleur-texte);
+  --_icone: color-mix(in srgb, var(--jaune) 74%, var(--couleur-voile));
+  --_fleche: var(--couleur-texte);
+}
+
+/* Pastille pleine de la teinte de survol, flèche de la couleur de la carte */
+.bib-carte-icone {
+  --pastille-fond: var(--_survol);
+  --pastille-encre: var(--_fleche);
+}
+
+/* Blanc (neutre) : surface blanche à contour gris (3,7:1, WCAG 1.4.11), icône bleu principal, pastille à
+   contour qui se remplit de bleu foncé au survol et au focus, comme la carte compacte neutre */
+.bib-carte-icone.bib-carte-icone--neutre {
+  --_fond: var(--couleur-surface);
+  --_survol: color-mix(in srgb, var(--couleur-texte) 4%, var(--couleur-surface));
+  --_encre: var(--couleur-texte);
+  --_icone: var(--bleu-principal);
+  --_fleche: var(--couleur-texte);
+  --pastille-contour: var(--couleur-contour);
+  --pastille-fond: var(--couleur-surface);
+  --pastille-encre: var(--couleur-texte);
+  --pastille-contour-actif: var(--bib-pastille-active-fond, var(--couleur-fond-fort));
+  --pastille-fond-actif: var(--bib-pastille-active-fond, var(--couleur-fond-fort));
+  --pastille-encre-actif: var(--bib-pastille-active-encre, var(--couleur-sur-fonce));
+  --carte-anneau-interieur: var(--couleur-texte);
+  box-shadow: inset 0 0 0 1px var(--couleur-contour);
+}
+
+.bib-carte-icone__pastille {
+  margin-inline-start: auto;
+}
+
+.bib-carte-icone__icone {
+  display: flex;
+  height: 2.5rem;
+  color: var(--_icone);
+}
+
+.bib-carte-icone__icone > svg {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.bib-carte-icone__titre {
+  flex-grow: 1;
+  max-width: var(--_texte);
+  padding-block-start: var(--espace-2);
+  font-size: var(--texte-grand);
+  font-weight: var(--graisse-moyenne);
+  line-height: 1.2;
+}
+
+@media (width >= 600px) {
+  .bib-carte-icone__icone {
+    height: 55px;
+  }
+
+  .bib-carte-icone__icone > svg {
+    width: 55px;
+    height: 55px;
+  }
+
+  .bib-carte-icone__titre {
+    padding-block-start: 1.6667rem;
+    font-size: 1.75rem;
+  }
+}
+
+.bib-carte-icone__pied {
+  display: flex;
+  align-items: center;
+  gap: var(--espace-2);
+  min-height: 55px;
+}
+
+.bib-carte-icone__plus {
+  flex-grow: 1;
+  min-width: 0;
+  max-width: calc(var(--_texte) - var(--taille-pastille) - 1rem);
+  font-size: var(--texte-courant);
+  font-weight: var(--graisse-normale);
+  line-height: 1.6;
+}
+
+@media (forced-colors: active) {
+  .bib-carte-icone {
+    border: 1px solid CanvasText;
+  }
+}
+
+/* Le niveau de titre est sémantique ; sa taille reste celle de la carte. */
+.bib-carte-icone__titre { margin: 0; }

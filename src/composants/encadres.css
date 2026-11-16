@@ -1,0 +1,86 @@
+/*
+ * Encadrés de couleur : un par rangée, deux dès 900 px, même hauteur, sur le fond choisi, avec une
+ * icône facultative à côté du titre.
+ *
+ *   <div class="bib-encadres" style="--bib-encadre-fond: var(--rose-300)">
+ *     <div class="bib-encadre surface-claire">
+ *       <span class="bib-encadre__icone" aria-hidden="true"><svg width="50" height="50" fill="var(--rouge-orange)">…</svg></span>
+ *       <h3>Titre</h3>
+ *       <p>Texte…</p>
+ *     </div>
+ *   </div>
+ *
+ * Le titre (h2 à h6, ou .bib-encadre__titre) colle au haut de l'encadré, partage la première rangée
+ * avec l'icône et prend l'apparence des titres (Lora, 1,25rem puis 1,875rem dès 900 px). La classe
+ * surface-claire garde les couleurs du texte sur les différentes bandes. À ne pas confondre avec
+ * l'alerte, qui met en avant une information : l'encadré met en couleur un bloc de contenu.
+ */
+.bib-encadres {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--espace-grille);
+  margin-block: var(--espace-bloc);
+}
+
+@media (width >= 900px) {
+  .bib-encadres {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.bib-encadre {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-content: start;
+  column-gap: var(--espace-element);
+  padding: var(--espace-carte);
+  border-radius: var(--rayon-carte);
+  background-color: var(--bib-encadre-fond, transparent);
+}
+
+.bib-encadre > * {
+  grid-column: 1 / -1;
+}
+
+/* Le titre et l'icône partagent la première rangée */
+.bib-encadre > .bib-encadre__icone {
+  display: flex;
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+}
+
+.bib-encadre > .bib-encadre__icone + * {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.bib-encadre > .bib-encadre__icone + *,
+.bib-encadre > :first-child {
+  margin-top: 0;
+}
+
+/* Titre : apparence h4 (deux classes : l'emporte sur les titres de la page) */
+.bib-encadre > :is(h2, h3, h4, h5, h6, .bib-encadre__titre) {
+  margin-bottom: 0.5em;
+  font-family: var(--police-serif);
+  font-size: var(--bib-encadre-taille-titre, var(--texte-grand));
+  font-weight: var(--graisse-normale);
+  font-variant-numeric: lining-nums proportional-nums;
+  line-height: 1.2;
+  color: inherit;
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+}
+
+@media (width >= 900px) {
+  .bib-encadre > :is(h2, h3, h4, h5, h6, .bib-encadre__titre) {
+    font-size: var(--bib-encadre-taille-titre, 1.875rem);
+  }
+}
+
+@media (forced-colors: active) {
+  .bib-encadre {
+    border: 1px solid CanvasText;
+  }
+}

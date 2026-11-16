@@ -1,0 +1,1 @@
+.bib-colonne-decalee{display:flex;flex-flow:row wrap;min-width:0}.bib-colonne-decalee__colonne{display:flex;flex-direction:column;box-sizing:border-box;width:calc(100% * (12 - 2 * var(--bib-decalage, 0)) / 12);min-width:0;margin-left:calc(100% * var(--bib-decalage, 0) / 12)}

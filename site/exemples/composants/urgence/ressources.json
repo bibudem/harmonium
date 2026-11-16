@@ -1,0 +1,13 @@
+{
+  "styles": [],
+  "scripts": [
+    {
+      "src": "@@dist/udem-urgence.min.js",
+      "attributs": "type=\"module\""
+    },
+    {
+      "src": "@@/exemples/composants/urgence/script-1.js",
+      "attributs": ""
+    }
+  ]
+}

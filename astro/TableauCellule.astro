@@ -1,0 +1,37 @@
+---
+/*
+ * <TableauCellule> : une cellule. Un <td> marqué data-cellule, que <TableauEntete> change en
+ * <th scope="col"> ; component="th" donne un en-tête de rangée (scope="row" par défaut).
+ */
+import '../src/composants/tableau.css'
+import { classes, fusionnerStyles } from './styles.ts'
+
+interface Props {
+  align?: 'left' | 'center' | 'right' | 'justify' | 'inherit'
+  component?: 'td' | 'th'
+  scope?: 'col' | 'row' | 'colgroup' | 'rowgroup'
+  colSpan?: number
+  rowSpan?: number
+  class?: string
+  className?: string
+  style?: string | Record<string, string | number>
+  [attribut: string]: unknown
+}
+
+const { align, component = 'td', scope, colSpan, rowSpan, class: classe, className, style, variant: _variante, padding: _rembourrage, ...reste } = Astro.props
+const estEntete = component === 'th'
+const ALIGNEMENTS: Record<string, string> = { center: 'bib-tableau__cellule--centre', right: 'bib-tableau__cellule--droite', justify: 'bib-tableau__cellule--justifie' }
+const alignement = align ? ALIGNEMENTS[align] : undefined
+---
+
+{
+  estEntete ? (
+    <th scope={scope ?? 'row'} colspan={colSpan} rowspan={rowSpan} class:list={['bib-tableau__cellule', alignement, classes(classe, className)]} style={fusionnerStyles(style)} {...reste}>
+      <slot />
+    </th>
+  ) : (
+    <td data-cellule scope={scope} colspan={colSpan} rowspan={rowSpan} class:list={['bib-tableau__cellule', alignement, classes(classe, className)]} style={fusionnerStyles(style)} {...reste}>
+      <slot />
+    </td>
+  )
+}

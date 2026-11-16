@@ -1,0 +1,84 @@
+/*
+ * Carte-lien bleue avec icône : bleu principal (survol : bleu principal foncé), 250 à 400 px de large puis sans
+ * limite dès 600 px, marges --espace-carte, icône de 55 px, titre de 1,75rem, pastille fléchée en bas à
+ * droite. Texte blanc : 7,10:1 au repos, 10,3:1 au survol. Construite sur le motif de carte-lien.css (à
+ * charger aussi).
+ *
+ *   <div class="bib-carte-texte bib-carte-lien bib-anneau-carte">
+ *     <div class="bib-carte-texte__icone"><svg width="55" height="55" aria-hidden="true">…</svg></div>
+ *     <div class="bib-carte-texte__titre"><a class="bib-lien-etire" href="/services/">Services</a></div>
+ *     <div class="bib-carte-texte__pied"><span class="bib-pastille-fleche" aria-hidden="true"><span class="bib-pastille-fleche__fleche"></span></span></div>
+ *   </div>
+ *
+ * Un seul lien, sur le titre : son ::after couvre la carte, son nom accessible est le titre.
+ */
+.bib-carte-texte {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: var(--espace-3);
+  box-sizing: border-box;
+  min-width: min(250px, 100%);
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
+  max-width: 400px;
+  height: 100%;
+  margin-inline: auto;
+  padding: var(--espace-carte);
+  border-radius: var(--rayon-carte);
+  background-color: var(--bleu-principal);
+  color: var(--couleur-sur-fonce);
+}
+
+@media (width >= 600px) {
+  .bib-carte-texte {
+    max-width: none;
+  }
+}
+
+/* Fond de survol en calque : on anime son opacité plutôt que la couleur */
+.bib-carte-texte::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-dessous);
+  border-radius: inherit;
+  background-color: var(--bleu-principal-fonce);
+  opacity: 0;
+  transition: opacity var(--duree-moyenne-2) var(--courbe-standard);
+}
+
+.bib-carte-texte:hover::before {
+  opacity: 1;
+}
+
+.bib-carte-texte__icone {
+  display: flex;
+  color: color-mix(in srgb, var(--couleur-sur-fonce) 53%, transparent);
+}
+
+.bib-carte-texte__titre {
+  font-size: 1.75rem;
+  font-weight: var(--graisse-moyenne);
+  line-height: 1.2;
+}
+
+.bib-carte-texte__pied {
+  display: flex;
+  flex-grow: 1;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+/* Pastille pleine, plus foncée que la carte (PastilleFleche) */
+.bib-carte-texte {
+  --pastille-fond: var(--bleu-principal-fonce);
+}
+
+@media (forced-colors: active) {
+  .bib-carte-texte {
+    border: 1px solid CanvasText;
+  }
+}

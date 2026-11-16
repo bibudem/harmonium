@@ -1,0 +1,32 @@
+---
+/*
+ * <BoutonsCarrousel> : les flèches Précédent et Suivant d'un carrousel, avec la région role="status" qui
+ * annonce les cartes visibles après un clic. Masquées (attribut hidden) tant que bib-carrousel.min.js n'a pas
+ * vu que la rangée défile : sans JavaScript, la rangée se parcourt au doigt ou à la barre de défilement.
+ */
+import '../src/composants/carrousel.css'
+import { classes } from './styles.ts'
+interface Props {
+  /** id de la piste qu'elles font défiler (aria-controls) */
+  piste: string
+  class?: string
+  /** Contenu repris de React */
+  className?: string
+}
+
+// `reste` porte l'attribut de portée du parent : son style s'applique à `class`
+const { piste, class: classe, className, ...reste } = Astro.props
+const FLECHE = 'm16.492 24.587 7.031-7.031a.586.586 0 0 1 .828.828l-6.03 6.031h15.772a.586.586 0 1 1 0 1.172H18.321l6.03 6.031a.586.586 0 0 1-.828.828l-7.031-7.03a.586.586 0 0 1 0-.829z'
+---
+
+<div class:list={['bib-carrousel__commandes', classes(classe, className)]} hidden data-commandes {...reste}>
+  <button type="button" class="bib-carrousel__commande" aria-controls={piste} aria-disabled="true" data-precedent>
+    <svg viewBox="0 0 50 50" width="50" height="50" aria-hidden="true" focusable="false"><circle cx="25" cy="25" r="25" opacity=".1"></circle><path d={FLECHE}></path></svg>
+    <span class="bib-masque">Cartes précédentes</span>
+  </button>
+  <button type="button" class="bib-carrousel__commande" aria-controls={piste} data-suivant>
+    <svg viewBox="0 0 50 50" width="50" height="50" aria-hidden="true" focusable="false" class="bib-carrousel__vers-droite"><circle cx="25" cy="25" r="25" opacity=".1"></circle><path d={FLECHE}></path></svg>
+    <span class="bib-masque">Cartes suivantes</span>
+  </button>
+  <span class="bib-masque" role="status" data-position></span>
+</div>
