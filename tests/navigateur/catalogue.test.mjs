@@ -46,7 +46,18 @@ test('toutes les pages : noms, rôles, contrastes et structure WCAG A/AA', async
     assert.deepEqual(violations, [], chemin)
     await page.setViewportSize({ width: 390, height: 844 })
     await page.evaluate(() => new Promise((resoudre) => requestAnimationFrame(() => requestAnimationFrame(resoudre))))
-    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${chemin} déborde sur mobile`)
+    const debord = await page.evaluate(() => {
+      if (document.documentElement.scrollWidth <= innerWidth) return null
+      // Nomme les éléments qui dépassent sans être contenus par une zone qui défile
+      const fautifs = [...document.querySelectorAll('body *')].filter((e) => {
+        const r = e.getBoundingClientRect()
+        if (!r.width || r.right <= innerWidth + 0.5) return false
+        for (let a = e.parentElement; a; a = a.parentElement) if (getComputedStyle(a).overflowX !== 'visible') return false
+        return true
+      }).slice(-5).map((e) => `${e.tagName.toLowerCase()}.${[...e.classList].join('.')} (${Math.round(e.getBoundingClientRect().right)} px) « ${e.textContent.trim().slice(0, 40)} »`)
+      return `${document.documentElement.scrollWidth} px pour ${innerWidth} : ${fautifs.join(' ; ') || 'élément non trouvé'}`
+    })
+    assert.equal(debord, null, `${chemin} déborde sur mobile`)
     await page.setViewportSize({ width: 1440, height: 1000 })
   }
   assert.deepEqual(erreurs, [])
