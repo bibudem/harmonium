@@ -4,9 +4,17 @@ description: "Phosphor pour l’interface et quelques signes propres aux bibliot
 fichiers: "`harmonium/astro/IconeSvg.astro` · `bib-icone-svg.min.css`"
 ---
 
+## Phosphor {#phosphor}
+
+Les icônes d’interface viennent de Phosphor (tracés de 256 × 256, `viewBox="0 0 256 256"`).
+
+- [Site de Phosphor](https://phosphoricons.com/) : chercher une icône, la copier en SVG.
+- [Phosphor dans Figma](https://www.figma.com/community/file/903830135544202908/Phosphor-Icons) : le fichier communautaire, à dupliquer dans son espace de travail. Le [module Figma](https://www.figma.com/community/plugin/898620911119764089/Phosphor-Icons) insère une icône directement dans une maquette.
+
 ## Usage {#usage}
 
-- Employer une même icône pour une même action. Taille courante : 24 px.
+- Employer une même icône pour une même action.
+- Tailles : `--taille-icone-petite` (1 rem, dans le texte), `--taille-icone-moyenne` (1,25 rem, commande compacte), `--taille-icone` (1,5 rem, la taille courante) et `--taille-icone-grande` (2 rem, pastille ou carte).
 - Utiliser `currentColor` pour suivre la couleur du contexte.
 - Une commande à icône seule garde un nom accessible : « Rechercher », « Fermer »…
 - Préférer un libellé visible aux symboles ambigus. Ne pas compter uniquement sur une infobulle.

@@ -1,5 +1,5 @@
 ---
-titre: Identité des sites des bibliothèques
+titre: Identité
 description: >-
   Les signatures qui identifient les bibliothèques de l’UdeM et leurs sites :
   logos de l’Université, des bibliothèques et des services, avec leurs variantes
@@ -46,6 +46,11 @@ blocs:
       largeur: 302
       hauteur: 302
       fond: fonce
+    - fichier: '@@dist/logo-bibliotheques-sceau-noir.svg'
+      nom: 'Les bibliothèques, Université de Montréal'
+      libelle: Bibliothèques · sceau · fond clair · SVG
+      largeur: 302
+      hauteur: 302
 ---
 
 Les fichiers SVG ci-dessous sont les fichiers de référence, à employer tels quels. Ils sont disponibles dans `dist/`.
@@ -62,22 +67,22 @@ Le logo de l’Université marque l’appartenance institutionnelle. Il se place
 
 ::logos[universite]
 
-## Signatures des sites de services {#services}
+## Signatures des autres sites {#services}
 
-Ces signatures identifient les services concernés. Privilégier les compositions horizontales dans les en-têtes ; conserver le nom du service et son rattachement aux bibliothèques.
+Ces signatures identifient un site des bibliothèques autre que le site principal : un service, une collection ou une plateforme (Studio•bib, Papyrus, collections spéciales…). Privilégier les compositions horizontales dans les en-têtes ; conserver le nom inscrit dans la signature et son rattachement aux bibliothèques.
 
 ::logos[services]
 
 ## Sceau {#sceau}
 
-Le sceau est un repère complémentaire, utilisé notamment dans le pied de page. Son anneau de texte est blanc : il se pose toujours sur un fond foncé. Il ne remplace pas la signature horizontale. Pour un sceau animé et lié, voir le composant [Sceau](@@/composants/sceau.html).
+Le sceau est un repère complémentaire, utilisé notamment dans le pied de page. Il existe en deux versions : anneau de texte blanc sur fond foncé, anneau noir sur fond clair. Il ne remplace pas la signature horizontale. Pour un sceau animé et lié, voir le composant [Sceau](@@/composants/sceau.html).
 
 ::logos[compacts]
 
 ## Utiliser les logos {#usage}
 
 -   Choisir la signature horizontale en premier, avec une variante adaptée au fond. Préserver les proportions et laisser un espace libre autour du dessin.
--   Utiliser le fichier correspondant au service. Ne pas recomposer une signature en collant un nom à un logo existant.
+-   Utiliser le fichier correspondant au site. Ne pas recomposer une signature en collant un nom à un logo existant.
 -   Ne pas déformer, recadrer, recolorer ou ajouter d’effets aux fichiers. Les couleurs des SVG restent celles des sources.
 -   Sur une page officielle, respecter les règles d’identification de l’Université. Le [guide de marque de l’UdeM](https://marque.umontreal.ca/) reste la référence pour les versions autorisées, les fonds et les espaces de protection.
 

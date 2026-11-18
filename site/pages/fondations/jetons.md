@@ -32,7 +32,7 @@ Le fichier définit les jetons sur `:root`. Il ne change aucun style à lui seul
   background: var(--couleur-surface);
   color: var(--couleur-texte);
   font-family: var(--police-sans);
-  transition: box-shadow var(--duree-courte-4) var(--courbe-standard);
+  transition: box-shadow var(--duree-courte) var(--courbe-standard);
 }
 .ma-carte:hover { box-shadow: var(--ombre-2); }
 ```

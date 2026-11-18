@@ -23,7 +23,3 @@ Ne pas commencer par « Image de ». Une légende donne le contexte ou le crédi
 ```
 
 Conserver les dimensions intrinsèques et appliquer `max-width: 100%; height: auto` dans la présentation. Réserver le chargement différé aux images hors du premier écran. Fournir des sources adaptées à l’écran lorsque nécessaire.
-
-## Logos et icônes {#signatures}
-
-Les [logos](@@/fondations/identite.html) conservent leurs tracés et leurs couleurs. Les [icônes](@@/fondations/icones.html) décoratives restent cachées aux technologies d’assistance ; une commande à icône seule possède un nom accessible.
