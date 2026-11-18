@@ -1,2 +1,2 @@
 /* Exemple d'habillage aux couleurs d'un site */
-      bib-consentement { --bib-consentement-bouton-fond: #0b113a; --bib-consentement-bouton-survol: #0057ac; }
+      bib-consentement { --bib-consentement-bouton-fond: var(--bleu-fonce); --bib-consentement-bouton-survol: var(--bleu-principal); }

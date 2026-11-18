@@ -3,6 +3,7 @@ titre: "Pied de page"
 description: "Le pied de page des sites des bibliothèques : le titre, deux colonnes de liens (« Besoin d’aide? », « Sites connexes »), le sceau, puis une barre du bas avec la licence et les liens légaux. Sous 900 px, tout s’empile et les colonnes se replient."
 fichiers: "`harmonium/astro/PiedDePage.astro` · `bib-pied-de-page.min.css` · `bib-pied-de-page.min.js` (facultatif)"
 ressources: "composants/pied-de-page"
+vignette: place
 ---
 
 ## Aperçu {#apercu}
@@ -80,6 +81,10 @@ Le bouton « Paramètres des témoins » (`data-parametres-temoins`) émet l’�
 
 Le [sceau](@@/composants/sceau.html) et la [licence](@@/composants/licence.html) sont des composants à part entière.
 
+### Variables d’habillage {#variables}
+
+{{habillage-pied-de-page}}
+
 ## Quand l’utiliser {#quand}
 
 ### À utiliser pour
@@ -108,7 +113,7 @@ Le [sceau](@@/composants/sceau.html) et la [licence](@@/composants/licence.html)
 -   **Licence** : le lien porte seulement sur le texte ; les logos CC, décoratifs, sont hors du lien. Il n’ouvre plus de nouvel onglet sans le dire.
 -   **Mouvement** : ouverture du volet animée seulement après un clic, jamais au chargement ; coupée si la personne réduit les animations, comme la rotation du sceau (2.3.3).
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Garder des libellés de liens explicites ; une icône seule doit recevoir un `libelle`, qui devient son nom.
 -   Ne pas ajouter de second `<footer>` hors de `<main>` : il créerait un second repère `contentinfo`.

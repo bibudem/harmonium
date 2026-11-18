@@ -39,6 +39,10 @@ import RetourHaut from 'harmonium/astro/RetourHaut.astro'
 
 **Le script est nécessaire à l’affichage.** `bib-retour-haut.min.js` pose `[data-visible]` quand on a défilé de plus d’un écran et demi. Sans lui, le bouton reste masqué (le défilement natif suffit : Début, ou le lien d’évitement). Sous 900 px, il se retire aussi après 2,5 s sans défilement, sauf s’il a le focus, le survol ou le toucher.
 
+### Variables d’habillage {#variables}
+
+{{habillage-retour-haut}}
+
 ## Quand l’utiliser {#quand}
 
 ### À utiliser pour
@@ -66,7 +70,7 @@ import RetourHaut from 'harmonium/astro/RetourHaut.astro'
 -   **Mouvement réduit** : le retour en haut est instantané (règle globale `scroll-behavior`), l’apparition sans glissement (2.3.3).
 -   **Sans JavaScript** : il reste masqué ; la touche Début et le lien d’évitement suffisent.
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Garder un lien d’évitement en tout début de page : c’est lui que le Tab atteint après le retour.
 -   Laisser une marge à droite du texte (au moins 40 px dès 900 px) : l’onglet s’y loge sans rien couvrir.

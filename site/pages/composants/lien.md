@@ -40,24 +40,28 @@ Habillage : `--bib-lien-couleur` et `--bib-lien-couleur-survol` (ceux des liens 
 ---
 import Lien from 'harmonium/astro/Lien.astro'
 ---
-<Lien to="/services/">Voir les services</Lien>
-<Lien to="/services/" Icon>Voir les services</Lien>
-<Lien to="https://exemple.ca/" flecheExterne>Autre site</Lien>
+<Lien href="/services/">Voir les services</Lien>
+<Lien href="/services/" Icone>Voir les services</Lien>
+<Lien href="https://exemple.ca/" flecheExterne>Autre site</Lien>
 ```
 
 | Propriété | Rôle | Défaut |
 | --- | --- | --- |
-| to, href | Adresse ; `href` est accepté en repli de `to`. |  |
-| Icon | `true` pour la flèche → ; sinon un composant d’icône, rendu avec `iconProps`. |  |
+| href | Adresse du lien. |  |
+| Icone | `true` pour la flèche → ; sinon un composant d’icône, rendu avec `proprietesIcone`. |  |
 | flecheExterne | Un lien vers un autre site (hors famille des bibliothèques) porte la flèche ↗ et l’annonce « (lien externe) » ; jamais pour un PDF, un courriel ni un téléphone. | non |
 | target, rel | `target="_blank"` reçoit `rel="noopener"` ; un PDF s’ouvre dans un nouvel onglet. |  |
+
+### Variables d’habillage {#variables}
+
+{{habillage-lien}}
 
 ## Quand l’utiliser {#quand}
 
 ### À utiliser pour
 
 -   Renvoyer vers une page, un document ou un autre site au fil du texte.
--   Un lien isolé sous un bloc (« Toutes les heures d’ouverture → »), avec l’icône flèche (`Icon`).
+-   Un lien isolé sous un bloc (« Toutes les heures d’ouverture → »), avec l’icône flèche (`Icone`).
 
 ### À éviter
 
@@ -75,7 +79,7 @@ import Lien from 'harmonium/astro/Lien.astro'
 -   **Clavier et focus** : un `<a href>` ordinaire, atteint par Tab, avec le contour de focus du site (2.1.1, 2.4.7).
 -   **Contraste** : `--couleur-lien` (bleu principal) sur fond clair dépasse 4,5:1 (1.4.3).
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Écrire un texte de lien qui dit où il mène : « conditions de prêt », jamais « cliquez ici » ni une adresse brute (2.4.4).
 -   Ne pas ouvrir de nouvel onglet sans raison ; s’il le faut, passer `target="_blank"` : l’annonce est ajoutée seule.

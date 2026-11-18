@@ -27,20 +27,25 @@ ressources: "composants/modalites"
 ```
 ---
 import Modalites from 'harmonium/astro/Modalites.astro'
+import Modalite from 'harmonium/astro/Modalite.astro'
 ---
 <Modalites>
-  <Modalite Icon={BooksIcon}>Nombre maximum de documents : 100</Modalite>
+  <Modalite Icone={BooksIcon}>Nombre maximum de documents : 100</Modalite>
   <Modalite><svg slot="icone" …></svg>Icône sur mesure</Modalite>
 </Modalites>
 ```
 
 | Propriété | Rôle | Défaut |
 | --- | --- | --- |
-| `Icon` | (`Modalite`) Un composant d’icône, rendu avec `size` et `color`. Une icône déjà prête (SVG, planche d’icônes du site) passe dans le slot `icone`, qui l’emporte. |  |
+| `Icone` | (`Modalite`) Un composant d’icône, rendu avec `size` et `color`. Une icône déjà prête (SVG, planche d’icônes du site) passe dans le slot `icone`, qui l’emporte. |  |
 | `taille` | (`Modalite`) Taille de l’icône en pixels. | `32` |
 | `couleur` | (`Modalite`) Couleur CSS de l’icône, de préférence un jeton. | `currentColor` |
 
 L’icône vient toujours du site : Harmonium n’impose aucune bibliothèque d’icônes.
+
+### Variables d’habillage {#variables}
+
+{{habillage-modalites}}
 
 ## Quand l’utiliser {#quand}
 
@@ -65,7 +70,7 @@ L’icône vient toujours du site : Harmonium n’impose aucune bibliothèque d�
 -   **Texte agrandi et 320 px** : le texte passe à la ligne et coupe au besoin un long mot (adresse, URL) ; rien ne déborde à 200 % (1.4.4, 1.4.10).
 -   **Couleurs forcées** : l’icône suit la couleur du texte par défaut (`currentColor`) et reste visible.
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Écrire chaque ligne pour qu’elle se suffise sans l’icône : « Durée du prêt : 3 jours », pas « 3 jours » seul.
 -   Choisir une icône dont le sens rejoint le texte, et garder la même icône pour la même idée d’une page à l’autre.

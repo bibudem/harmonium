@@ -33,24 +33,29 @@ Habillage : dès 900 px : texte sur 5 colonnes de 12, espace d’une colonne, im
 ```
 ---
 import BandeImageTexte from 'harmonium/astro/BandeImageTexte.astro'
+import Bouton from 'harmonium/astro/Bouton.astro'
 ---
-<BandeImageTexte Image={photo} align="left">
+<BandeImageTexte image={photo} alignement="gauche">
   <h3>Des espaces pour tous</h3>
   <p>Réservez une salle en quelques clics.</p>
-  <Bouton slot="footer" href="/services/">Réserver</Bouton>
+  <Bouton slot="pied" href="/services/">Réserver</Bouton>
 </BandeImageTexte>
 ```
 
 | Propriété | Rôle | Défaut |
 | --- | --- | --- |
-| Image | Image importée (formats et tailles d’astro:assets) ou adresse. Obligatoire. |  |
-| align | `left` : image à droite ; `right` : image à gauche. | `left` |
+| image | Image importée (formats et tailles d’astro:assets) ou adresse. Obligatoire. |  |
+| alignement | `gauche` : texte à gauche, image à droite ; `droite` : l’inverse. | `gauche` |
 | alt | Texte de remplacement, seulement si l’image porte un message ; décorative par défaut. | vide |
 | compact | Vignette à côté du titre sous 900 px. | non |
 | legende | Légende sous l’image (HTML) ; l’image et elle forment une `<figure>`. |  |
-| offset | Décalage de chaque côté, en colonnes ; 0 pour s’aligner sur les carrousels et les grilles. | `0.5` |
-| slots | `titre` (au-dessus des deux colonnes), `footer` (les boutons, rendus une seule fois). |  |
+| decalage | Décalage de chaque côté, en colonnes ; 0 pour s’aligner sur les carrousels et les grilles. | `0.5` |
+| slots | `titre` (au-dessus des deux colonnes), `pied` (les boutons, rendus une seule fois). |  |
 
+
+### Variables d’habillage {#variables}
+
+{{habillage-bande-image-texte}}
 
 ## Quand l’utiliser {#quand}
 
@@ -78,7 +83,7 @@ import BandeImageTexte from 'harmonium/astro/BandeImageTexte.astro'
 -   **Boutons sur fond foncé** : variante claire, le bouton bleu foncé ne s’y voyait pas (1.4.11).
 -   **Encart en couleurs forcées** : cerné d’un filet.
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Dire dans le texte tout ce que la photo montre d’utile ; laisser les crochets vides dans le format normal.
 -   Donner une description à une petite image qui porte un message (logo, affiche).

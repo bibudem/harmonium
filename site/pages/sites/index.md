@@ -7,8 +7,6 @@ description: "Harmonium est le socle commun des sites des Bibliothèques. Les co
 
 {{integration-sites}}
 
-> Dépôts locaux vérifiés le {{date-integration}} : aucune référence à Harmonium dans les manifestes, configurations Astro ou sources examinés. Ce relevé décrit le code disponible ; il ne confirme pas un déploiement en production. Les composants institutionnels déjà chargés depuis une autre distribution ne constituent pas une intégration d’Harmonium.
-
 ## Quand indiquer « Bien intégré » {#validation}
 
 -   Le site charge les jetons et les composants d’Harmonium pour les usages concernés.

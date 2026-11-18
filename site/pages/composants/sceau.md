@@ -8,6 +8,8 @@ fichiers: "`harmonium/astro/SceauBibliotheques.astro` · `bib-sceau.min.css` · 
 
 ::exemple[composants/sceau/01.html]
 
+::exemple[composants/sceau/02.html]
+
 ## Utilisation {#utilisation}
 
 ### En HTML
@@ -28,23 +30,30 @@ fichiers: "`harmonium/astro/SceauBibliotheques.astro` · `bib-sceau.min.css` · 
 import SceauBibliotheques from 'harmonium/astro/SceauBibliotheques.astro'
 ---
 <a href="/"><SceauBibliotheques /></a>
+<a href="/"><SceauBibliotheques fond="clair" /></a>
 ```
 
 | Propriété | Rôle | Défaut |
 | --- | --- | --- |
+| fond | `fonce` : texte de l’anneau blanc ; `clair` : texte noir. | `fonce` |
 | nom | Nom accessible du sceau : le lien parent n’a pas d’autre texte. | « Les bibliothèques, Université de Montréal – Accueil » |
 
-Deux fichiers SVG empilés (le U, l’anneau de texte) plutôt qu’un SVG en ligne : l’anneau pèse 21 Ko, et en fichier le navigateur le garde en cache. Le script facultatif `bib-sceau.min.js` fait tourner l’anneau ; il ne fait rien si l’appareil limite les animations.
+Sur fond clair, remplacer `bib-sceau-anneau.svg` par `bib-sceau-anneau-noir.svg`. Deux fichiers SVG empilés (le U, l’anneau de texte) plutôt qu’un SVG en ligne : l’anneau pèse 21 Ko, et en fichier le navigateur le garde en cache. Le script facultatif `bib-sceau.min.js` fait tourner l’anneau ; il ne fait rien si l’appareil limite les animations.
+
+### Variables d’habillage {#variables}
+
+{{habillage-sceau}}
 
 ## Quand l’utiliser {#quand}
 
 ### À utiliser pour
 
--   Le pied de page des sites des bibliothèques, sur fond foncé (le texte de l’anneau est blanc, figé dans le dessin).
+-   Le pied de page des sites des bibliothèques, sur fond foncé.
+-   Une page ou un document sur fond clair, avec l’anneau noir.
 
 ### À éviter
 
--   **Sur fond clair** : l’anneau blanc disparaît. Utiliser le logo horizontal (`logo-bib-horizontal.svg`).
+-   **L’anneau blanc sur fond clair** (ou le noir sur fond foncé) : le texte disparaît. Choisir l’anneau selon le fond.
 -   **Dans l’en-tête** : le logo de l’UdeM et « Les bibliothèques » y tiennent ce rôle (voir [Entete](@@/composants/entete.html)).
 -   **Sur téléphone** : le [pied de page](@@/composants/pied-de-page.html) montre plutôt le logo horizontal en tête ; le sceau, petit, serait illisible.
 -   **Hors d’un lien** : sans lien parent, le script n’anime rien.
@@ -59,7 +68,7 @@ Deux fichiers SVG empilés (le U, l’anneau de texte) plutôt qu’un SVG en li
 -   **Pas de mouvement automatique** : la rotation ne dure que le temps du survol ou du focus et s’arrête d’elle-même ; rien à mettre en pause (2.2.2).
 -   **Pointeur** : seule la souris déclenche la rotation (`pointerType === 'mouse'`) ; un toucher sur téléphone suit le lien sans animation parasite.
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Placer le sceau dans un lien, sans autre texte (sinon le nom serait répété) ; changer `nom` si le lien ne mène pas à l’accueil des bibliothèques.
 -   Le poser sur un fond foncé : le texte de l’anneau est blanc, figé dans le dessin (un logo n’est pas soumis au critère de contraste 1.4.3, mais il doit rester lisible).

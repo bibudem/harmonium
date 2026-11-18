@@ -12,10 +12,6 @@ fichiers: "`harmonium/astro/FilAriane.astro` · `bib-fil-ariane.min.css`"
 
 ::exemple[composants/fil-ariane/02.html]
 
- 
-
-::exemple[composants/fil-ariane/03.html]
-
 ## Utilisation {#utilisation}
 
 ### En HTML
@@ -56,6 +52,10 @@ import FilAriane from 'harmonium/astro/FilAriane.astro'
 
 C’est le site qui calcule les maillons (cela dépend de son contenu).
 
+### Variables d’habillage {#variables}
+
+{{habillage-fil-ariane}}
+
 ## Quand l’utiliser {#quand}
 
 ### À utiliser pour
@@ -81,7 +81,7 @@ C’est le site qui calcule les maillons (cela dépend de son contenu).
 -   **Langue** : le titre d’une page dans une autre langue porte son `lang`, et `lang` sur le `<nav>` remet le reste en français (3.1.2).
 -   **Contraste** : liens en `--couleur-lien` et page courante en `--couleur-texte` sur le fond de page (1.4.3). En couleurs forcées, les liens prennent la couleur système des liens.
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Donner à chaque page un titre court : il devient le libellé de son maillon.
 -   Garder une arborescence d’adresses qui reflète les sections : le fil suit l’adresse, pas le menu.

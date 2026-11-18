@@ -9,14 +9,40 @@ ressources: "composants/table-matieres"
 
 ::exemple[composants/table-matieres/01.html]
 
-## Deux navigations distinctes {#distinction}
+## Utilisation {#utilisation}
 
-| Composant | Destination des liens | Usage |
-| --- | --- | --- |
-| Table des matières | Les titres de la page en cours. | Lire et parcourir une page longue. |
-| [Navigation secondaire](@@/composants/navigation-secondaire.html) | Les autres pages de la section. | Se déplacer dans un groupe de pages. |
+### En HTML {#html}
 
-## Avec Astro {#astro}
+Charger les jetons, les deux feuilles et, pour le suivi de lecture, le script :
+
+```
+<link rel="stylesheet" href="…/dist/bib-jetons.min.css">
+<link rel="stylesheet" href="…/dist/bib-navigation-secondaire.min.css">
+<link rel="stylesheet" href="…/dist/bib-table-matieres.min.css">
+<script type="module" src="…/dist/bib-table-matieres.min.js"></script>
+
+<div class="bib-table-matieres" data-table-matieres>
+  <nav class="bib-navigation-secondaire bib-navigation-secondaire--sommaire"
+       aria-label="Sur cette page">
+    <ul>
+      <li><a href="#emprunter">Emprunter</a></li>
+      <li><a href="#retourner">Retourner</a></li>
+    </ul>
+  </nav>
+  <details class="bib-navigation-secondaire-repliable">
+    <summary>Sur cette page</summary>
+    <nav class="bib-navigation-secondaire bib-navigation-secondaire--sommaire"
+         aria-label="Sur cette page">
+      <ul>
+        <li><a href="#emprunter">Emprunter</a></li>
+        <li><a href="#retourner">Retourner</a></li>
+      </ul>
+    </nav>
+  </details>
+</div>
+```
+
+### Avec Astro {#astro}
 
 ```
 ---
@@ -55,42 +81,25 @@ Dans Harmonium, le menu des pages occupe déjà la gauche, hors de la grille du 
 | nom | Nom du repère et libellé du volet. | Sur cette page |
 | id | Préfixe des identifiants des deux variantes. | Unique, généré |
 
-## En HTML {#html}
+### Deux navigations distinctes {#distinction}
 
-Charger les jetons, les deux feuilles et, pour le suivi de lecture, le script :
+| Composant | Destination des liens | Usage |
+| --- | --- | --- |
+| Table des matières | Les titres de la page en cours. | Lire et parcourir une page longue. |
+| [Navigation secondaire](@@/composants/navigation-secondaire.html) | Les autres pages de la section. | Se déplacer dans un groupe de pages. |
 
-```
-<link rel="stylesheet" href="…/dist/bib-jetons.min.css">
-<link rel="stylesheet" href="…/dist/bib-navigation-secondaire.min.css">
-<link rel="stylesheet" href="…/dist/bib-table-matieres.min.css">
-<script type="module" src="…/dist/bib-table-matieres.min.js"></script>
+### Variables d’habillage {#variables}
 
-<div class="bib-table-matieres" data-table-matieres>
-  <nav class="bib-navigation-secondaire bib-navigation-secondaire--sommaire"
-       aria-label="Sur cette page">
-    <ul>
-      <li><a href="#emprunter">Emprunter</a></li>
-      <li><a href="#retourner">Retourner</a></li>
-    </ul>
-  </nav>
-  <details class="bib-navigation-secondaire-repliable">
-    <summary>Sur cette page</summary>
-    <nav class="bib-navigation-secondaire bib-navigation-secondaire--sommaire"
-         aria-label="Sur cette page">
-      <ul>
-        <li><a href="#emprunter">Emprunter</a></li>
-        <li><a href="#retourner">Retourner</a></li>
-      </ul>
-    </nav>
-  </details>
-</div>
-```
+{{habillage-table-matieres}}
 
-## Usage et accessibilité {#usage}
+## Quand l’utiliser {#quand}
 
--   Avec une navigation secondaire : sommaire à droite. Sans navigation secondaire : sommaire à gauche. Réserver cette dernière disposition aux pages autonomes.
 -   Afficher un sommaire quand les sections aident à parcourir une page longue. Garder les libellés identiques aux titres visés.
+-   Avec une navigation secondaire : sommaire à droite. Sans navigation secondaire : sommaire à gauche. Réserver cette dernière disposition aux pages autonomes.
 -   Se limiter aux h2 par défaut ; ajouter les h3 lorsque la longueur et la structure du contenu le justifient.
+
+## Accessibilité {#accessibilite}
+
 -   Une seule variante est visible à la fois : volet sous 1200 px, colonne dès 1200 px. Les liens et le volet natif fonctionnent sans JavaScript.
 -   La section lue porte `aria-current="true"`, distinct du `aria-current="page"` de la navigation entre pages. Le suivi de lecture ne déplace ni le focus ni l’adresse.
 -   Dans le volet, Échap referme le sommaire et rend le focus au résumé. Activer un lien referme le volet et poursuit la lecture sur le titre ciblé.

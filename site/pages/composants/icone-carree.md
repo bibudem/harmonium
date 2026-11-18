@@ -18,7 +18,7 @@ ressources: "composants/icone-carree"
 ### En HTML
 
 ```
-<div class="bib-icone-carree" style="--bib-icone-carree-fond: var(--vert-pale)">
+<div class="bib-icone-carree" style="--bib-icone-carree-fond: var(--vert)">
   <div class="bib-icone-carree__icone" aria-hidden="true"><svg viewBox="0 0 256 256">…</svg></div>
 </div>
 
@@ -28,7 +28,7 @@ ressources: "composants/icone-carree"
 <!-- Avec texte : le texte (2/3) et le carré (1/3) côte à côte -->
 <div class="bib-icone-carree-texte">
   <div class="bib-icone-carree-texte__texte"><h3>Notre mission</h3><p>Texte.</p></div>
-  <div class="bib-icone-carree" style="--bib-icone-carree-fond: var(--vert-pale)">…</div>
+  <div class="bib-icone-carree" style="--bib-icone-carree-fond: var(--vert)">…</div>
 </div>
 ```
 
@@ -38,7 +38,7 @@ ressources: "composants/icone-carree"
 ---
 import IconeCarree from 'harmonium/astro/IconeCarree.astro'
 ---
-<IconeCarree color="var(--vert-pale)">
+<IconeCarree couleur="var(--vert)">
   <svg viewBox="0 0 256 256">…</svg>
 </IconeCarree>
 
@@ -46,7 +46,7 @@ import IconeCarree from 'harmonium/astro/IconeCarree.astro'
 import IconeTexte from 'harmonium/astro/IconeTexte.astro'
 ---
 <!-- Avec texte -->
-<IconeTexte Icone={TargetIcon} fond="vertPale">
+<IconeTexte Icone={TargetIcon} couleur="vert">
   <h3>Notre mission</h3>
   <p>Texte.</p>
 </IconeTexte>
@@ -54,12 +54,16 @@ import IconeTexte from 'harmonium/astro/IconeTexte.astro'
 
 | Propriété | Rôle | Défaut |
 | --- | --- | --- |
-| `color` | Couleur du carré : une valeur CSS ou un jeton. En HTML : la variable `--bib-icone-carree-fond`. | transparent |
+| `couleur` | Couleur du carré : une valeur CSS ou un jeton. En HTML : la variable `--bib-icone-carree-fond`. | transparent |
 | `fonce` | Force l’icône éclaircie (`true`) ou assombrie (`false`). Reconnu seul : `--bleu-principal-fonce`, `--bleu-600`, `--vert-fonce`. En HTML : le modificateur `--fonce`. | automatique |
 
 L’icône passe dans le slot, en SVG.
 
-`<IconeTexte>` (avec texte) : `Icone`, le composant d’icône (obligatoire) ; `fond`, une clé de palette (`vertPale`) ou une couleur CSS. Le texte passe dans le slot.
+`<IconeTexte>` (avec texte) : `Icone`, le composant d’icône (obligatoire) ; `fond`, une clé de palette (`vert`) ou une couleur CSS. Le texte passe dans le slot.
+
+### Variables d’habillage {#variables}
+
+{{habillage-icone-carree}}
 
 ## Quand l’utiliser {#quand}
 
@@ -84,7 +88,7 @@ L’icône passe dans le slot, en SVG.
 -   **Couleurs forcées** : l’icône prend la couleur du texte (`CanvasText`) et reste visible.
 -   **Texte agrandi et 320 px** : le carré (10,875rem) ne dépasse jamais sa colonne, qui dépassait la largeur d’un téléphone à 200 % (1.4.4, 1.4.10).
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Placer un titre et un texte à côté du carré : sans eux, le bloc ne dit rien aux lecteurs d’écran.
 -   Choisir une icône qui rejoint le titre, sans compter sur elle pour le sens.

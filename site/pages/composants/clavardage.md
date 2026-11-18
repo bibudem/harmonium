@@ -15,9 +15,7 @@ Le rond est en bas à droite de cette page. L’invitation paraît ici après **
 
 ::exemple[composants/clavardage/02.html]
 
-Une invitation fermée ne revient pas pendant la visite (onglet ouvert).
-
-::exemple[composants/clavardage/03.html]
+Une invitation fermée ne revient pas pendant la visite (onglet ouvert). Sur un écran de moins de 700 px, le rond reste en bas à droite et la conversation s’ouvre dans un nouvel onglet.
 
 ## Utilisation {#utilisation}
 
@@ -30,7 +28,7 @@ Une invitation fermée ne revient pas pendant la visite (onglet ouvert).
     C’est tout : le rond, le panneau et l’invitation sont créés par le script. Par défaut, c’est le widget des bibliothèques.
     
 
-## Réglages (facultatifs) {#reglages}
+### Réglages (facultatifs) {#reglages}
 
 En attributs `data-*` sur la même balise `<script>` :
 
@@ -50,7 +48,7 @@ Exemple :
 <script defer src="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-clavardage.min.js" data-invitation="0"></script>
 ```
 
-## Ouvrir depuis le site {#ouvrir}
+### Ouvrir depuis le site {#ouvrir}
 
 N’importe quel bouton du site (menu, page « Nous joindre »…) peut ouvrir le clavardage :
 
@@ -58,20 +56,20 @@ N’importe quel bouton du site (menu, page « Nous joindre »…) peut ouvrir l
 <button type="button" onclick="window.dispatchEvent(new Event('bib:ouvrir-clavardage'))">Clavarder avec nous</button>
 ```
 
-## Habillage aux couleurs d’un site {#habillage}
+## Habillage {#habillage}
 
 Dans la feuille de style du site (toutes facultatives) :
 
 ```
 :root {
-  --bib-clavardage-couleur: #0057ac;          /* rond */
-  --bib-clavardage-couleur-survol: #0b113a;   /* rond au survol, anneau de focus */
-  --bib-clavardage-sur-couleur: #fff;         /* icône dans le rond */
-  --bib-clavardage-surface: #fff;             /* panneau, libellé, bulle */
-  --bib-clavardage-texte: #0b113a;
-  --bib-clavardage-texte-secondaire: #4a5160;
-  --bib-clavardage-bordure: #c3ccd5;
-  --bib-clavardage-pastille: #f04e24;         /* nouveau message */
+  --bib-clavardage-couleur: var(--bleu-principal);          /* rond */
+  --bib-clavardage-couleur-survol: var(--bleu-fonce);   /* rond au survol, anneau de focus */
+  --bib-clavardage-sur-couleur: var(--blanc);         /* icône dans le rond */
+  --bib-clavardage-surface: var(--blanc);             /* panneau, libellé, bulle */
+  --bib-clavardage-texte: var(--bleu-fonce);
+  --bib-clavardage-texte-secondaire: var(--gris-600);
+  --bib-clavardage-bordure: var(--gris-300);
+  --bib-clavardage-pastille: var(--rouge-orange);        /* nouveau message */
   --bib-clavardage-rayon: 12px;
   --bib-clavardage-police: 'Figtree Variable', sans-serif;
   --bib-clavardage-droite: 1.5rem;            /* distance au bord, ≥ 900 px */
@@ -85,7 +83,9 @@ Dans la feuille de style du site (toutes facultatives) :
 
 Si le site a déjà un élément fixe en bas à droite (bouton « Retour en haut »…), augmenter `--bib-clavardage-droite` ou `--bib-clavardage-bas` pour lui laisser la place.
 
-## Pourquoi {#pourquoi}
+## Quand l’utiliser {#quand}
+
+### Pourquoi {#pourquoi}
 
 Le widget LibChat de Springshare se colle tel quel dans une page, mais son apparence dépend alors de chaque site et il présente des défauts d’accessibilité : région et iframe nommées « Chat Widget », nouveau message signalé par un simple point rouge, invitation automatique qui déplace le focus. Ce script l’intègre de la même façon sur tous les sites des bibliothèques.
 
@@ -93,8 +93,6 @@ Le widget LibChat de Springshare se colle tel quel dans une page, mais son appar
 -   **Aucune dépendance** : seul le script de LibChat est chargé, comme avec le code d’origine.
 -   **Corrections d’accessibilité** : libellé visible, noms en français, nouveau message annoncé, focus toujours visible, Échap, invitation qui ne vole pas le focus.
 -   **Cohabitation** : le rond se place au-dessus de la [carte de consentement](@@/composants/consentement.html) et résiste aux styles hostiles du site.
-
-## Quand l’utiliser {#quand}
 
 ### À utiliser pour
 
@@ -121,7 +119,7 @@ Le script règle tout ce qui est autour de la conversation. Le contenu du pannea
 -   **Focus visible** : anneau de 3 px, imposé même si le site retire les contours avec `outline: none !important` (2.4.7, testé avec une feuille hostile). Le rond reste au-dessus de la carte de consentement, donc jamais caché par elle (2.4.11).
 -   **Invitation** : la bulle ne prend pas le focus. C’est une région `role="status"` dont le texte est ajouté juste après son apparition, pour être annoncé. Sa croix est un bouton nommé « Fermer l’invitation au clavardage » (28 px) ; fermée au clavier, elle rend le focus au rond. Elle ne revient pas de la visite et disparaît quand le panneau s’ouvre.
 -   **Mouvement** : le rond pulse trois fois (moins de 5 s) à l’arrivée de l’invitation (2.2.2). Avec « réduire les animations », pulsation, glissements et agrandissements sont retirés ; la bulle apparaît en fondu (2.3.3).
--   **Contrastes** (couleurs par défaut) : icône blanche sur rond `#0057ac`, 7,1:1 ; libellé `#0b113a` sur blanc, 18:1 ; libellé hors ligne `#4a5160`, 8:1 (1.4.3, 1.4.11).
+-   **Contrastes** (couleurs par défaut) : icône blanche sur rond `--bleu-principal`, 7,1:1 ; libellé `--bleu-fonce` sur blanc, 18:1 ; libellé hors ligne `#4a5160`, 8:1 (1.4.3, 1.4.11).
 -   **Contraste élevé** (couleurs forcées) : le rond et la croix de la bulle reçoivent une bordure et une icône en couleur système.
 -   **Téléphone et agrandissement** : sous 700 px de large (règle de LibChat), le rond ouvre la conversation dans un nouvel onglet au lieu d’un panneau ; la bulle ne dépasse pas la largeur de l’écran (1.4.10).
 -   **Impression** : le clavardage n’est pas imprimé.

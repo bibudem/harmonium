@@ -21,11 +21,11 @@ fichiers: "`harmonium/astro/Banniere.astro` · `bib-banniere.min.css`"
 ### En HTML
 
 ```
-<div class="bib-banniere bib-banniere--vague">
+<div class="bib-banniere bib-banniere--vague surface-foncee">
   <img class="bib-banniere__image" src="photo.jpg" alt="" fetchpriority="high">
   <div class="bib-banniere__texte">
     <div class="bib-banniere__colonne">
-      <h1 class="bib-typographie bib-typographie--titreSuperHero bib-banniere__titre">Les bibliothèques</h1>
+      <h1 class="bib-typographie bib-typographie--titre-banniere bib-banniere__titre">Les bibliothèques</h1>
       <div class="bib-banniere__sous-titre">Étudier, chercher, créer.</div>
     </div>
   </div>
@@ -33,7 +33,7 @@ fichiers: "`harmonium/astro/Banniere.astro` · `bib-banniere.min.css`"
 </div>
 
 <!-- Sous-pages : bande basse, titre en paragraphe -->
-<section class="bib-banniere bib-banniere--vague bib-banniere--section" aria-label="Études">
+<section class="bib-banniere bib-banniere--vague bib-banniere--section surface-foncee" aria-label="Études">
   <img class="bib-banniere__image" src="photo.jpg" alt="">
   <div class="bib-banniere__texte"><div class="bib-banniere__colonne"><p class="bib-banniere__titre-section">Études</p></div></div>
 </section>
@@ -47,17 +47,17 @@ Habillage : `--bib-banniere-voile` (voile uniforme, 50 %), `--bib-banniere-cadra
 ---
 import Banniere from 'harmonium/astro/Banniere.astro'
 ---
-<Banniere title="Les bibliothèques" image={photo} subTitle="Étudier, chercher, créer." cadrage="20%" />
-<Banniere variante="section" title="Études" image={photo} />
+<Banniere titre="Les bibliothèques" image={photo} sousTitre="Étudier, chercher, créer." cadrage="20%" />
+<Banniere variante="section" titre="Études" image={photo} />
 ```
 
 | Propriété | Rôle | Défaut |
 | --- | --- | --- |
-| title, image | Titre de la page (`<h1>`) et photo. Obligatoires. |  |
-| subTitle | Texte sous le titre ; ou le slot `subTitle`. Le contenu par défaut (sommaire, boutons) passe sous le texte. |  |
+| titre, image | Titre de la page (`<h1>`) et photo. Obligatoires. |  |
+| sousTitre | Texte sous le titre ; ou le slot `sousTitre`. Le contenu par défaut (sommaire, boutons) passe sous le texte. |  |
 | alt | Texte de remplacement, seulement si la photo porte un message. | vide |
 | cadrage | Hauteur de la photo à garder (« 20% »). En petit format sans cadrage, la photo est recadrée à la construction en 5:2. | le centre |
-| size | `default` ou `small`. | `default` |
+| taille | `normale` ou `petite`. | `normale` |
 | vague | Dégradé bleu foncé à la place du voile noir uniforme. | oui |
 | titreReduit | Police réduite pour le titre (aussi automatique au-delà de 45 caractères). | non |
 | variante | `page` ou `section` (bande basse des sous-pages, titre en paragraphe). | `page` |
@@ -65,6 +65,10 @@ import Banniere from 'harmonium/astro/Banniere.astro'
 La photo est chargée en priorité (`fetchpriority="high"`, `loading="eager"`) : elle est en haut de page.
 
 Le site garde, de son côté, le choix des images (par nom de fichier) et le cadrage propre à chaque photo : il les passe en propriétés.
+
+### Variables d’habillage {#variables}
+
+{{habillage-banniere}}
 
 ## Quand l’utiliser {#quand}
 
@@ -91,7 +95,7 @@ Le site garde, de son côté, le choix des images (par nom de fichier) et le cad
 -   **Images décoratives** : `alt=""` par défaut ; la photo est en haut de page, chargée en priorité.
 -   **Mouvement** : seul le fondu de la photo à son chargement ; il est coupé avec le mouvement réduit.
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Choisir une photo dont la zone du titre est calme, et remesurer le contraste quand la photo change.
 -   Régler `cadrage` pour garder les visages, plutôt que de laisser la bannière couper au cou.

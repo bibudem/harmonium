@@ -8,8 +8,8 @@ before(async () => (nav = await lancer()))
 after(() => nav?.close())
 const css = (...noms) => ['jetons', ...noms].map(n => `<link rel="stylesheet" href="/dist/bib-${n}.min.css">`).join('')
 
-const onglets = (orientation = 'vertical') => `
-<div class="bib-onglets" data-onglets data-orientation-large="${orientation}">
+const onglets = () => `
+<div class="bib-onglets" data-onglets>
  <div class="bib-onglets__liste" data-onglets-liste data-aria-label="Services">
   <button type="button" class="bib-onglets__onglet" data-onglet id="o1" aria-controls="p1" data-selectionne="true">Prêt</button>
   <button type="button" class="bib-onglets__onglet" data-onglet id="o2" aria-controls="p2" data-selectionne="false">Retour</button>
@@ -46,7 +46,7 @@ test('320 px et texte à 200 % : les libellés et cartes restent dans le contenu
  const page = await nouvellePage(nav, {largeur:320})
  await ouvrir(page, {corps: css('bouton', 'carte-texte', 'carte-revelation', 'typographie') + `
  <style>html { font-size:200% } body { margin:16px } .zone { width:100% }</style>
- <div class="zone"><h1 class="bib-typographie bib-typographie--h1">BibliothèquesEtServicesDocumentaires</h1>
+ <div class="zone"><h1 class="bib-typographie bib-typographie--titre-1">BibliothèquesEtServicesDocumentaires</h1>
  <button class="bib-bouton bib-bouton--plein">Réserver une salle pour un travail en équipe</button>
  <div class="bib-carte-texte">BibliothèquesEtServicesDocumentaires</div>
  <div class="bib-carte-revelation bib-carte-revelation--bleu-principal"><h2>Collections</h2></div></div>`})
@@ -82,9 +82,9 @@ test('onglets : orientation clavier, ancre malformée et initialisation répét�
  await ouvrir(page, {scripts:[{fichier:'bib-onglets.min.js'}],corps:css('onglets')+onglets()})
  await page.evaluate(()=>{ location.hash = '%E0%A4%A' })
  await page.focus('#o1')
- await page.keyboard.press('ArrowRight')
- assert.equal(await page.evaluate(()=>document.activeElement.id),'o1')
  await page.keyboard.press('ArrowDown')
+ assert.equal(await page.evaluate(()=>document.activeElement.id),'o1')
+ await page.keyboard.press('ArrowRight')
  assert.equal(await page.evaluate(()=>document.activeElement.id),'o2')
  assert.equal(await page.locator('#o2').getAttribute('aria-selected'),'true')
  assert.equal(await page.locator('#p1').isVisible(),false)
@@ -131,7 +131,7 @@ test('le sceau s’arrête si le mouvement réduit est activé pendant le survol
 
 test('les chiffres reviennent à leur valeur finale quand le mouvement est réduit en cours de visite', async () => {
  const page = await nouvellePage(nav)
- await ouvrir(page, { corps: css('chiffres') + '<style>:root{--duree-longue-2:5s}</style><div data-chiffres style="height:100px"><div data-chiffres-unite><span class="bib-chiffres__compteur" data-compteur="1000">1 000</span></div></div>', scripts: [{ fichier: 'bib-chiffres.min.js' }] })
+ await ouvrir(page, { corps: css('chiffres') + '<style>:root{--duree-longue:5s}</style><div data-chiffres style="height:100px"><div data-chiffres-unite><span class="bib-chiffres__compteur" data-compteur="1000">1 000</span></div></div>', scripts: [{ fichier: 'bib-chiffres.min.js' }] })
  await page.waitForFunction(() => document.querySelector('[data-compteur]').hasAttribute('data-compte'))
  await page.emulateMedia({ reducedMotion: 'reduce' })
  await page.waitForFunction(() => document.querySelector('[data-compteur]').textContent.replace(/\D/g, '') === '1000')

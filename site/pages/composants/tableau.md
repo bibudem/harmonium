@@ -39,7 +39,7 @@ fichiers: "`harmonium/astro/Tableau.astro` · `bib-tableau.min.css` · `bib-tabl
 </div>
 ```
 
-Habillage : `bib-tableau--compact` (cellules plus serrées), `bib-tableau__cellule--centre`, `--droite` et `--justifie` (alignement des colonnes), `bib-tableau__rangee--survol` (surligne la rangée au survol).
+Habillage : en-tête sur fond teinté et en graisse forte, filets gris clair entre rangées et colonnes, contour gris autour de la zone. Couleurs : `--bib-tableau-entete-fond` (`--couleur-teinte`), `--bib-tableau-filet` (`--gris-200`), `--bib-tableau-bordure` (`--couleur-bordure`). Variantes : `bib-tableau--compact` (cellules plus serrées), `bib-tableau__cellule--centre`, `--droite` et `--justifie` (alignement des colonnes), `bib-tableau__rangee--survol` (surligne la rangée au survol).
 
 ### Avec Astro
 
@@ -56,14 +56,18 @@ import Tableau from 'harmonium/astro/Tableau.astro'
 | Propriété | Rôle | Défaut |
 | --- | --- | --- |
 | titre | Nom du tableau, repris par la zone défilante. | « Tableau » |
-| size | `small` : cellules plus serrées. | `medium` |
+| taille | `compact` : cellules plus serrées. | `normal` |
 | style | Style du `<table>` (largeur minimale). |  |
 
 **Sémantique réglée à la construction.** Toutes les cellules de `<thead>` deviennent des `<th scope="col">`. Dans le corps, les `<th>` sans portée reçoivent `scope="row"`.
 
-**En plusieurs composants.** `TableauConteneur` (la zone), `TableauTable` (le `<table>`), `TableauEntete`, `TableauCorps`, `TableauLigne` (`hover`) et `TableauCellule` (`align`, `component="th"`) produisent le même HTML. La zone des morceaux est un `role="group"` plutôt qu’une région : plusieurs tableaux sans nom propre sur une page donneraient plusieurs repères identiques.
+**En plusieurs composants.** `TableauConteneur` (la zone), `TableauTable` (le `<table>`), `TableauEntete`, `TableauCorps`, `TableauLigne` (`survol`) et `TableauCellule` (`alignement`, `balise="th"`) produisent le même HTML. La zone des morceaux est un `role="group"` plutôt qu’une région : plusieurs tableaux sans nom propre sur une page donneraient plusieurs repères identiques.
 
 Le script facultatif `bib-tableau.min.js` ne garde la zone comme arrêt de tabulation et région nommée que si le tableau défile vraiment (sinon un arrêt inutile, et le nom annoncé deux fois).
+
+### Variables d’habillage {#variables}
+
+{{habillage-tableau}}
 
 ## Quand l’utiliser {#quand}
 
@@ -88,7 +92,7 @@ Le script facultatif `bib-tableau.min.js` ne garde la zone comme arrêt de tabul
 -   **Texte masqué contenu** : la zone est en `position: relative`, pour que le texte masqué des liens du tableau ne déborde pas de la page.
 -   **Couleurs forcées** : une bordure remplace l’ombre de la surface.
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Donner un nom au tableau (`titre`) qui dit ce qu’il contient ; sans lui, tous les tableaux s’appellent « Tableau ».
 -   Mettre une vraie ligne d’en-tête et, si les rangées ont un intitulé, l’écrire en première colonne (`<th>`).

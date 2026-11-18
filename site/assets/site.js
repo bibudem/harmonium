@@ -53,10 +53,10 @@ for (const pre of document.querySelectorAll('main pre')) {
   pre.replaceWith(bloc)
   const bouton = document.createElement('button')
   bouton.type = 'button'
-  bouton.className = 'copier'
+  bouton.className = 'bib-bouton bib-bouton--petit bib-bouton--contour-blanc copier'
   bouton.textContent = 'Copier'
   const etat = document.createElement('span')
-  etat.className = 'masque'
+  etat.className = 'bib-masque'
   etat.setAttribute('role', 'status')
   bouton.addEventListener('click', async () => {
     try {

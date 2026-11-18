@@ -27,15 +27,19 @@ ressources: "composants/colonne-decalee"
 ---
 import ColonneDecalee from 'harmonium/astro/ColonneDecalee.astro'
 ---
-<ColonneDecalee offset={0.5}>
+<ColonneDecalee decalage={0.5}>
   …
 </ColonneDecalee>
 ```
 
 | Propriété | Rôle | Défaut |
 | --- | --- | --- |
-| `offset` | Colonnes laissées de chaque côté, de 0 à 6 (demi-valeurs permises). En HTML : la variable `--bib-decalage`. | `0` |
+| `decalage` | Colonnes laissées de chaque côté, de 0 à 6 (demi-valeurs permises). En HTML : la variable `--bib-decalage`. | `0` |
 
+
+### Variables d’habillage {#variables}
+
+{{habillage-colonne-decalee}}
 
 ## Quand l’utiliser {#quand}
 
@@ -47,7 +51,7 @@ import ColonneDecalee from 'harmonium/astro/ColonneDecalee.astro'
 
 -   **Pour limiter la longueur des lignes de texte** : la mesure du texte (`--mesure-texte`) le fait déjà sur les paragraphes.
 -   **Pour placer plusieurs blocs côte à côte** : utiliser une [grille](@@/fondations/espacements.html).
--   **Avec un grand décalage sur un contenu dense** : sur téléphone, la même proportion s’applique et la colonne devient très étroite (à `offset={3}`, la moitié de l’écran).
+-   **Avec un grand décalage sur un contenu dense** : sur téléphone, la même proportion s’applique et la colonne devient très étroite (à `decalage={3}`, la moitié de l’écran).
 
 ## Accessibilité {#accessibilite}
 
@@ -57,7 +61,7 @@ import ColonneDecalee from 'harmonium/astro/ColonneDecalee.astro'
 -   **Pas de saut de mise en page** au chargement : la largeur est connue avant tout script, le texte ne bouge pas sous les yeux ni sous le pointeur.
 -   **Pas de débordement** : largeur en pourcentage et `min-width: 0` ; le contenu reste dans la colonne à 320 px et à 200 % de texte (WCAG 1.4.10).
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Choisir un petit décalage (0,5 à 1) : la proportion ne change pas sur téléphone, un grand décalage y écrase le contenu.
 -   Vérifier le rendu à 320 px de large avec le texte agrandi.

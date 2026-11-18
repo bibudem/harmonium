@@ -40,7 +40,7 @@ ressources: "composants/chiffres"
 </div>
 ```
 
-Habillage : les parts prennent le bleu principal, le rouge orangé et le violet, dans cet ordre (palette validée : écart sous daltonisme, contraste d’au moins 3:1 sur le blanc) ; la couleur suit la part (`--couleur` de chaque pastille et barre).
+Habillage : les parts prennent le bleu principal, le rouge orangé et le jaune, dans cet ordre (distincts sous daltonisme) ; la couleur suit la part (`--couleur` de chaque pastille et barre).
 
 ### Avec Astro
 
@@ -63,6 +63,10 @@ import Chiffres from 'harmonium/astro/Chiffres.astro'
 
 **Animation.** Le script `bib-chiffres.min.js` remplit les barres de gauche à droite et fait monter les nombres, une seule fois, quand le bloc entre à l’écran. Le nombre animé est masqué aux lecteurs d’écran, qui lisent la valeur finale ; une copie invisible réserve sa largeur, donc rien ne bouge autour. Rien ne s’anime avec le mouvement réduit, sur un rechargement ou à l’impression.
 
+### Variables d’habillage {#variables}
+
+{{habillage-chiffres}}
+
 ## Quand l’utiliser {#quand}
 
 ### À utiliser pour
@@ -84,12 +88,12 @@ import Chiffres from 'harmonium/astro/Chiffres.astro'
 -   **Structure** : chaque groupe est une `<figure>` dont la légende (`<figcaption>`) donne le titre et le total ; les parts sont une liste (WCAG 1.3.1).
 -   **Pas d’information par la couleur seule** : chaque part est écrite avec son libellé, sa valeur et son pourcentage (1.4.1). La barre et la légende commune sont masquées aux lecteurs d’écran, qui lisent la liste.
 -   **Lecteurs d’écran** : ils lisent toujours la valeur finale ; le nombre qui monte est une copie masquée (`aria-hidden`) posée sur la vraie valeur.
--   **Contrastes** : couleurs des parts (bleu principal, rouge orangé, violet foncé) d’au moins 3:1 sur le blanc, choisies pour rester distinctes en cas de daltonisme (1.4.11). Les nombres restent dans la couleur du texte.
+-   **Contrastes** : couleurs des parts (bleu principal, rouge orangé, jaune) choisies pour rester distinctes en cas de daltonisme. Le jaune n’atteint pas 3:1 sur le blanc : la barre est décorative (`aria-hidden`), chaque part est donnée en texte avec son nombre et son pourcentage, la couleur n’est jamais seule (1.4.1, 1.4.11). Les nombres restent dans la couleur du texte.
 -   **Couleurs forcées** : les parts se distinguent par un motif (plein, hachures à 45° et à 135°), dans la barre comme dans la légende.
 -   **Texte agrandi et 320 px** : la grille ne déborde pas ; dans une carte étroite, la valeur passe sous le libellé ; le grand total peut se couper en dernier recours (1.4.4, 1.4.10).
 -   **Mouvement** : aucune animation si la personne réduit les animations, à l’impression, sur un rechargement ou un retour arrière (2.3.3). Les nombres gardent leur largeur pendant qu’ils montent : rien ne bouge autour.
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Écrire des libellés complets (« en format numérique »), compréhensibles sans la couleur ni la légende.
 -   Garder les mêmes parts, dans le même ordre, d’un groupe à l’autre pour profiter de la légende commune.

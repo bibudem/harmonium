@@ -55,6 +55,10 @@ import NavigationSecondaire from 'harmonium/astro/NavigationSecondaire.astro'
 
 Le composant reçoit l’arbre de navigation du site (`navigationDeSection` dépend du contenu du site) : le site le passe en propriété.
 
+### Variables d’habillage {#variables}
+
+{{habillage-navigation-secondaire}}
+
 ## Quand l’utiliser {#quand}
 
 ### À utiliser pour
@@ -82,7 +86,7 @@ Le composant reçoit l’arbre de navigation du site (`navigationDeSection` dép
 -   **Reflow** : les libellés longs se coupent (`overflow-wrap: anywhere`) ; rien ne déborde à 320 px ni avec le texte à 200 % (1.4.4, 1.4.10).
 -   **Mouvement** : seule la rotation du chevron est animée ; coupée si la personne réduit les animations (règle globale du site).
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Donner aux pages des titres courts et distincts : ils deviennent les libellés de la liste.
 -   Écrire le libellé d’un lien externe pour qu’il dise sa destination (la flèche n’est pas lue).

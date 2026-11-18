@@ -7,8 +7,8 @@ export const code = (texte) => `<pre><code>${echapper(texte.replace(/^\n+|\s+$/g
 
 /** Tableau : en-têtes, lignes de cellules HTML */
 export const tableau = (entetes, lignes, classe = '') =>
-  `<div class="tableau"><table${classe ? ` class="${classe}"` : ''}><thead><tr>${entetes.map((e) => `<th scope="col">${e}</th>`).join('')}</tr></thead><tbody>${lignes
-    .map((l) => `<tr>${l.map((c) => `<td>${c}</td>`).join('')}</tr>`)
+  `<div class="bib-tableau-zone"><table class="bib-tableau${classe ? ` ${classe}` : ''}"><thead><tr class="bib-tableau__rangee">${entetes.map((e) => `<th scope="col" class="bib-tableau__cellule">${e}</th>`).join('')}</tr></thead><tbody>${lignes
+    .map((l) => `<tr class="bib-tableau__rangee">${l.map((c) => `<td class="bib-tableau__cellule">${c}</td>`).join('')}</tr>`)
     .join('')}</tbody></table></div>`
 
 export const c = (t) => `<code>${echapper(t)}</code>`

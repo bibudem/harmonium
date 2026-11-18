@@ -1,0 +1,9 @@
+{
+  "styles": [],
+  "scripts": [
+    {
+      "src": "@@dist/bib-liste-filtrable.min.js",
+      "attributs": "type=\"module\""
+    }
+  ]
+}

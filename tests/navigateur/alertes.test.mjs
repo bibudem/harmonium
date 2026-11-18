@@ -32,9 +32,9 @@ test('quatre types : couleurs par défaut, icône dessinée par masque', async (
   const page = await nouvellePage(nav)
   await ouvrir(page, { corps: FEUILLE + ['info', 'succes', 'avertissement', 'erreur'].map((t) => alerte(t)).join('') })
   const attendu = {
-    info: ['rgb(204, 226, 243)', 'rgb(0, 87, 172)'],
-    succes: ['rgb(214, 240, 226)', 'rgb(2, 66, 68)'],
-    avertissement: ['rgb(255, 224, 194)', 'rgb(179, 52, 16)'],
+    info: ['rgb(204, 221, 238)', 'rgb(0, 87, 172)'],
+    succes: ['rgb(220, 241, 230)', 'rgb(2, 66, 68)'],
+    avertissement: ['rgb(253, 223, 187)', 'rgb(168, 55, 25)'],
     erreur: ['rgb(254, 225, 222)', 'rgb(177, 0, 0)'],
   }
   for (const [type, [fond, couleur]] of Object.entries(attendu)) {
@@ -43,7 +43,7 @@ test('quatre types : couleurs par défaut, icône dessinée par masque', async (
     assert.equal(s.couleurIcone, couleur, type)
     assert.equal(s.masque, 'url("data:image/svg+xml,%3', type)
     assert.equal(s.tailleIcone, '24px x 24px'.replace(' x ', 'x'), type)
-    assert.equal(s.fondMessage, 'rgb(238, 244, 247)')
+    assert.equal(s.fondMessage, 'rgb(229, 238, 247)')
     assert.equal(s.rayon, '0px 12px 12px 0px')
   }
 })

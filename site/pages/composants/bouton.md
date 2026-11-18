@@ -50,6 +50,8 @@ Un bouton secondaire conserve toujours un contour visible, au repos comme au sur
 
 Habillage commun : bouton plein (`--bib-bouton-plein-fond`, `-texte`, `-fond-survol`), bouton secondaire à contour (`--bib-bouton-texte-fond`, `-couleur`, `-bordure`, `-fond-survol`) et plein sur fond foncé (`--bib-bouton-clair-fond`, `-texte`, `-fond-survol`). Les jetons `--action-*` permettent de choisir l’accent jaune sans changer le HTML.
 
+Icône seule : `bib-bouton--icone` (carré rond, l’icône Phosphor en `currentColor`). Le nom va dans `aria-label` ; une [infobulle](@@/composants/infobulle.html) peut le redire à l’écran.
+
 ### Avec Astro
 
 ```
@@ -57,31 +59,63 @@ Habillage commun : bouton plein (`--bib-bouton-plein-fond`, `-texte`, `-fond-sur
 import Bouton from 'harmonium/astro/Bouton.astro'
 ---
 <Bouton href="/services/">Réserver une salle</Bouton>
-<Bouton href="https://exemple.ca/" secondary>Autre site</Bouton>
-<Bouton type="submit" variant="outlined">Envoyer</Bouton>
+<Bouton href="https://exemple.ca/" secondaire>Autre site</Bouton>
+<Bouton type="submit" variante="contour">Envoyer</Bouton>
 ```
 
 | Propriété | Rôle | Défaut |
 | --- | --- | --- |
 | href | Avec une adresse, un `<a>` ; sans, un `<button>`. |  |
-| primary, secondary | Plein (par défaut) ou à contour. | primary |
-| variant | `contained` (plein) ou `outlined` (contour). `text` reste un alias du contour. | selon primary |
-| color | `bleuFonce` ou `bleuPrincipal` (`blue` et `primary` aussi). | `bleuFonce` |
-| light | Variante pour fond foncé. | non |
+| secondaire | Bouton à contour, en bleu principal. | non |
+| variante | `plein` ou `contour` ; l’emporte sur `secondaire`. | `plein` |
+| couleur | `bleuFonce` ou `bleuPrincipal`. | `bleuFonce` (`bleuPrincipal` si `secondaire`) |
+| taille | `petit`, `moyen` ou `grand`. | `moyen` |
+| clair | Variante pour fond foncé. | non |
 | retour | Flèche vers la gauche avant le texte, au lieu de la flèche de fin. | non |
-| disableEndIcon | Retire la flèche de fin. | non |
+| sansFleche | Retire la flèche de fin. | non |
+| iconeSeule | Bouton à icône seule (`bib-bouton--icone`) : le SVG va dans le contenu, le nom dans `aria-label`. | non |
 | target, rel, type | Comme sur l’élément HTML ; `rel` fourni n’est jamais écrasé. |  |
 
 **La flèche et l’annonce suivent l’adresse.** → pour une page du même site (un chemin ou une adresse du site hôte) ; ↗ pour un autre site, y compris ses sous-domaines, ou un nouvel onglet ; aucune flèche pour un PDF, un courriel ou un téléphone. Un PDF s’ouvre dans un nouvel onglet. PDF et nouvel onglet sont annoncés en texte masqué, et `rel="noopener"` est ajouté.
 
-Les classes `blueOutlineNoIcon`, `whiteOutlineNoIcon`, `mt1`, `mt4`, `right`, `center` et `left` que le Markdown des sites écrit sont reconnues dans le composant Astro ; en HTML : `bib-bouton--contour-bleu`, `--contour-blanc`, `--mt1`, `--mt4`, `--droite`, `--centre`, `--gauche`.
+En HTML, `bib-bouton--droite`, `--centre` et `--gauche` placent le bouton seul sur sa ligne ; `--contour-bleu` et `--contour-blanc` (fond foncé) donnent un contour sans flèche. Avec Astro, ces classes passent par `class`.
+
+### Variables d’habillage {#variables}
+
+{{habillage-bouton}}
+
+### Tailles et états {#etats}
+
+Trois tailles partagent une cible d’au moins 44 px. Garder `moyen` dans le contenu ; `petit` sert aux commandes denses et `grand` à une action isolée.
+
+::exemple[composants/bouton/06.html]
+
+```
+<Bouton taille="petit">Filtrer</Bouton>
+<Bouton disabled aria-describedby="raison">Réserver</Bouton>
+<p id="raison">Les inscriptions ouvrent lundi.</p>
+```
+
+`taille` : `petit`, `moyen` (défaut), `grand`. En HTML : `bib-bouton--petit` ou `bib-bouton--grand`. `disabled` : booléen, faux par défaut. Le style seul `aria-disabled` ne bloque pas un lien HTML : retirer aussi son `href`.
+
+### Regrouper des actions {#groupes}
+
+Réserver une seule action principale par groupe. Les commandes suivent l’ordre de lecture et passent à la ligne sur petit écran.
+
+::exemple[composants/groupe-boutons/01.html]
+
+```astro
+import GroupeBoutons from 'harmonium/astro/GroupeBoutons.astro'
+
+<GroupeBoutons><Bouton type="submit">Enregistrer</Bouton><Bouton secondaire>Annuler</Bouton></GroupeBoutons>
+```
 
 ## Quand l’utiliser {#quand}
 
 ### À utiliser pour
 
 -   L’action principale d’une page ou d’une section : « Réserver une salle », « Prendre rendez-vous ».
--   Une ou deux actions côte à côte, la plus importante en plein, l’autre en texte (`secondary`).
+-   Une ou deux actions côte à côte, la plus importante en plein, l’autre en texte (`secondaire`).
 -   Le retour vers l’accueil d’une page d’erreur (`retour`).
 
 ### À éviter
@@ -105,35 +139,9 @@ Les classes `blueOutlineNoIcon`, `whiteOutlineNoIcon`, `mt1`, `mt4`, `right`, `c
 -   **Couleurs forcées** : une bordure `ButtonText` trace le bouton, dont le fond disparaît en mode contraste élevé.
 -   **Survol au toucher** : l’avance de la flèche au survol est réservée aux pointeurs fins ; elle ne reste pas collée après un tapotement.
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Écrire un libellé qui dit l’action et se comprend hors contexte : « Réserver une salle », pas « Cliquez ici » ni « En savoir plus » (2.4.4).
 -   Choisir la balise selon le rôle : `href` pour naviguer, rien (ou `type="submit"`) pour agir.
--   Poser `light` sur un fond foncé : sans lui, le bouton secondaire bleu y serait illisible.
+-   Poser `clair` sur un fond foncé : sans lui, le bouton secondaire bleu y serait illisible.
 -   L’état `disabled` bloque l’action native. Expliquer dans un texte voisin pourquoi elle est indisponible ; un lien désactivé perd son `href` et porte `aria-disabled="true"`.
-
-## Tailles et états {#etats}
-
-Trois tailles partagent une cible d’au moins 44 px. Garder `medium` dans le contenu ; `small` sert aux commandes denses et `large` à une action isolée.
-
-::exemple[composants/bouton/06.html]
-
-```
-<Bouton size="small">Filtrer</Bouton>
-<Bouton disabled aria-describedby="raison">Réserver</Bouton>
-<p id="raison">Les inscriptions ouvrent lundi.</p>
-```
-
-`size` : `small`, `medium` (défaut), `large`. En HTML : `bib-bouton--petit` ou `bib-bouton--grand`. `disabled` : booléen, faux par défaut. Le style seul `aria-disabled` ne bloque pas un lien HTML : retirer aussi son `href`.
-
-## Regrouper des actions {#groupes}
-
-Réserver une seule action principale par groupe. Les commandes suivent l’ordre de lecture et passent à la ligne sur petit écran.
-
-::exemple[composants/groupe-boutons/01.html]
-
-```astro
-import GroupeBoutons from 'harmonium/astro/GroupeBoutons.astro'
-
-<GroupeBoutons><Bouton type="submit">Enregistrer</Bouton><Bouton secondary>Annuler</Bouton></GroupeBoutons>
-```

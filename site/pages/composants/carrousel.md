@@ -46,24 +46,30 @@ Habillage : l’espace entre les groupes vient de `--espace-bloc` et celui entre
 ```
 ---
 import Carrousel from 'harmonium/astro/Carrousel.astro'
-import 'harmonium/dist/bib-carrousel.min.js'  // les flèches et la progression (facultatif)
+import CarteImage from 'harmonium/astro/CarteImage.astro'
 ---
-<Carrousel title="Pour étudier" description="Des guides, des outils et des experts." moreText="Voir tout" moreLink="/etudes/">
-  <CarteImage title="Apprendre à chercher" Image={photo} href="/etudes/chercher/" />
-  <CarteImage title="Citer ses sources" Image={photo2} href="/etudes/citer/" />
+<Carrousel titre="Pour étudier" description="Des guides, des outils et des experts." textePlus="Voir tout" lienPlus="/etudes/">
+  <CarteImage titre="Apprendre à chercher" image={photo} href="/etudes/chercher/" />
+  <CarteImage titre="Citer ses sources" image={photo2} href="/etudes/citer/" />
 </Carrousel>
+<!-- Les flèches et la progression (facultatif) -->
+<script>import 'harmonium/dist/bib-carrousel.min.js'</script>
 ```
 
 | Propriété | Rôle |
 | --- | --- |
-| title | Titre, rendu en h2 ; un autre titre passe en slot `title`. |
+| titre | Titre, rendu en h2 ; un autre titre passe en slot `titre`. |
 | description | Chaîne ; un élément passe en slot `description`. |
-| moreText, moreLink, moreTarget | Bouton « voir tout » sous la piste ; `moreTarget="_blank"` l’ouvre dans un nouvel onglet (annoncé). |
+| textePlus, lienPlus, ciblePlus | Bouton « voir tout » sous la piste ; `ciblePlus="_blank"` l’ouvre dans un nouvel onglet (annoncé). |
 | ariaLabel | Nom accessible : le titre seul. À donner quand le titre est un élément (qui doublerait le nom). |
 
 **Chaque enfant de premier niveau du slot est une diapositive** : le composant les redécoupe et les numérote (« n sur N »). Sans le script, les flèches et la barre restent masquées (attribut `hidden`) ; la rangée se parcourt au doigt ou à la barre de défilement.
 
 **Les flèches** avancent d’une « page » : la première diapositive coupée à droite vient au début (l’inverse en reculant). Elles sont désactivées aux extrémités et masquées quand tout tient dans la largeur.
+
+### Variables d’habillage {#variables}
+
+{{habillage-carrousel}}
 
 ## Quand l’utiliser {#quand}
 
@@ -92,7 +98,7 @@ import 'harmonium/dist/bib-carrousel.min.js'  // les flèches et la progression 
 -   **Couleurs forcées** : contour plein autour des flèches, en pointillé et `GrayText` quand elles sont désactivées.
 -   **320 px** : les flèches passent sous la description ; aucune marge négative ne fait déborder la page (1.4.10).
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Donner un titre au carrousel : il nomme la région. Sinon, fournir `ariaLabel`.
 -   Mettre dans chaque diapositive un seul lien, nommé clairement (une carte-lien).

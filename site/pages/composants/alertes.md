@@ -16,37 +16,6 @@ description: "Une alerte est un encadré qui met en avant une information, une c
 
 ::exemple[composants/alertes/03.html]
 
-## Pourquoi {#pourquoi}
-
-Un composant commun sert les sites des bibliothèques, avec les mêmes types de message et les mêmes règles d’accessibilité.
-
--   **Pas de JavaScript** : l’alerte est du HTML et du CSS. Les sites Astro utilisent le composant `<Alerte>` ; les autres copient le HTML et chargent la feuille de style. Les deux produisent exactement le même code.
--   **Aucune dépendance** : les icônes Phosphor (licence MIT) sont intégrées à la feuille de style.
--   **Le type ne repose pas sur la couleur** : il est aussi dit en texte, pour les lecteurs d’écran.
-
-## Quand l’utiliser {#quand}
-
-### À utiliser pour
-
--   Une information à mettre en avant dans le contenu d’une page, près de ce qu’elle concerne : heures modifiées, salle fermée, service interrompu.
--   Une confirmation ou une erreur affichée sur une page après une action (réservation confirmée, formulaire indisponible).
-
-### À éviter
-
--   **Pour un message qui concerne tout le site** (fermeture, panne) : l’[avis](@@/composants/avis.html) en haut de page.
--   **Pour une urgence de l’UdeM** : l’[urgence](@@/composants/urgence.html).
--   **Pour décorer ou varier la mise en page** : une page couverte d’encadrés n’en fait plus ressortir aucun. Un paragraphe suffit le plus souvent.
--   **Pour annoncer un changement qui survient pendant la visite** (résultat d’un envoi sans rechargement) : l’alerte est statique et n’est pas annoncée ; il faut alors une région `role="status"` ou `role="alert"` gérée par le script de la page.
-
-### Choisir le type {#choisir}
-
-| Type | Pour | Exemple |
-| --- | --- | --- |
-| `info` | Une information utile, sans urgence. | Heures modifiées, nouveau service. |
-| `succes` | Une confirmation, un résultat positif. | Réservation confirmée. |
-| `avertissement` | Une mise en garde : quelque chose à savoir avant d’agir. | Salle fermée, délai prolongé. |
-| `erreur` | Un problème, un service interrompu. | Service en panne, formulaire indisponible. |
-
 ## Utilisation {#utilisation}
 
 ### En HTML
@@ -85,25 +54,56 @@ import Alerte from 'harmonium/astro/Alerte.astro'
 | `icone` | `false` retire l’icône. | `true` |
 | `class`, autres attributs | Ajoutés à l’élément (`id`, `data-*`…). |  |
 
-## Couleurs et habillage {#habillage}
+## Habillage {#habillage}
 
-L’encadré utilise les jetons communs quand la page les définit : `--alerte-fond`, `--alerte-info-fond`, `--alerte-info-icone` (et de même pour `succes`, `avertissement`, `erreur`), `--couleur-neutre-700`, `--couleur-bordure`, `--rayon-petit`, `--espace-element`, `--texte-petit`, `--texte-courant`, `--graisse-moyenne`. Sans eux, il prend les couleurs claires du socle (comme sur cette page).
+L’encadré utilise les jetons communs quand la page les définit : `--alerte-fond`, `--alerte-info-fond`, `--alerte-info-icone` (et de même pour `succes`, `avertissement`, `erreur`), `--couleur-texte-neutre`, `--couleur-bordure`, `--rayon-petit`, `--espace-element`, `--texte-petit`, `--texte-courant`, `--graisse-moyenne`. Sans eux, il prend les couleurs claires du socle (comme sur cette page).
 
 Pour un autre habillage, des propriétés propres l’emportent :
 
 ```
 .bib-alerte {
-  --bib-alerte-fond: #eef4f7;              /* fond du message */
-  --bib-alerte-texte: #2e3440;
-  --bib-alerte-bordure: #c3ccd5;
+  --bib-alerte-fond: var(--bleu-10);              /* fond du message */
+  --bib-alerte-texte: var(--gris-700);
+  --bib-alerte-bordure: var(--gris-300);
   --bib-alerte-rayon: 12px;
   --bib-alerte-marge: 1rem;                /* espace au-dessus et au-dessous */
   --bib-alerte-taille: 0.875rem;           /* taille du texte */
   --bib-alerte-taille-titre: 1rem;
-  --bib-alerte-info-fond: #cce2f3;         /* bandeau de l'icône */
-  --bib-alerte-info-icone: #0057ac;        /* idem : -succes-, -avertissement-, -erreur- */
+  --bib-alerte-info-fond: var(--bleu-20);        /* bandeau de l'icône */
+  --bib-alerte-info-icone: var(--bleu-principal);        /* idem : -succes-, -avertissement-, -erreur- */
 }
 ```
+
+## Quand l’utiliser {#quand}
+
+### Pourquoi {#pourquoi}
+
+Un composant commun sert les sites des bibliothèques, avec les mêmes types de message et les mêmes règles d’accessibilité.
+
+-   **Pas de JavaScript** : l’alerte est du HTML et du CSS. Les sites Astro utilisent le composant `<Alerte>` ; les autres copient le HTML et chargent la feuille de style. Les deux produisent exactement le même code.
+-   **Aucune dépendance** : les icônes Phosphor (licence MIT) sont intégrées à la feuille de style.
+-   **Le type ne repose pas sur la couleur** : il est aussi dit en texte, pour les lecteurs d’écran.
+
+### À utiliser pour
+
+-   Une information à mettre en avant dans le contenu d’une page, près de ce qu’elle concerne : heures modifiées, salle fermée, service interrompu.
+-   Une confirmation ou une erreur affichée sur une page après une action (réservation confirmée, formulaire indisponible).
+
+### À éviter
+
+-   **Pour un message qui concerne tout le site** (fermeture, panne) : l’[avis](@@/composants/avis.html) en haut de page.
+-   **Pour une urgence de l’UdeM** : l’[urgence](@@/composants/urgence.html).
+-   **Pour décorer ou varier la mise en page** : une page couverte d’encadrés n’en fait plus ressortir aucun. Un paragraphe suffit le plus souvent.
+-   **Pour annoncer un changement qui survient pendant la visite** (résultat d’un envoi sans rechargement) : l’alerte est statique et n’est pas annoncée ; il faut alors une région `role="status"` ou `role="alert"` gérée par le script de la page.
+
+### Choisir le type {#choisir}
+
+| Type | Pour | Exemple |
+| --- | --- | --- |
+| `info` | Une information utile, sans urgence. | Heures modifiées, nouveau service. |
+| `succes` | Une confirmation, un résultat positif. | Réservation confirmée. |
+| `avertissement` | Une mise en garde : quelque chose à savoir avant d’agir. | Salle fermée, délai prolongé. |
+| `erreur` | Un problème, un service interrompu. | Service en panne, formulaire indisponible. |
 
 ## Accessibilité {#accessibilite}
 
@@ -113,7 +113,7 @@ Pour un autre habillage, des propriétés propres l’emportent :
 -   **Pas de rôle « alert »** : le contenu est statique ; avec ce rôle, il serait annoncé au chargement comme une urgence, et interromprait la lecture (testé).
 -   **Titre hors hiérarchie** : le titre de l’encadré est un paragraphe, pas un `h2`–`h6` ; il ne fausse pas la structure des titres de la page (1.3.1).
 -   **Clavier** : l’encadré n’est pas interactif et ne prend pas le focus ; les liens qu’il contient suivent l’ordre de la page.
--   **Contrastes** (couleurs par défaut) : texte `#2e3440` sur `#eef4f7`, 11:1 (1.4.3). Icônes sur leur bandeau : info 5,3:1, succès 9,3:1, avertissement 4,9:1, erreur 5,9:1, au-delà des 3:1 demandés (1.4.11).
+-   **Contrastes** (couleurs par défaut) : texte `--gris-700` sur `--bleu-10`, 12,5:1 (1.4.3). Icônes sur leur bandeau : info 5,1:1, succès 9,5:1, avertissement 5,1:1, erreur 5,9:1, au-delà des 3:1 demandés (1.4.11).
 -   **Contraste élevé** (couleurs forcées) : l’icône est redessinée en couleur système et un filet sépare le bandeau du texte (testé).
 -   **Agrandissement et téléphone** : l’encadré épouse son texte et ne dépasse jamais la colonne ; un mot très long passe à la ligne, sans défilement horizontal à 320 px (1.4.4, 1.4.10, testé). Les tailles sont en `rem` : elles suivent la taille de police choisie.
 -   **Mouvement** : aucune animation.

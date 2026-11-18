@@ -3,6 +3,7 @@ titre: "Avis"
 fichiers: "`bib-avis.min.js` · `<bib-avis>`"
 description: "Un bandeau jaune en haut de page pour informer d’une fermeture, de travaux ou d’un service perturbé. Le texte vient du service d’avis des bibliothèques : rien ne paraît quand il n’y a pas d’avis."
 ressources: "composants/avis"
+vignette: 2
 ---
 
 ## Aperçu {#apercu}
@@ -34,7 +35,7 @@ ressources: "composants/avis"
     ```
     
 
-## Réglages {#reglages}
+### Réglages {#reglages}
 
 | Attribut | Rôle |
 | --- | --- |
@@ -48,7 +49,7 @@ Un `<bib-avis>` qui contient du texte affiche ce texte au lieu d’appeler le se
 <bib-avis bouton-fermer><strong>Fermeture</strong> : la bibliothèque est fermée le 24 décembre.</bib-avis>
 ```
 
-## Événements {#evenements}
+### Événements {#evenements}
 
 Sur l’élément, propagés, annulables avec `preventDefault()` :
 
@@ -61,21 +62,7 @@ Sur l’élément, propagés, annulables avec `preventDefault()` :
 document.addEventListener('bib:hide', (e) => console.log('avis fermé', e.target))
 ```
 
-## Habillage {#habillage}
-
-```
-bib-avis {
-  --bib-avis-container-color: #ffe8ac;   /* fond */
-  --bib-avis-size: 1rem;                 /* taille du texte */
-  --bib-avis-spacing-inline: 1rem;       /* marges latérales */
-  --bib-btn-close-color: #0b113a;
-  --bib-btn-close-hover-color: #0057ac;
-}
-```
-
-Ces valeurs sont un exemple. Sans réglage, le fond est `#ffe8ac`, le texte garde la taille de la page, les marges latérales font 64 px et la croix est noire à 60 %.
-
-## HTML permis {#securite}
+### HTML permis {#securite}
 
 Le texte du service est nettoyé avant d’être affiché, car il paraît sur des sites que nous ne contrôlons pas. Seule la mise en forme passe : `a`, `p`, `br`, `strong`, `em`, `b`, `i`, `u`, `s`, `ul`, `ol`, `li`, `span`, `div`, `small`, `sub`, `sup`, `abbr`, `time`, `code`.
 
@@ -83,7 +70,23 @@ Le texte du service est nettoyé avant d’être affiché, car il paraît sur de
 -   Un lien accepte http, https, mailto, tel ou une adresse relative ; ouvert dans un nouvel onglet, il reçoit `rel="noopener noreferrer"`.
 -   Le contenu écrit dans la page, lui, n’est pas nettoyé : il vient du site.
 
-## Pourquoi {#pourquoi}
+## Habillage {#habillage}
+
+```
+bib-avis {
+  --bib-avis-fond: var(--jaune-40);   /* fond */
+  --bib-avis-taille: 1rem;    /* taille du texte */
+  --bib-avis-spacing-inline: 1rem;       /* marges latérales */
+  --bib-btn-close-color: var(--bleu-fonce);
+  --bib-btn-close-hover-color: var(--bleu-principal);
+}
+```
+
+Ces valeurs sont un exemple. Sans réglage, le fond est `--jaune-40`, le texte garde la taille de la page, les marges latérales font 64 px et la croix est noire à 60 %.
+
+## Quand l’utiliser {#quand}
+
+### Pourquoi {#pourquoi}
 
 Quand une bibliothèque ferme ou qu’un service est en panne, l’information doit paraître sur tous les sites des bibliothèques en même temps, sans que chaque équipe modifie son site. L’équipe écrit l’avis une fois, dans le service d’avis ; chaque site l’affiche grâce à une balise.
 
@@ -91,8 +94,6 @@ Quand une bibliothèque ferme ou qu’un service est en panne, l’information d
 -   **Aucune dépendance** : un script autonome ; la fermeture est retenue dans le navigateur, sans témoin ni compte.
 -   **Sûr** : le texte du service est nettoyé avant d’être affiché, car il paraît sur des sites que nous ne contrôlons pas.
 -   **Choix d’accessibilité** : le focus ne se perd pas à la fermeture, la croix est contrastée, le texte est lu en français.
-
-## Quand l’utiliser {#quand}
 
 ### À utiliser pour
 
@@ -113,7 +114,7 @@ Quand une bibliothèque ferme ou qu’un service est en panne, l’information d
 -   **Sémantique** : le bandeau est un `<aside>` ; le texte garde sa mise en forme (gras, listes, liens) (WCAG 1.3.1). Il n’a pas de rôle d’alerte : il est en tête de page et n’est pas annoncé de force au chargement.
 -   **Bouton « Fermer »** : un vrai `<button>` nommé « Fermer l’avis » ; l’icône est cachée aux lecteurs d’écran (4.1.2). Cible de 24 × 24 px (2.5.8).
 -   **Clavier et focus** : la croix s’atteint avec Tab et s’active avec Entrée ou Espace (2.1.1) ; contour de focus de 3 px (2.4.7). À la fermeture, le focus reste sur l’emplacement de l’avis : Tab continue juste après, au lieu de repartir du début de la page (2.4.3, testé).
--   **Contrastes** : texte foncé sur jaune `#ffe8ac` (plus de 15:1 avec un texte `#0b113a`) ; croix à 5,4:1, au-delà des 3:1 demandés (1.4.3, 1.4.11).
+-   **Contrastes** : texte `--bleu-fonce` sur `--jaune-40`, 15,3:1 ; croix à 5,4:1, au-delà des 3:1 demandés (1.4.3, 1.4.11).
 -   **Contraste élevé** (couleurs forcées) : le bouton et son contour prennent les couleurs système ; aucune information ne passe par la seule couleur.
 -   **Agrandissement et téléphone** : la hauteur suit le texte ; à 320 px de large, le texte passe à la ligne (1.4.4, 1.4.10). Sur un petit écran, préférer `--bib-avis-spacing-inline` plus petit que les 64 px par défaut.
 -   **Mouvement** : seule la couleur de la croix change au survol (150 ms).

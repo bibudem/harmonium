@@ -30,7 +30,7 @@ Chaque carte de la liste repose sur le lien étiré et la pastille fléchée, d�
 </ul>
 ```
 
-Habillage : `bib-liste-liens--grille` : sans retrait, les cartes côte à côte (14 rem au moins chacune), puis empilées sur écran étroit ; une carte seule garde sa pastille à droite, centrée. `bib-element-liste-liens--vert-fonce` (sur une section vert foncé) : pastille vert pâle avec une flèche bleu foncé (7,32:1). Sans `bib-element-liste-liens__bouton`, une pastille fléchée.
+Habillage : chaque carte a un contour gris clair (`--bib-liste-liens-bordure`, `--gris-200` par défaut). `bib-liste-liens--grille` : sans retrait, les cartes côte à côte (14 rem au moins chacune), puis empilées sur écran étroit ; une carte seule garde sa pastille à droite, centrée. `bib-element-liste-liens--vert-fonce` (sur une section vert foncé) : pastille vert pâle avec une flèche bleu foncé (7,32:1). Sans `bib-element-liste-liens__bouton`, une pastille fléchée.
 
 ### Avec Astro
 
@@ -40,20 +40,24 @@ import ListeLiens from 'harmonium/astro/ListeLiens.astro'
 import ElementListeLiens from 'harmonium/astro/ElementListeLiens.astro'
 ---
 <ListeLiens>
-  <ElementListeLiens title="Prêts" description="Durées, renouvellements et frais." href="/prets/" linkText="Voir" />
-  <ElementListeLiens title="Collections" description="Livres, revues." href="/collections/" />
+  <ElementListeLiens titre="Prêts" description="Durées, renouvellements et frais." href="/prets/" texteLien="Voir" />
+  <ElementListeLiens titre="Collections" description="Livres, revues." href="/collections/" />
 </ListeLiens>
 ```
 
 | Propriété | Rôle | Défaut |
 | --- | --- | --- |
 | grille | (`ListeLiens`) Cartes côte à côte, sans retrait. | non |
-| offset | (`ListeLiens`) Décalage de chaque côté, en colonnes. | `0.5` (0 en grille) |
-| title, href | (`ElementListeLiens`) Titre (qui porte le lien) et adresse. Obligatoires. |  |
+| decalage | (`ListeLiens`) Décalage de chaque côté, en colonnes. | `0.5` (0 en grille) |
+| titre, href | (`ElementListeLiens`) Titre (qui porte le lien) et adresse. Obligatoires. |  |
 | description | (`ElementListeLiens`) Texte sous le titre. |  |
-| linkText | (`ElementListeLiens`) Texte d’appel à droite, qui décrit le lien ; sans lui, une pastille fléchée. |  |
-| color | (`ElementListeLiens`) `vertFonce` sur une section vert foncé. | `default` |
+| texteLien | (`ElementListeLiens`) Texte d’appel à droite, qui décrit le lien ; sans lui, une pastille fléchée. |  |
+| couleur | (`ElementListeLiens`) `neutre` ou `vertFonce` (sur une section vert foncé). | `neutre` |
 | niveauTitre | (`ElementListeLiens`) 2 à 6, sans changer la taille. | `3` |
+
+### Variables d’habillage {#variables}
+
+{{habillage-liste-liens}}
 
 ## Quand l’utiliser {#quand}
 
@@ -84,7 +88,7 @@ import ElementListeLiens from 'harmonium/astro/ElementListeLiens.astro'
 -   **Texte agrandi** : le texte d’appel passe à la ligne au lieu de pousser la page hors de l’écran (1.4.10).
 -   **Survol réservé aux pointeurs fins** : au toucher, il ne reste pas d’état fantôme après le tapotement.
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Écrire des titres qui nomment la destination (« Nous écrire »), jamais « En savoir plus ».
 -   Garder la description à une phrase : elle est lue après le titre, à chaque élément.

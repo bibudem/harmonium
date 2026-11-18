@@ -6,6 +6,8 @@ let nav
 before(async () => (nav = await lancer()))
 after(() => nav?.close())
 const css = ['jetons', 'champ', 'entete', 'recherche'].map((nom) => `<link rel="stylesheet" href="/dist/bib-${nom}.min.css">`).join('')
+// Composants hors catalogue : leurs exemples vivent avec les tests
+const fixture = async (nom) => readFile(new URL(`./exemples/${nom}.html`, import.meta.url), 'utf8')
 const exemple = async (nom, numero = '01') => readFile(new URL(`../../site/exemples/composants/${nom}/${numero}.html`, import.meta.url), 'utf8')
 
 test('en-tête sans JavaScript : la navigation reste dans la barre, sans commandes', async () => {
@@ -96,7 +98,7 @@ test('recherche commune : Entrée soumet une requête GET sans JavaScript', asyn
 
 test('champs : erreur reliée, validation native et choix au clavier', async () => {
   const page = await nouvellePage(nav, { largeur: 390 })
-  await ouvrir(page, { corps: css + await exemple('champ-liste', '02') + await exemple('champ-liste', '03') })
+  await ouvrir(page, { corps: css + await fixture('champ-liste-02') + await fixture('champ-liste-03') })
   const champ = page.getByLabel('Adresse courriel (obligatoire)')
   assert.equal(await champ.getAttribute('aria-invalid'), 'true')
   assert.equal(await champ.evaluate((el) => el.checkValidity()), false)

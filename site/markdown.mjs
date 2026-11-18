@@ -69,9 +69,16 @@ md.inline.ruler.before('text', 'valeur-harmonium', (state, silencieux) => {
   return true
 })
 md.renderer.rules.valeur_harmonium = (tokens, i, options, env) => donnee(tokens[i].content, env)
-md.renderer.rules.table_open = () => '<div class="tableau"><table>\n'
+// Les tableaux de la doc sont des composants Tableau d'Harmonium (zone défilante, filets, alignement)
+const alignement = (token) => {
+  const style = token.attrGet('style') ?? ''
+  return style.includes('right') ? ' bib-tableau__cellule--droite' : style.includes('center') ? ' bib-tableau__cellule--centre' : ''
+}
+md.renderer.rules.table_open = () => '<div class="bib-tableau-zone"><table class="bib-tableau">\n'
 md.renderer.rules.table_close = () => '</table></div>\n'
-md.renderer.rules.th_open = () => '<th scope="col">'
+md.renderer.rules.tr_open = () => '<tr class="bib-tableau__rangee">\n'
+md.renderer.rules.th_open = (tokens, i) => `<th scope="col" class="bib-tableau__cellule${alignement(tokens[i])}">`
+md.renderer.rules.td_open = (tokens, i) => `<td class="bib-tableau__cellule${alignement(tokens[i])}">`
 
 export function rendreMarkdown(texte, donnees = {}, blocs = {}) {
   return md.render(texte, { donnees, blocs })
@@ -92,5 +99,5 @@ export async function lirePage(fichier, donnees = {}) {
     : `<h1>${echapper(data.titre)}</h1>`
   const description = data.description ? `<p class="chapeau">${md.renderInline(data.description, { donnees })}</p>` : ''
   const fichiers = data.fichiers ? `<p class="fichier">${md.renderInline(data.fichiers, { donnees })}</p>` : ''
-  return { titre: data.titre, tete, fin, contenu: `${titre}\n${description}\n${fichiers}\n${rendreMarkdown(content, donnees, data.blocs)}` }
+  return { titre: data.titre, statut: data.statut, tete, fin, contenu: `${titre}\n${description}\n${fichiers}\n${rendreMarkdown(content, donnees, data.blocs)}` }
 }

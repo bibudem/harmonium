@@ -1,4 +1,5 @@
 ---
+titre-court: "Accueil"
 titre: Harmonium
 logo: '@@dist/harmonium-horizontal.svg'
 description: >-

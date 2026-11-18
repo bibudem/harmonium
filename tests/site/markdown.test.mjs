@@ -5,7 +5,8 @@ import { rendreMarkdown, lirePage } from '../../site/markdown.mjs'
 import { donneesCatalogue } from '../../site/donnees/catalogue.mjs'
 import { donneesIntegration } from '../../site/integration.mjs'
 import { donneesFondations } from '../../site/donnees/fondations.mjs'
-import { integrationComposant } from '../../site/integration.mjs'
+import { donneesHabillage } from '../../site/donnees/habillage.mjs'
+import { statutComposant, verifierSuivi } from '../../site/integration.mjs'
 import { pagesAPlat } from '../../site/navigation.mjs'
 
 const RACINE = new URL('../../site/pages/', import.meta.url)
@@ -25,7 +26,7 @@ test('les données calculées restent à jour et les directives invalides échou
 })
 
 test('le contenu et les ressources du bouton sont distincts, l’exemple est le vrai HTML', async () => {
-  const page = await lirePage(new URL('composants/bouton.md', RACINE))
+  const page = await lirePage(new URL('composants/bouton.md', RACINE), donneesHabillage())
   assert.match(page.contenu, /class="bib-bouton/)
   assert.doesNotMatch(page.contenu, /<style\b|<script\b/)
   const source = await readFile(new URL('composants/bouton.md', RACINE), 'utf8')
@@ -33,17 +34,17 @@ test('le contenu et les ressources du bouton sont distincts, l’exemple est le 
 })
 
 test('les styles et scripts des aperçus sont chargés depuis des fichiers séparés', async () => {
-  const page = await lirePage(new URL('composants/entete.md', RACINE))
+  const page = await lirePage(new URL('composants/entete.md', RACINE), donneesHabillage())
   assert.ok(page.tete.includes('exemples/composants/entete/style.css'))
   assert.ok(page.fin.includes('src="@@dist/bib-entete.min.js"'))
   assert.doesNotMatch(page.tete, /<style\b/)
-  const pied = await lirePage(new URL('composants/pied-de-page.md', RACINE))
+  const pied = await lirePage(new URL('composants/pied-de-page.md', RACINE), donneesHabillage())
   assert.ok(pied.tete.includes('exemples/composants/pied-de-page/style.css'))
   assert.doesNotMatch(pied.tete, /<style\b/)
 })
 
 test('chaque page du plan possède une source Markdown qui se construit', async () => {
-  const donnees = { ...await donneesFondations(), ...await donneesCatalogue(), ...donneesIntegration() }
+  const donnees = { ...await donneesFondations(), ...await donneesCatalogue(), ...donneesIntegration(), ...donneesHabillage() }
   for (const { chemin } of pagesAPlat()) {
     const page = await lirePage(new URL(chemin.replace(/\.html$/, '.md'), RACINE), donnees)
     assert.ok(page.titre, chemin)
@@ -58,17 +59,24 @@ test('chaque page du plan possède une source Markdown qui se construit', async 
   await fichiers(RACINE)
 })
 
-test('le statut distingue la disponibilité du socle et son intégration aux sites', () => {
-  const fixture = { sites: [{ id: 'bibweb', nom: 'bibweb', etat: 'a-integrer' }, { id: 'studio', nom: 'Studio•bib', etat: 'a-integrer' }], composants: {} }
-  const html = integrationComposant('composants/bouton.html', '@@/', fixture)
-  assert.match(html, /bibweb/)
-  assert.match(html, /Studio•bib/)
-  assert.equal((html.match(/À intégrer/g) ?? []).length, 2)
-  assert.doesNotMatch(html, /Bien intégré/)
-  fixture.composants['composants/bouton.html'] = { studio: { etat: 'integre' } }
-  assert.throws(() => integrationComposant('composants/bouton.html', '@@/', fixture), /Validation incomplète/)
-  Object.assign(fixture.composants['composants/bouton.html'].studio, { date: '2026-11-16', preuve: 'Construction et parcours au clavier vérifiés.' })
-  assert.match(integrationComposant('composants/bouton.html', '@@/', fixture), /Bien intégré/)
+test('les fiches affichent la maturité, jamais les sites ; le suivi reste validé à part', () => {
+  assert.match(statutComposant(), /Stable/)
+  assert.match(statutComposant('beta'), /Bêta/)
+  assert.throws(() => statutComposant('inconnu'), /Statut de composant inconnu/)
+  const fixture = { sites: [{ id: 'a', nom: 'Site A', etat: 'a-integrer' }], composants: { 'composants/bouton.html': { a: { etat: 'integre' } } } }
+  assert.throws(() => verifierSuivi(fixture), /Validation incomplète/)
+  Object.assign(fixture.composants['composants/bouton.html'].a, { date: '2026-11-16', preuve: 'Parcours vérifiés.' })
+  assert.doesNotThrow(() => verifierSuivi(fixture))
+})
+
+test('aucune fiche ne nomme un site dans son en-tête', async () => {
+  const donnees = { ...await donneesFondations(), ...await donneesCatalogue(), ...donneesIntegration(), ...donneesHabillage() }
+  for (const { chemin } of pagesAPlat()) {
+    if (!chemin.startsWith('composants/')) continue
+    const page = await lirePage(new URL(chemin.replace(/\.html$/, '.md'), RACINE), donnees).catch(() => null)
+    if (!page) continue
+    statutComposant(page.statut)
+  }
 })
 
 test('chaque fiche du catalogue actif a son suivi d’intégration', async () => {

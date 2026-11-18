@@ -6,6 +6,7 @@
 // Contenu : site/pages/**/*.md ; forme : site/gabarit.mjs, site/vues.mjs et site/assets/.
 // Exemples : site/exemples/ ; valeurs calculées : site/donnees/fondations.mjs.
 // demo/ et _site/ sont produits : ne pas les modifier à la main.
+import { donneesHabillage } from '../site/donnees/habillage.mjs'
 import { cp, mkdir, readdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { dirname, join, relative } from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -26,14 +27,32 @@ async function* fichiers(dossier) {
   }
 }
 
+/** Une construction interrompue laisse son dossier temporaire : le retirer si son processus n'existe plus */
+async function nettoyerConstructionsAbandonnees(cible) {
+  const prefixe = `${cible.split(/[\\/]/).pop()}.construction-`
+  for (const nom of await readdir(RACINE)) {
+    if (!nom.startsWith(prefixe)) continue
+    const pid = Number(nom.slice(prefixe.length))
+    let vivant = false
+    try {
+      process.kill(pid, 0)
+      vivant = pid !== process.pid
+    } catch (erreur) {
+      vivant = erreur.code === 'EPERM'
+    }
+    if (!vivant) await rm(join(RACINE, nom), { recursive: true, force: true, maxRetries: 5 })
+  }
+}
+
 export async function construireSite({ publication = false } = {}) {
   // Construit à côté, puis remplace d'un coup : le site servi n'est jamais à moitié écrit
   const cible = join(RACINE, publication ? '_site' : 'demo')
   const sortie = `${cible}.construction-${process.pid}`
+  await nettoyerConstructionsAbandonnees(cible)
   await rm(sortie, { recursive: true, force: true, maxRetries: 5 })
   await mkdir(sortie, { recursive: true })
 
-  const donnees = { ...await donneesFondations(), ...await donneesCatalogue(), ...donneesIntegration() }
+  const donnees = { ...await donneesFondations(), ...await donneesCatalogue(), ...donneesIntegration(), ...donneesHabillage() }
   const liste = pagesAPlat()
   const erreurs = []
   for (const { chemin } of liste) {
@@ -69,7 +88,7 @@ export async function construireSite({ publication = false } = {}) {
 <body><p><a href="../fondations/typographie.html#composant">Consulter la page Typographie.</a></p></body></html>`)
   for (const nom of await readdir(join(RACINE, 'site/assets'))) {
     if (publication && nom === 'rechargement.js') continue
-    await cp(join(RACINE, 'site/assets', nom), join(sortie, nom))
+    await cp(join(RACINE, 'site/assets', nom), join(sortie, nom), { recursive: true })
   }
   for await (const fichier of fichiers(join(RACINE, 'site/exemples'))) {
     if (!/\.(css|js)$/.test(fichier)) continue

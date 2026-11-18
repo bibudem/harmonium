@@ -3,6 +3,7 @@ titre: En-tête et menu
 description: "La barre du haut de chaque page : les deux marques, la navigation principale, la recherche et le menu. Sous 1200 px, une barre compacte ouvre un rideau qui descend sous l’en-tête ; dès 1200 px, la navigation est dans la barre."
 fichiers: "`harmonium/astro/Entete.astro` · `bib-entete.min.css` · `bib-entete.min.js`"
 ressources: composants/entete
+vignette: place
 ---
 
 ## Aperçu {#apercu}
@@ -103,6 +104,10 @@ import logoUdem from 'harmonium/dist/logo-universite-montreal.svg'
 | slot `menu` | Groupes propres au site, sous « Explorer » (accès rapides, catalogue de services…). Titrer chaque groupe avec `bib-entete__surtitre` et nommer sa liste par `aria-labelledby`. |  |
 
 Habillage : `--bib-entete-accent` (surtitres, « Afficher le menu », flèches ; `--couleur-accent` par défaut), `--bib-entete-survol` (fond des commandes au survol ; `--couleur-teinte`), `--bib-entete-bandeau` (jaune par défaut), `--bib-entete-courante` (pastille de la page courante dans « Explorer » ; rouge orangé). Le script tient `--hauteur-entete` à jour, pour la marge de défilement des ancres.
+
+### Variables d’habillage {#variables}
+
+{{habillage-entete}}
 
 ## Quand l’utiliser {#quand}
 

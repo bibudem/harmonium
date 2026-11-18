@@ -31,7 +31,7 @@ fichiers: "`harmonium/astro/CarteImage.astro` · `bib-carte-image.min.css`"
 
 Les titres utilisent Figtree dans toutes les variantes.
 
-Habillage : la carte fait 330 × 500 px, la photo 220 px de haut ; la flèche (→ ou ↗) suit l’adresse. Texte et flèche en bleu principal sur le fond : 6,8:1. Modificateur `--surface` : carte blanche à contour et ombre, 280 × 400 px, photo de 170 px, titre sans empattement en gras, texte d’appel en description sous le titre, pastille à contour (active : `--bib-pastille-active-fond`, voir [Lien étiré et pastille](@@/composants/carte-icone.html#lien-etire)). Plusieurs cartes : `<div class="bib-carte-image-grille">`, rangée qui défile sous 600 px, grille de trois au plus ensuite.
+Habillage : la carte fait 330 × 500 px, la photo 220 px de haut, avec un contour gris (`--bib-carte-image-bordure`, `--couleur-bordure` par défaut) ; la flèche (→ ou ↗) suit l’adresse. Texte et flèche en bleu principal sur le fond : 6,8:1. Modificateur `--surface` : carte blanche à contour et ombre, 280 × 400 px, photo de 170 px, titre sans empattement en gras, texte d’appel en description sous le titre, pastille à contour (active : `--bib-pastille-active-fond`, voir [Lien étiré et pastille](@@/composants/carte-icone.html#lien-etire)). Plusieurs cartes : `<div class="bib-carte-image-grille">`, rangée qui défile sous 600 px, grille de trois au plus ensuite.
 
 ### Avec Astro
 
@@ -39,17 +39,21 @@ Habillage : la carte fait 330 × 500 px, la photo 220 px de haut ; la flèche (�
 ---
 import CarteImage from 'harmonium/astro/CarteImage.astro'
 ---
-<CarteImage title="Apprendre à chercher" Image={photo} href="/etudes/" moreText="En savoir plus" />
+<CarteImage titre="Apprendre à chercher" image={photo} href="/etudes/" textePlus="En savoir plus" />
 ```
 
 | Propriété | Rôle | Défaut |
 | --- | --- | --- |
 | surface | Carte blanche à contour. | non |
-| title, href | Titre (qui porte le lien) et adresse. Obligatoires. |  |
-| Image | Image importée (formats et tailles d’astro:assets) ou adresse. Obligatoire. |  |
-| moreText | Texte d’appel. | « En savoir plus » |
+| titre, href | Titre (qui porte le lien) et adresse. Obligatoires. |  |
+| image | Image importée (formats et tailles d’astro:assets) ou adresse. Obligatoire. |  |
+| textePlus | Texte d’appel. | « En savoir plus » |
 | alt | Texte de remplacement, seulement si la photo porte un message. | vide |
 | niveauTitre | 2 à 6 ; la police et la taille restent celles de la carte. | `3` |
+
+### Variables d’habillage {#variables}
+
+{{habillage-carte-image}}
 
 ## Quand l’utiliser {#quand}
 
@@ -76,7 +80,7 @@ import CarteImage from 'harmonium/astro/CarteImage.astro'
 -   **Texte agrandi et 320 px** : hauteur minimale plutôt que fixe, titre jamais coupé ; la carte ne dépasse jamais sa colonne (1.4.4, 1.4.10).
 -   **Couleurs forcées** : un contour délimite la carte et la pastille.
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Écrire un titre qui nomme la destination ; ne pas mettre l’information seulement dans la photo.
 -   Donner un `alt` seulement si la photo apporte une information que le titre ne donne pas.

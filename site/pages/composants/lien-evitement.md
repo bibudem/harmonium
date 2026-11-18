@@ -4,11 +4,13 @@ description: "Le premier lien d’une page permet d’atteindre le contenu sans 
 fichiers: "`harmonium/astro/LienEvitement.astro` · `bib-lien-evitement.min.css`"
 ---
 
-## Essayer {#essayer}
+## Aperçu {#essayer}
 
 Depuis le début de cette page, appuyer sur Tab : « Aller au contenu » apparaît. Entrée mène au contenu principal et la prochaine tabulation poursuit dans le contenu.
 
-## En HTML {#html}
+## Utilisation {#utilisation}
+
+### En HTML {#html}
 
 ```
 <body>
@@ -18,7 +20,7 @@ Depuis le début de cette page, appuyer sur Tab : « Aller au contenu » appara�
 </body>
 ```
 
-## En Astro {#astro}
+### En Astro {#astro}
 
 ```
 ---
@@ -33,8 +35,16 @@ import LienEvitement from 'harmonium/astro/LienEvitement.astro'
 
 `cible` vaut `contenu` par défaut et reçoit un id sans `#`. Le slot permet de changer le libellé. Aucun script n’est nécessaire.
 
-## Accessibilité et usage {#accessibilite}
+### Variables d’habillage {#variables}
 
-Ce lien concerne les pages ayant une navigation répétée (WCAG 2.4.1). Il est masqué visuellement au repos, reste dans l’ordre de tabulation et se montre aussi au focus programmatique. Sa cible existe, a un identifiant unique et porte `tabindex="-1"` pour recevoir le focus sans créer un arrêt supplémentaire.
+{{habillage-lien-evitement}}
+
+## Quand l’utiliser {#quand}
+
+-   Sur toute page qui répète une navigation avant son contenu (en-tête, menu) : le lien permet de la sauter (WCAG 2.4.1).
+
+## Accessibilité {#accessibilite}
+
+Il est masqué visuellement au repos, reste dans l’ordre de tabulation et se montre aussi au focus programmatique. Sa cible existe, a un identifiant unique et porte `tabindex="-1"` pour recevoir le focus sans créer un arrêt supplémentaire.
 
 Le placer directement au début du `body`, hors d’une zone qui rogne son contenu. Un en-tête fixe réserve assez de défilement pour garder la cible visible. Vérifier le trajet complet au clavier dans le gabarit du site hôte.

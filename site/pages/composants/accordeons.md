@@ -9,14 +9,6 @@ ressources: "composants/accordeons"
 
 ::exemple[composants/accordeons/01.html]
 
- 
-
-::exemple[composants/accordeons/02.html]
-
- 
-
-::exemple[composants/accordeons/03.html]
-
 ## Utilisation {#utilisation}
 
 ### En HTML
@@ -40,10 +32,13 @@ Habillage : bleu par défaut ; `bib-accordeons--neutre` (pastille jaune, filet g
 
 ```
 ---
-import { GroupeAccordeons, Accordeon, AccordeonTitre, AccordeonContenu } from 'harmonium/astro/…'  // un fichier par composant
+import GroupeAccordeons from 'harmonium/astro/GroupeAccordeons.astro'
+import Accordeon from 'harmonium/astro/Accordeon.astro'
+import AccordeonTitre from 'harmonium/astro/AccordeonTitre.astro'
+import AccordeonContenu from 'harmonium/astro/AccordeonContenu.astro'
 ---
-<GroupeAccordeons color="rose">
-  <Accordeon defaultExpanded>
+<GroupeAccordeons couleur="rose">
+  <Accordeon ouvert>
     <AccordeonTitre niveauTitre={3}>Qui peut emprunter?</AccordeonTitre>
     <AccordeonContenu><p>Toute personne inscrite.</p></AccordeonContenu>
   </Accordeon>
@@ -52,12 +47,16 @@ import { GroupeAccordeons, Accordeon, AccordeonTitre, AccordeonContenu } from 'h
 
 | Propriété | Rôle | Défaut |
 | --- | --- | --- |
-| color | (`GroupeAccordeons`, `Accordeon`) `bleuPrincipal`, `neutre`, `rose` ou `vertPale`. | `bleuPrincipal` |
-| defaultExpanded | (`Accordeon`) Ouvert au premier affichage ; dans un groupe, le premier l’emporte. | non |
+| couleur | (`GroupeAccordeons`, `Accordeon`) `bleuPrincipal`, `neutre`, `rose` ou `vert`. | `bleuPrincipal` |
+| ouvert | (`Accordeon`) Ouvert au premier affichage ; dans un groupe, le premier l’emporte. | non |
 | niveauTitre | (`AccordeonTitre`) Niveau du titre, de 2 à 6 ; 0 pour un `<span>`. | `3` |
 
 
 Le script facultatif `bib-accordeons.min.js` ouvre le volet qui contient la cible d’une ancre, et garde le titre cliqué sous le pointeur quand un autre volet se ferme plus haut. Sans lui, tout fonctionne sauf ces deux finesses.
+
+### Variables d’habillage {#variables}
+
+{{habillage-accordeons}}
 
 ## Quand l’utiliser {#quand}
 
@@ -82,11 +81,11 @@ Le script facultatif `bib-accordeons.min.js` ouvre le volet qui contient la cibl
 -   **Clavier** : chaque titre est atteignable avec Tab et s’ouvre avec Entrée ou Espace (WCAG 2.1.1). Le contour de focus est celui du site (2.4.7).
 -   **Titres réels** : le titre du volet est un `h2` à `h6` ; la navigation par titres des lecteurs d’écran le trouve (1.3.1).
 -   **État visible sans la couleur** : l’icône passe de plus à moins ; la pastille seule ne suffirait pas (1.4.1). En mode contraste élevé, la pastille reçoit une bordure.
--   **Contrastes** : couleurs « rose » et « vert pâle » corrigées (titre en `#b33410`, 5,5:1 sur rose 100 ; vert foncé au lieu du vert pâle à 2,5:1) (1.4.3).
+-   **Contrastes** : couleurs « rose » et « vert pâle » corrigées (titre en `--rouge-orange-fonce`, 5,9:1 sur `--rose-50` ; vert foncé au lieu du vert pâle à 2,5:1) (1.4.3).
 -   **Mouvement** : l’animation de hauteur est coupée quand la personne réduit les animations ; une ouverture par ancre n’est jamais animée, pour que la cible soit en place.
 -   **Sans JavaScript** : tout fonctionne ; le script ne sert qu’à ouvrir le volet visé par une ancre.
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Écrire des titres qui se comprennent seuls, comme une question ou un sujet (« Combien de documents puis-je emprunter? »), jamais « Cliquez ici ».
 -   Respecter la hiérarchie : le niveau des titres des volets suit celui du titre qui précède l’accordéon (`niveauTitre`). Le niveau est celui que l’auteur écrit ; il n’est pas deviné.

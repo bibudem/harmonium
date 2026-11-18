@@ -26,7 +26,7 @@ ressources: "composants/surface"
 ---
 import Surface from 'harmonium/astro/Surface.astro'
 ---
-<Surface component="section" variant="outlined" aria-labelledby="titre-salles">
+<Surface balise="section" variante="contour" aria-labelledby="titre-salles">
   <h3 id="titre-salles">Salles de travail</h3>
   …
 </Surface>
@@ -34,12 +34,16 @@ import Surface from 'harmonium/astro/Surface.astro'
 
 | Propriété | Rôle | Défaut |
 | --- | --- | --- |
-| `variant` | `elevation` (ombre) ou `outlined` (contour de 1 px). | `elevation` |
-| `elevation` | `0` retire l’ombre ; toute autre valeur donne l’ombre légère du thème (`--ombre-1`). | `1` |
-| `square` | Coins droits. | non |
-| `component` | Balise rendue : `div`, `section`, `article`, `aside`, `li`, `nav`, `header` ou `footer`. | `div` |
+| `variante` | `ombre` ou `contour` (contour de 1 px). | `ombre` |
+| `ombre` | `0` retire l’ombre ; toute autre valeur donne l’ombre légère du thème (`--ombre-1`). | `1` |
+| `coinsDroits` | Coins droits. | non |
+| `balise` | Balise rendue : `div`, `section`, `article`, `aside`, `li`, `nav`, `header` ou `footer`. | `div` |
 
 En HTML, les modificateurs sont `--contour`, `--sans-ombre` et `--carre`.
+
+### Variables d’habillage {#variables}
+
+{{habillage-surface}}
 
 ## Quand l’utiliser {#quand}
 
@@ -62,8 +66,8 @@ En HTML, les modificateurs sont `--contour`, `--sans-ombre` et `--carre`.
 -   **Couleurs forcées** : l’ombre disparaît en mode contraste élevé ; une bordure `CanvasText` la remplace et la boîte reste visible.
 -   **Contraste** : texte `--couleur-texte` sur `--couleur-fond`, bien au-delà de 4,5:1 (WCAG 1.4.3).
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
--   Choisir la balise qui correspond au contenu (`component`) ; une `<section>` doit alors avoir un titre et un nom (`aria-labelledby`) (1.3.1).
+-   Choisir la balise qui correspond au contenu (`balise`) ; une `<section>` doit alors avoir un titre et un nom (`aria-labelledby`) (1.3.1).
 -   Ne pas faire de la surface un lien ou un bouton en y ajoutant un gestionnaire de clic : utiliser une carte.
 -   Ne pas signaler une information par l’ombre ou le contour seul.

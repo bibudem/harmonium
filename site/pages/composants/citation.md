@@ -39,6 +39,10 @@ import Citation from 'harmonium/astro/Citation.astro'
 | `source` | Attribution affichée sous la citation (`<figcaption>`). |
 | `cite` | Adresse de la source, posée sur le `<blockquote>`. |
 
+### Variables d’habillage {#variables}
+
+{{habillage-citation}}
+
 ## Quand l’utiliser {#quand}
 
 ### À utiliser pour
@@ -60,7 +64,7 @@ import Citation from 'harmonium/astro/Citation.astro'
 -   **Couleurs forcées** : le filet passe en `CanvasText` et reste visible en mode contraste élevé.
 -   **Guillemets décoratifs** : générés par le CSS ; ils ne sont pas dans le texte, la citation reste propre à copier.
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Toujours indiquer la source (`source`) : une citation anonyme ne dit pas qui parle.
 -   Ne pas écrire de guillemets autour du texte : ils seraient doublés.

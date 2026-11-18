@@ -64,6 +64,10 @@ import Integration from 'harmonium/astro/Integration.astro'
 | hauteur, hauteurLarge | Place réservée, puis dès 1200 px (longueur CSS). | `auto` (402 px avec `clavardage`) |
 | chargement, erreur, sansScript | Messages d’attente, d’échec et sans JavaScript. | ceux du formulaire ou du clavardage |
 
+### Variables d’habillage {#variables}
+
+{{habillage-integration}}
+
 ## Quand l’utiliser {#quand}
 
 ### À utiliser pour
@@ -89,7 +93,7 @@ import Integration from 'harmonium/astro/Integration.astro'
 -   **Cibles agrandies** dans le widget LibAnswers, injecté dans la page : étiquettes des boutons radio portées à 24 px (2.5.8), bouton d’envoi de 44 px sous 900 px. Une iframe d’un autre domaine (LibWizard) ne peut pas être corrigée.
 -   **Sans JavaScript** : le `<noscript>` dit que le contenu en a besoin, et la réserve est levée (`scripting: none`).
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Placer un titre avant le conteneur (« Nous écrire ») : le contenu tiers n’en apporte pas toujours.
 -   Donner un autre moyen de joindre l’équipe (courriel, téléphone) sur la page : un bloqueur ou une panne peut empêcher le contenu de s’afficher.

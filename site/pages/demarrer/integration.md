@@ -34,21 +34,42 @@ Le chemin d’un composant est `harmonium/astro/Nom.astro`. L’étiquette fixe 
 
 Les composants à script (urgence, avis, clavardage, rétroaction, consentement) se chargent par balise `<script>` dans tous les sites, Astro compris.
 
-## Les scripts facultatifs {#scripts}
+## Les scripts des composants {#scripts}
 
-Les composants sans script (HTML et CSS) fonctionnent seuls. Certains gagnent à charger un petit script, jamais nécessaire, sauf pour le retour en haut et les onglets ; chacun est indiqué en haut de la fiche de son composant. Tous fonctionnent avec ou sans navigation sans rechargement (`ClientRouter` d’Astro : ils se relancent à chaque page).
+La plupart des composants ne sont que du HTML et du CSS. Certains ont aussi un petit fichier JavaScript (`bib-<nom>.min.js`), indiqué en haut de leur fiche. On ne le charge que si la page utilise le composant.
+
+Ces scripts sont de deux sortes. Tous se relancent d’eux-mêmes après une navigation sans rechargement (`ClientRouter` d’Astro).
+
+### Nécessaires {#scripts-necessaires}
+
+Sans son script, le composant ne fonctionne pas ou n’apparaît pas.
+
+| Script | Composant | Rôle |
+| --- | --- | --- |
+| `bib-onglets.min.js` | [Onglets](@@/composants/onglets.html) | Rôles ARIA, flèches du clavier, groupes synchronisés. Sans lui, les panneaux s’affichent l’un sous l’autre. |
+| `bib-retour-haut.min.js` | [Retour en haut](@@/composants/retour-haut.html) | Affiche le bouton après un défilement et ramène en haut. |
+| `bib-entete.min.js` | [En-tête](@@/composants/entete.html) | Montre les commandes et ouvre le menu. |
+| `bib-integration.min.js` | [Intégration tierce](@@/composants/integration.html) | Charge le formulaire ou le clavardage du fournisseur. |
+| `bib-horaire-semaine.min.js` | [Horaire d’un service](@@/composants/horaire-semaine.html) | Lit l’horaire dans l’API ; sans lui, le texte de repli reste. |
+| `bib-avis.min.js`, `udem-urgence.min.js`, `bib-clavardage.min.js`, `bib-consentement.min.js`, `bib-retroaction-usager.min.js` | [Avis](@@/composants/avis.html), [urgence](@@/composants/urgence.html), [clavardage](@@/composants/clavardage.html), [consentement](@@/composants/consentement.html), [rétroaction](@@/composants/retroaction.html) | Le composant entier : il se charge par balise `<script>` dans tous les sites, Astro compris. |
+
+### Facultatifs {#scripts-facultatifs}
+
+Le composant marche sans eux ; le script ajoute un confort.
 
 | Script | Composant | Ce qu’il ajoute |
 | --- | --- | --- |
-| `bib-accordeons.min.js` | [Accordéons](@@/composants/accordeons.html) | Ouverture du volet visé par une ancre ; le titre cliqué reste sous le pointeur. |
+| `bib-accordeons.min.js` | [Accordéons](@@/composants/accordeons.html) | Ouvre le volet visé par une ancre ; le titre cliqué reste sous le pointeur. |
 | `bib-carrousel.min.js` | [Carrousel](@@/composants/carrousel.html) | Flèches, annonce des cartes visibles, barre de progression, fondu du bord. |
 | `bib-chiffres.min.js` | [Chiffres clés](@@/composants/chiffres.html) | Remplissage des barres et montée des nombres à l’affichage. |
+| `bib-copier.min.js` | [Copier](@@/composants/copier.html) | Montre le bouton « Copier » si le presse-papiers est disponible. |
 | `bib-infobulle.min.js` | [Infobulle](@@/composants/infobulle.html) | Échap ferme l’infobulle affichée. |
-| `bib-onglets.min.js` | [Onglets](@@/composants/onglets.html) | **Nécessaire** aux onglets : rôles ARIA, flèches du clavier, groupes synchronisés. |
+| `bib-liste-filtrable.min.js` | [Liste filtrable](@@/composants/liste-filtrable.html) | Recherche et filtre par catégorie ; sans lui, la liste complète reste lisible. |
 | `bib-pied-de-page.min.js` | [Pied de page](@@/composants/pied-de-page.html) | Colonnes repliables sous 900 px ; bouton des témoins. |
-| `bib-retour-haut.min.js` | [Retour en haut](@@/composants/retour-haut.html) | **Nécessaire** : affiche le bouton après un défilement et le ramène en haut. |
 | `bib-sceau.min.js` | [Sceau](@@/composants/sceau.html) | Le texte tourne autour du U au survol. |
+| `bib-table-matieres.min.js` | [Table des matières](@@/composants/table-matieres.html) | Marque la section en cours de lecture. |
 | `bib-tableau.min.js` | [Tableau](@@/composants/tableau.html) | La zone n’est un arrêt de tabulation que si le tableau défile. |
+| `bib-video.min.js` | [Vidéo](@@/composants/video.html) | Remplace le lien vers la plateforme par le lecteur intégré. |
 
 ## Adopter progressivement {#adoption}
 
@@ -111,13 +132,15 @@ Les fichiers sont servis par jsDelivr depuis le dépôt GitHub :
 https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/
 ```
 
--   **`@1`** : la dernière version 1.x. Les sites reçoivent les corrections automatiquement (dans les 12 h environ, délai du cache de jsDelivr). Un changement qui casse l’usage passe à `@2` : les sites migrent un à un.
--   **Version exacte** : `…/harmonium@1.0.1/dist/…`, de préférence avec une empreinte SRI (attribut `integrity`) et `crossorigin="anonymous"`.
+Le numéro placé après `@` choisit la version. Deux façons de l’écrire :
 
-::exemple[demarrer/integration/01.html]
+| Adresse | Ce que le site reçoit | Quand la choisir |
+| --- | --- | --- |
+| `harmonium@1/dist/…` | La dernière version 1.x. Les corrections arrivent seules, en 12 h environ (délai du cache de jsDelivr). | Cas courant : le site profite des correctifs sans rien changer. |
+| `harmonium@1.1.0/dist/…` | Toujours le même fichier, figé. Rien ne change tant qu’on ne modifie pas le numéro. | Page qu’on ne peut pas revérifier souvent. |
+
+Un changement qui casse l’usage passe à `@2` : avec `@1`, un site n’est jamais touché par une version majeure ; il migre quand il est prêt.
 
 ## Essais et démonstration {#essais}
 
 Ce mini-site charge les fichiers de `dist/` du dépôt, ceux que publie jsDelivr. Les services réels (avis, urgence, LibChat) sont appelés pour de vrai ; les exemples d’avis et d’urgence utilisent des messages simulés.
-
-::exemple[demarrer/integration/02.html]

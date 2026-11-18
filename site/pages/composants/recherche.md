@@ -64,6 +64,14 @@ import Recherche from 'harmonium/astro/Recherche.astro'
 
 Les attributs `data-*` passent au `<form>` : un script du site peut ainsi le repérer pour ajouter des suggestions.
 
+### Variables d’habillage {#variables}
+
+{{habillage-recherche}}
+
+## Quand l’utiliser {#quand}
+
+-   La recherche du site, dans l’en-tête ou en haut d’une page de résultats. La destination et les résultats appartiennent au site.
+
 ## Accessibilité {#accessibilite}
 
 - L’étiquette reste visible ; le texte d’exemple du champ ne la remplace pas.

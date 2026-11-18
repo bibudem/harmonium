@@ -65,6 +65,10 @@ import photo from './images/ouvrages.webp'
 
 Une seule source parmi `youtube`, `loom`, `integration` et `fichier`.
 
+### Variables d’habillage {#variables}
+
+{{habillage-video}}
+
 ## Quand l’utiliser {#quand}
 
 ### À utiliser pour
@@ -90,7 +94,7 @@ Une seule source parmi `youtube`, `loom`, `integration` et `fichier`.
 -   **Couleurs forcées** : le cadre reçoit un contour et le voile laisse place au fond du système.
 -   **Téléphone** : sous 600 px, seul le titre reste sur la façade, pour tenir en 16:9.
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Donner un titre qui dit ce que montre la vidéo.
 -   Fournir une transcription, et des sous-titres sur la plateforme (WCAG 1.2.2, 1.2.3) ; la lier avec `transcription`.

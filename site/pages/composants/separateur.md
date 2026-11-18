@@ -38,12 +38,16 @@ import Separateur from 'harmonium/astro/Separateur.astro'
 | --- | --- | --- |
 | `orientation` | `horizontal` ou `vertical` ; vertical pose `aria-orientation` et s’étire sur la hauteur d’une rangée flex. | `horizontal` |
 
+### Variables d’habillage {#variables}
+
+{{habillage-separateur}}
+
 ## Quand l’utiliser {#quand}
 
 ### À utiliser pour
 
 -   Marquer un changement de sujet à l’intérieur d’une section, quand un titre serait de trop.
--   Séparer des éléments en ligne dans une rangée flex (`orientation="vertical"`, `flexItem`).
+-   Séparer des éléments en ligne dans une rangée flex (`orientation="vertical"`, `dansRangee`).
 
 ### À éviter
 
@@ -60,7 +64,7 @@ import Separateur from 'harmonium/astro/Separateur.astro'
 -   **Non focalisable** : il n’est pas un arrêt de tabulation.
 -   **Couleurs forcées** : le filet passe en `CanvasText` pour rester visible.
 
-### Ce que l’auteur doit faire
+### Ce que l’intégrateur doit faire
 
 -   Ne pas compter sur le filet seul pour dire qu’on change de sujet : un lecteur d’écran ne l’annonce pas toujours ; un titre ou une phrase d’introduction reste plus sûr.
 -   Le filet `--couleur-bordure` est décoratif et pâle (moins de 3:1) : rien d’important ne doit en dépendre (1.4.11).

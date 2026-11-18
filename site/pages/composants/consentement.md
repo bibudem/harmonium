@@ -48,7 +48,7 @@ Dernier choix : **aucun pendant cette visite**.
     ```
     
 
-## Réglages {#reglages}
+### Réglages {#reglages}
 
 | Attribut | Rôle |
 | --- | --- |
@@ -66,7 +66,7 @@ Le panneau ne nomme que les tiers réellement chargés :
 | `clarity-id` | Microsoft (Clarity) |
 | aucun | « aucun outil de statistiques n’est utilisé sur ce site » |
 
-## Fonctionnement {#fonctionnement}
+### Fonctionnement {#fonctionnement}
 
 -   **Rien avant la réponse** : aucun script de Google ou de Microsoft n’est chargé avant que la personne accepte.
 -   **Refus** : les témoins de statistiques déjà posés (`_ga`, `_clck`…) sont effacés, sur le site et ses domaines parents.
@@ -74,22 +74,22 @@ Le panneau ne nomme que les tiers réellement chargés :
 -   **Un seul par page** : un second `<bib-consentement>` est ignoré (avertissement dans la console).
 -   **Hauteur publiée** : tant que la carte est affichée, sa hauteur est publiée dans `--bib-consentement-hauteur` (sur `<html>`) ; le [clavardage](@@/composants/clavardage.html) se place au-dessus.
 
-## Rouvrir, réagir, navigation {#api}
+### Rouvrir, réagir, navigation {#api}
 
-### Rouvrir le panneau depuis le code
+#### Rouvrir le panneau depuis le code
 
 ```
 window.dispatchEvent(new Event('bib:parametres-temoins'))
 // ou : document.querySelector('bib-consentement').ouvrirParametres()
 ```
 
-### Réagir au choix
+#### Réagir au choix
 
 ```
 window.addEventListener('bib:consentement', (e) => console.log(e.detail.statistiques)) // true | false
 ```
 
-### Site à navigation côté client (conteneur GTM)
+#### Site à navigation côté client (conteneur GTM)
 
 Une page vue est envoyée au chargement du conteneur. Un site qui change de page sans rechargement (Astro ClientRouter, application monopage) signale chaque nouvelle page :
 
@@ -97,7 +97,7 @@ Une page vue est envoyée au chargement du conteneur. Un site qui change de page
 window.dispatchEvent(new Event('bib:page-vue'))
 ```
 
-## Habillage aux couleurs d’un site {#habillage}
+## Habillage {#habillage}
 
 Dans la feuille de style du site, une fois (toutes facultatives ; chaque propriété a une valeur par défaut neutre). Exemple avec les jetons communs :
 
@@ -118,7 +118,9 @@ bib-consentement {
 }
 ```
 
-## Pourquoi {#pourquoi}
+## Quand l’utiliser {#quand}
+
+### Pourquoi {#pourquoi}
 
 La Loi sur l’accès (art. 65.0.1) exige l’accord de la personne avant d’activer des outils qui la profilent ou la localisent, comme les statistiques de fréquentation. Le texte présenté, la durée du choix et l’effacement des témoins sont fixés une fois, avec la personne responsable de la vie privée, au lieu d’être refaits sur chaque site.
 
@@ -126,8 +128,6 @@ La Loi sur l’accès (art. 65.0.1) exige l’accord de la personne avant d’ac
 -   **Rien avant la réponse** : aucun script de Google ou de Microsoft n’est chargé avant l’accord, et un refus efface les témoins déjà posés.
 -   **Aucune dépendance** : pas de plateforme de consentement externe ; le script est autonome.
 -   **Choix d’accessibilité** : carte non bloquante, panneau en vraie boîte de dialogue, focus rendu après le choix, choix annoncé, place gardée pour le focus en bas de l’écran.
-
-## Quand l’utiliser {#quand}
 
 ### À utiliser pour
 
@@ -151,7 +151,7 @@ La Loi sur l’accès (art. 65.0.1) exige l’accord de la personne avant d’ac
 -   **Après le choix** : la carte disparaît et le focus revient à l’élément de la page d’où il venait, sinon sur l’emplacement du composant, jamais au début de la page (2.4.3, testé). « Choix enregistré : statistiques acceptées. » (ou refusées) est annoncé (`role="status"`) (4.1.3).
 -   **Focus jamais caché** : tant que la carte est affichée, la page garde une marge en bas (`scroll-padding-bottom`) : un élément atteint au clavier ne passe pas sous la carte, même à 400 % (2.4.11, testé). Le contour de focus, jaune `#ffca40` bordé de `#0b113a`, se voit sur fond clair comme sur fond foncé (2.4.7).
 -   **Lien externe annoncé** : « Vie privée à l’UdeM » dit en texte masqué qu’il ouvre une nouvelle fenêtre (3.2.5).
--   **Contrastes** (couleurs par défaut) : texte `#0b113a` sur blanc et texte blanc sur les boutons `#0b113a`, 18:1 (1.4.3).
+-   **Contrastes** (couleurs par défaut) : texte `--bleu-fonce` sur blanc et texte blanc sur les boutons `--bleu-fonce`, 18:1 (1.4.3).
 -   **Contraste élevé** (couleurs forcées) : les boutons gardent une bordure, transparente en temps normal, qui devient visible.
 -   **Agrandissement et téléphone** : sur un écran bas (téléphone couché, zoom à 400 %), la carte se compacte ; le panneau défile s’il dépasse la hauteur de l’écran (1.4.4, 1.4.10).
 -   **Mouvement** : aucune animation.

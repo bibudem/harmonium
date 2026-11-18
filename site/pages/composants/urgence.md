@@ -3,6 +3,7 @@ titre: "Urgence"
 fichiers: "`udem-urgence.min.js` · `<udem-urgence>`"
 description: "Le message d’urgence de l’Université de Montréal (Bureau de la sûreté), en haut de page. Rien ne s’affiche tant qu’il n’y a pas d’urgence en cours."
 ressources: "composants/urgence"
+vignette: 2
 ---
 
 ## Aperçu {#apercu}
@@ -34,14 +35,16 @@ ressources: "composants/urgence"
     ```
     
 
-## Réglages (facultatifs) {#reglages}
+### Réglages (facultatifs) {#reglages}
 
 | Attribut | Rôle |
 | --- | --- |
 | `big` | Grand format. Le message peut aussi l’imposer (`bannerType: "large"`). |
 | `service` | Adresse du message (par défaut `https://urgence.umontreal.ca/urgence-udem.json`). Changer l’attribut recharge le message. Une adresse `data:` sert aux essais. |
 
-## Pourquoi {#pourquoi}
+## Quand l’utiliser {#quand}
+
+### Pourquoi {#pourquoi}
 
 En cas d’urgence sur le campus (évacuation, fermeture, menace), le Bureau de la sûreté publie un message que tous les sites de l’Université doivent montrer, sans délai et de la même façon. Chaque site des bibliothèques n’a pas à recoder ce bandeau : il ajoute une balise, et le message paraît dès qu’il est publié.
 
@@ -49,8 +52,6 @@ En cas d’urgence sur le campus (évacuation, fermeture, menace), le Bureau de 
 -   **Aucune dépendance** : un script autonome, sans bibliothèque à charger.
 -   **Accessible d’emblée** : message jamais coupé, un seul arrêt au clavier, ouverture dans un nouvel onglet annoncée, urgence publiée pendant la visite annoncée aux lecteurs d’écran.
 -   **Prudent avec le service** : seules les adresses http(s) sont acceptées pour le lien, et une panne passagère n’efface pas une urgence déjà affichée.
-
-## Quand l’utiliser {#quand}
 
 ### À utiliser pour
 
