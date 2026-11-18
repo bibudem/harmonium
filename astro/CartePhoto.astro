@@ -3,7 +3,7 @@
  * <CartePhoto> : une carte-lien à photo plein cadre. Produit le HTML documenté dans
  * src/composants/carte-photo.css et importe cette feuille.
  *
- *   <CartePhoto titre="Réserver une salle" description="Des salles pour vos projets." url="/salles/" image={photo} />
+ *   <CartePhoto titre="Réserver une salle" description="Des salles pour vos projets." href="/salles/" image={photo} />
  *
  * `image` : image importée (formats modernes et tailles d'astro:assets) ou adresse. La photo est décorative.
  */
@@ -15,20 +15,18 @@ import { classes, fusionnerStyles, type Style } from './styles.ts'
 interface Props {
   titre: string
   description: string
-  url: string
+  href: string
   image: ImageMetadata | string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const { titre, description, url, image, class: classe, className, style, ...reste } = Astro.props
+const { titre, description, href, image, class: classe, style, ...reste } = Astro.props
 
 if (!image) throw new Error('CartePhoto : la propriété `image` est obligatoire.')
 ---
 
-<a class:list={['bib-carte-photo', classes(classe, className)]} href={url} style={fusionnerStyles(style)} {...reste}>
+<a class:list={['bib-carte-photo', classes(classe)]} href={href} style={fusionnerStyles(style)} {...reste}>
   {
     typeof image === 'string' ? (
       <img class="bib-carte-photo__photo" src={image} alt="" loading="lazy" decoding="async" />

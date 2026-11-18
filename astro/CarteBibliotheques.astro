@@ -38,15 +38,13 @@ interface Props {
   sousTitre?: string
   nomPastilles?: string
   regionDefaut?: string
-  niveau?: 2 | 3 | 4 | 5 | 6
+  niveauTitre?: 2 | 3 | 4 | 5 | 6
   donneesStructurees?: boolean
   class?: string
-  /** Contenu repris de React */
-  className?: string
 }
 
-const { service, lieux, sousTitre, nomPastilles = 'Caractéristiques', regionDefaut = 'Montréal', niveau = 3, donneesStructurees = true, class: classe, className } = Astro.props
-const Titre = `h${niveau}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+const { service, lieux, sousTitre, nomPastilles = 'Caractéristiques', regionDefaut = 'Montréal', niveauTitre = 3, donneesStructurees = true, class: classe } = Astro.props
+const Titre = `h${niveauTitre}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 const id = idUnique('carte-bibliotheques')
 const regionDe = (l: LieuCarte) => l.region ?? regionDefaut
 const regions = [...new Set(lieux.map(regionDe))]
@@ -78,7 +76,7 @@ const jsonLd = donneesStructurees
   : undefined
 ---
 
-<div class:list={['bib-carte-bibliotheques', classes(classe, className)]} data-carte-bibliotheques>
+<div class:list={['bib-carte-bibliotheques', classes(classe)]} data-carte-bibliotheques>
   {jsonLd && <script is:inline type="application/ld+json" set:html={jsonLd} />}
   {
     regions.length > 1 && (

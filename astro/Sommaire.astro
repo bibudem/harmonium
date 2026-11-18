@@ -18,17 +18,15 @@ interface Props {
   /** Libellé de la pastille */
   libelle?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const { liens = [], nom = 'Sur cette page', libelle = 'Aller à une section', class: classe, className, style, ...reste } = Astro.props
+const { liens = [], nom = 'Sur cette page', libelle = 'Aller à une section', class: classe, style, ...reste } = Astro.props
 ---
 
 {
   liens.length >= 2 && (
-    <nav class:list={['bib-sommaire', 'theme-clair', classes(classe, className)]} style={fusionnerStyles(style)} aria-label={nom} data-sommaire {...reste}>
+    <nav class:list={['bib-sommaire', 'theme-clair', classes(classe)]} style={fusionnerStyles(style)} aria-label={nom} data-sommaire {...reste}>
       <details class="bib-sommaire__details">
         <summary class="bib-sommaire__pastille">
           {libelle}

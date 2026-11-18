@@ -17,32 +17,31 @@ import EtatErreur from './EtatErreur.astro'
 import { analyserLien } from './liens.ts'
 import type { Style } from './styles.ts'
 
+
 interface Props {
-  title?: string
+  titre?: string
   id?: string
   service?: string
-  limit?: number
-  moreText?: string
-  moreLink?: string
+  limite?: number
+  textePlus?: string
+  lienPlus?: string
   colonnes?: 1 | 2
   titreMasque?: boolean
   plusCentre?: boolean
   nouvelOnglet?: boolean
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
 const SERVICE_URL = 'https://api.bib.umontreal.ca/formations/'
 const MORE_LINK = 'https://calendrier.bib.umontreal.ca/calendar?cid=7690&t=m&d=0000-00-00&cal=7690&inc=0'
 
-const { title = 'Formations', id, service = SERVICE_URL, limit: limiteDemandee = 4, moreText = 'Toutes nos formations', moreLink = MORE_LINK, colonnes = 1, titreMasque, plusCentre, class: classe, className, style } = Astro.props
+const { titre: title = 'Formations', id, service = SERVICE_URL, limite: limiteDemandee = 4, textePlus: moreText = 'Toutes nos formations', lienPlus: moreLink = MORE_LINK, colonnes = 1, titreMasque, plusCentre, class: classe, style } = Astro.props
 const nouvelOnglet = Astro.props.nouvelOnglet ?? !analyserLien(moreLink, Astro.site?.origin ?? Astro.url.origin).interne
 const limite = typeof limiteDemandee === 'number' && limiteDemandee > 0 ? limiteDemandee : 4
 ---
 
-<ColonneActualites title={title} id={id} moreText={moreText} moreLink={moreLink} externe={nouvelOnglet} titreMasque={titreMasque} plusCentre={plusCentre} class={classe} className={className} style={style}>
+<ColonneActualites titre={title} id={id} textePlus={moreText} lienPlus={moreLink} externe={nouvelOnglet} titreMasque={titreMasque} plusCentre={plusCentre} class={classe} style={style}>
   <div
     class:list={['bib-actualites-dynamique', { 'bib-actualites-dynamique--deux-colonnes': colonnes === 2 }]}
     style={`--bib-actualites-rangees: ${Math.ceil(limite / 2)}`}

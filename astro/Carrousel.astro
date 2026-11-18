@@ -4,12 +4,12 @@
  * src/composants/carrousel.css et importe cette feuille ; les flèches et la barre de progression sont
  * <BoutonsCarrousel> et <ProgressionCarrousel>. bib-carrousel.min.js (facultatif) les branche.
  *
- *   <Carrousel title="Nos services" description="Un aperçu." moreText="Voir tout" moreLink="/services/">
+ *   <Carrousel titre="Nos services" description="Un aperçu." textePlus="Voir tout" lienPlus="/services/">
  *     <CarteImage … /> <CarteImage … />
  *   </Carrousel>
  *
- * Chaque enfant de premier niveau du slot est une diapositive. `title` : chaîne (rendue en h2) ; un autre
- * titre passe en slot « title ». `description` : chaîne, ou slot « description ». `ariaLabel` : nom
+ * Chaque enfant de premier niveau du slot est une diapositive. `titre` : chaîne (rendue en h2) ; un autre
+ * titre passe en slot « titre ». `description` : chaîne, ou slot « description ». `ariaLabel` : nom
  * accessible, à donner quand le titre est un élément (qui doublerait le nom). `moreTarget="_blank"` ouvre
  * moreLink dans un nouvel onglet (annoncé par le bouton).
  */
@@ -22,31 +22,30 @@ import BoutonsCarrousel from './BoutonsCarrousel.astro'
 import ProgressionCarrousel from './ProgressionCarrousel.astro'
 import { classes, fusionnerStyles, type Style } from './styles.ts'
 
+
 interface Props {
-  /** Chaîne (rendue en h2) ; un autre titre passe en slot « title » */
-  title?: string
+  /** Chaîne (rendue en h2) ; un autre titre passe en slot « titre » */
+  titre?: string
   /** Chaîne ; un élément passe en slot « description » */
   description?: string
-  moreText?: string
-  moreLink?: string
+  textePlus?: string
+  lienPlus?: string
   /** `_blank` pour ouvrir moreLink dans un nouvel onglet (annoncé par Bouton) */
-  moreTarget?: string
+  ciblePlus?: string
   /** Nom accessible : le titre seul. À donner quand le titre est un élément
       (un Titre de vitrine contient le texte masqué de son lien d'ancre, qui
       doublait le nom : « … Lien vers la section « … » ») */
   ariaLabel?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
   [attribut: string]: unknown
 }
 
-const { title, description, moreText, moreLink, moreTarget, ariaLabel, class: classe, className, style, ...reste } = Astro.props
+const { titre: title, description, textePlus: moreText, lienPlus: moreLink, ciblePlus: moreTarget, ariaLabel, class: classe, style, ...reste } = Astro.props
 const id = idUnique('carrousel')
 const { panneaux, annexes } = panneauxDuSlot(Astro.slots.has('default') ? await Astro.slots.render('default') : '')
 const total = panneaux.length
-const aTitre = title !== undefined || Astro.slots.has('title')
+const aTitre = title !== undefined || Astro.slots.has('titre')
 // Un slot passé sous condition ({texte && <… slot="description" />}) existe
 // même vide pour Astro.slots.has : on regarde ce qu'il rend
 const htmlDescription = Astro.slots.has('description') ? (await Astro.slots.render('description')).trim() : ''
@@ -54,7 +53,7 @@ const aDescription = description !== undefined || htmlDescription !== ''
 ---
 
 <div
-  class:list={['bib-carrousel', classes(classe, className)]}
+  class:list={['bib-carrousel', classes(classe)]}
   style={fusionnerStyles(style)}
   role="region"
   aria-roledescription="carrousel"
@@ -67,8 +66,8 @@ const aDescription = description !== undefined || htmlDescription !== ''
     {
       aTitre && (
         <div class="bib-carrousel__titre" id={`${id}-titre`}>
-          <slot name="title">
-            <Typographie component="h2" variant="h2">
+          <slot name="titre">
+            <Typographie balise="h2" variante="titre-2">
               {title}
             </Typographie>
           </slot>
@@ -82,7 +81,7 @@ const aDescription = description !== undefined || htmlDescription !== ''
             htmlDescription ? (
               <Fragment set:html={htmlDescription} />
             ) : (
-              <Typographie variant="body1" component="div">
+              <Typographie variante="texte" balise="div">
                 {description}
               </Typographie>
             )

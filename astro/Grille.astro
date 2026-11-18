@@ -3,15 +3,15 @@
  * <Grille> : une grille de 12 colonnes, sans JavaScript. Produit le HTML documenté dans
  * src/composants/grille.css et importe cette feuille.
  *
- *   <Grille container spacing={2}>
- *     <Grille size={{ xs: 12, md: 6 }}>…</Grille>
- *     <Grille size={{ xs: 12, md: 6 }}>…</Grille>
+ *   <Grille conteneur ecart={2}>
+ *     <Grille taille={{ xs: 12, md: 6 }}>…</Grille>
+ *     <Grille taille={{ xs: 12, md: 6 }}>…</Grille>
  *   </Grille>
  *
- * `container` : le parent des blocs (boîte flex) ; `spacing` (× 8 px, ou chaîne CSS), `rowSpacing` et
- * `columnSpacing` : ses écarts (la valeur xs seulement). `size` : colonnes du bloc (0 à 12, `grow`, `auto`),
- * seuil par seuil. `offset` : colonnes de marge à gauche, ou `auto`. `direction`, `wrap`, `alignItems`,
- * `justifyContent`, `gap` : réglages flex du conteneur. `component` : la balise (div par défaut).
+ * `conteneur` : le parent des blocs (boîte flex) ; `ecart` (en pas de l'échelle, ou chaîne CSS), `ecartRangees` et
+ * `ecartColonnes` : ses écarts (la valeur xs seulement). `taille` : colonnes du bloc (0 à 12, `grow`, `auto`),
+ * seuil par seuil. `decalage` : colonnes de marge à gauche, ou `auto`. `direction`, `retour`, `alignementVertical`,
+ * `alignementHorizontal` : réglages flex du conteneur ; `ecartDirect` : un écart CSS qui ne change pas le calcul des largeurs. `balise` : la balise (div par défaut).
  */
 import '../src/composants/grille.css'
 import { classes, espacement, fusionnerStyles, parPoint, type Responsive, type Style } from './styles.ts'
@@ -19,47 +19,27 @@ import { classes, espacement, fusionnerStyles, parPoint, type Responsive, type S
 type Taille = number | string | boolean
 type Decalage = number | string
 
+
 interface Props {
-  container?: boolean
-  size?: Responsive<Taille>
-  offset?: Responsive<Decalage>
-  spacing?: Responsive<number | string>
-  rowSpacing?: Responsive<number | string>
-  columnSpacing?: Responsive<number | string>
+  conteneur?: boolean
+  taille?: Responsive<Taille>
+  decalage?: Responsive<Decalage>
+  ecart?: Responsive<number | string>
+  ecartRangees?: Responsive<number | string>
+  ecartColonnes?: Responsive<number | string>
   direction?: 'row' | 'row-reverse' | 'column' | 'column-reverse'
-  wrap?: 'wrap' | 'nowrap' | 'wrap-reverse'
-  alignItems?: string
-  justifyContent?: string
+  retour?: 'wrap' | 'nowrap' | 'wrap-reverse'
+  alignementVertical?: string
+  alignementHorizontal?: string
   /** Écart CSS direct ; ne change pas le calcul des largeurs */
-  gap?: number | string
-  component?: string
+  ecartDirect?: number | string
+  balise?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
   [attribut: string]: unknown
 }
 
-const {
-  container = false,
-  size,
-  offset,
-  spacing,
-  rowSpacing,
-  columnSpacing,
-  direction,
-  wrap,
-  alignItems,
-  justifyContent,
-  gap,
-  component = 'div',
-  class: classe,
-  className,
-  style,
-  // Ancienne API de grille : acceptée et ignorée
-  item: _item,
-  ...reste
-} = Astro.props
+const { conteneur: container = false, taille: size, decalage: offset, ecart: spacing, ecartRangees: rowSpacing, ecartColonnes: columnSpacing, direction, retour: wrap, alignementVertical: alignItems, alignementHorizontal: justifyContent, ecartDirect, balise: component = 'div', class: classe, style, ...reste } = Astro.props
 
 const Balise = component
 const attributs: Record<string, string> = {}
@@ -99,10 +79,10 @@ const styleFinal = fusionnerStyles(
     flexWrap: wrap,
     alignItems,
     justifyContent,
-    gap: espacement(gap as number | string | undefined),
+    gap: espacement(ecartDirect as number | string | undefined),
   },
   style,
 )
 ---
 
-<Balise class:list={['bib-grille', { 'bib-grille--conteneur': container }, classes(classe, className)]} style={styleFinal} {...attributs} {...reste}><slot /></Balise>
+<Balise class:list={['bib-grille', { 'bib-grille--conteneur': container }, classes(classe)]} style={styleFinal} {...attributs} {...reste}><slot /></Balise>

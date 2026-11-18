@@ -3,9 +3,9 @@
  * <ElementListeLiens> : un élément de <ListeLiens>. Produit le HTML documenté dans
  * src/composants/element-liste-liens.css et importe cette feuille (et carte-lien.css).
  *
- *   <ElementListeLiens title="Prêts" description="Durées et conditions." href="/prets/" linkText="Voir" />
+ *   <ElementListeLiens titre="Prêts" description="Durées et conditions." href="/prets/" texteLien="Voir" />
  *
- * `linkText` : texte d'appel à droite (sinon une pastille fléchée). `color="vertFonce"` sur une section
+ * `texteLien` : texte d’appel à droite (sinon une pastille fléchée). `couleur="vertFonce"` sur une section
  * vert foncé. `niveauTitre` : 2 à 6 (3 par défaut).
  */
 import '../src/composants/element-liste-liens.css'
@@ -15,22 +15,21 @@ import { lienCarte } from './liens.ts'
 import { idUnique } from './ids.ts'
 import { classes, fusionnerStyles, type Style } from './styles.ts'
 
+
 interface Props {
-  title: string
+  titre?: string
   description?: string
   href: string
   target?: string
   rel?: string
-  linkText?: string | null
-  color?: 'default' | 'vertFonce'
+  texteLien?: string | null
+  couleur?: 'neutre' | 'vertFonce'
   niveauTitre?: 2 | 3 | 4 | 5 | 6
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const { title, description, href, target, rel, linkText = null, color = 'default', niveauTitre = 3, class: classe, className, style, ...reste } = Astro.props
+const { titre: title, description, href, target, rel, texteLien: linkText = null, couleur: color = 'neutre', niveauTitre = 3, class: classe, style, ...reste } = Astro.props
 if (!href) throw new Error(`ElementListeLiens « ${title} » : la propriété \`href\` est requise.`)
 // Annonce « (PDF) » comme les autres cartes ; l'appel visible (linkText),
 // caché aux lecteurs d'écran dans la pastille, décrit le lien
@@ -40,7 +39,7 @@ const idAppel = linkText ? idUnique('appel') : undefined
 const Titre = `h${niveauTitre}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 ---
 
-<li class:list={['bib-element-liste-liens', 'bib-carte-lien', `${color === 'vertFonce' ? 'bib-element-liste-liens--vert-fonce' : ''}`, classes(classe, className)]} style={fusionnerStyles(style)} {...reste}>
+<li class:list={['bib-element-liste-liens', 'bib-carte-lien', `${color === 'vertFonce' ? 'bib-element-liste-liens--vert-fonce' : ''}`, classes(classe)]} style={fusionnerStyles(style)} {...reste}>
   <div class="bib-element-liste-liens__texte">
     <Titre class="bib-element-liste-liens__titre">
       <a class="bib-lien-etire bib-element-liste-liens__lien" href={href} target={cible} rel={relFinal} aria-describedby={idAppel}>

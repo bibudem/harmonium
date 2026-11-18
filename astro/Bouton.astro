@@ -4,74 +4,47 @@
  * Un <a> si `href` est fourni, sinon un <button>.
  *
  *   <Bouton href="/services/">Réserver une salle</Bouton>
- *   <Bouton secondary>Annuler</Bouton>
+ *   <Bouton secondaire>Annuler</Bouton>
  *
- * - primary (par défaut) : plein ; secondary : contour. `variant` (contained, outlined ; text est un alias du contour) et
- *   `color` (bleuFonce, bleuPrincipal) précisent.
+ * - Plein par défaut ; `secondaire` : contour. `variante` (plein, contour) et `couleur` (bleuFonce,
+ *   bleuPrincipal) précisent.
  * - Avec href : flèche de fin → (autre page des bibliothèques) ou ↗ (autre site, nouvel onglet) ;
  *   jamais pour un PDF, un courriel ni un téléphone. Un PDF s'ouvre dans un nouvel onglet ; PDF
  *   et nouvel onglet sont annoncés en texte masqué.
  * - `retour` : flèche vers la gauche avant le texte, au lieu de la flèche de fin.
- * - `light` : variante pour fond foncé. `disableEndIcon` retire la flèche.
- * - Les classes `blueOutlineNoIcon`, `whiteOutlineNoIcon`, `mt1`, `mt4`, `right`, `center`, `left` (directive ::bouton du
- *   contenu) sont reconnues.
+ * - `clair` : variante pour fond foncé. `sansFleche` retire la flèche. `iconeSeule` : bouton à icône seule.
  */
 import '../src/composants/bouton.css'
 import { analyserLien, annonceLien, relDuLien, versAilleurs } from './liens.ts'
 import { classes, fusionnerStyles, type Style } from './styles.ts'
 
 interface Props {
-  primary?: boolean
-  secondary?: boolean
+  secondaire?: boolean
   href?: string
-  /** bleuFonce ou bleuPrincipal (blue et primary aussi) */
-  color?: string
-  variant?: 'contained' | 'text' | 'outlined'
+  /** bleuFonce ou bleuPrincipal */
+  couleur?: 'bleuFonce' | 'bleuPrincipal'
+  variante?: 'plein' | 'contour'
   disabled?: boolean
-  size?: 'small' | 'medium' | 'large'
-  light?: boolean
-  disableEndIcon?: boolean
+  taille?: 'petit' | 'moyen' | 'grand'
+  clair?: boolean
+  sansFleche?: boolean
+  /** Bouton à icône seule (SVG dans le contenu) : nommer le bouton avec aria-label */
+  iconeSeule?: boolean
   retour?: boolean
   target?: string
   rel?: string
   type?: 'button' | 'submit' | 'reset'
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
   [attribut: string]: unknown
 }
 
-const {
-  primary,
-  secondary,
-  href,
-  color,
-  variant,
-  size = 'medium',
-  disabled = false,
-  light = false,
-  disableEndIcon = false,
-  retour = false,
-  target,
-  rel,
-  type = 'button',
-  class: classe,
-  className,
-  style,
-  // Propriétés de MUI acceptées sans effet
-  disableElevation: _elevation,
-  endIcon: _icone,
-  sx: _sx,
-  ...reste
-} = Astro.props
+const { secondaire = false, href, couleur, variante, taille = 'moyen', disabled = false, clair = false, sansFleche = false, iconeSeule = false, retour = false, target, rel, type = 'button', class: classe, style, ...reste } = Astro.props
 
-const estPrimaire = !secondary || primary === true
-const variante = variant ?? (estPrimaire ? 'contained' : 'outlined')
-const couleur = color ?? (estPrimaire ? 'bleuFonce' : 'bleuPrincipal')
-const VARIANTES: Record<string, string> = { contained: 'plein', text: 'contour', outlined: 'contour' }
-const COULEURS: Record<string, string> = { bleuFonce: 'bleu-fonce', bleuPrincipal: 'bleu-principal', blue: 'bleu-principal', primary: 'bleu-principal' }
-const CLASSES_AUTEUR: Record<string, string> = { blueOutlineNoIcon: 'bib-bouton--contour-bleu', mt1: 'bib-bouton--mt1', mt4: 'bib-bouton--mt4', whiteOutlineNoIcon: 'bib-bouton--contour-blanc', right: 'bib-bouton--droite', center: 'bib-bouton--centre', left: 'bib-bouton--gauche' }
+const apparence = variante ?? (secondaire ? 'contour' : 'plein')
+const teinte = couleur ?? (secondaire ? 'bleuPrincipal' : 'bleuFonce')
+const COULEURS: Record<string, string> = { bleuFonce: 'bleu-fonce', bleuPrincipal: 'bleu-principal' }
+const TAILLES: Record<string, string | undefined> = { petit: 'bib-bouton--petit', moyen: undefined, grand: 'bib-bouton--grand' }
 
 const estLien = typeof href === 'string'
 if (estLien && !href.trim()) throw new Error('Bouton : une adresse non vide est requise.')
@@ -81,13 +54,8 @@ const nouvelOnglet = cible === '_blank'
 const relFinal = estLien ? relDuLien(rel, analyse.interne, nouvelOnglet) : rel
 const annonce = estLien ? annonceLien({ pdf: analyse.pdf, nouvelOnglet }) : ''
 const externe = versAilleurs(analyse, nouvelOnglet)
-const avecFin = estLien && !analyse.pdf && !analyse.courrielOuTelephone && !disableEndIcon && !retour
-const classeAuteur = classes(classe, className)
-  ?.split(/\s+/)
-  .map((c) => CLASSES_AUTEUR[c] ?? (c === 'no-pdf-icon' || c === 'sans-icone-pdf' ? '' : c))
-  .join(' ')
-const TAILLES: Record<string, string> = { small: 'bib-bouton--petit', large: 'bib-bouton--grand' }
-const listeClasses = ['bib-bouton', TAILLES[size], `bib-bouton--${VARIANTES[variante] ?? 'plein'}`, `bib-bouton--${COULEURS[couleur] ?? 'bleu-fonce'}`, { 'bib-bouton--clair': light }, classeAuteur]
+const avecFin = estLien && !analyse.pdf && !analyse.courrielOuTelephone && !sansFleche && !retour && !iconeSeule
+const listeClasses = ['bib-bouton', TAILLES[taille], `bib-bouton--${apparence === 'contour' ? 'contour' : 'plein'}`, `bib-bouton--${COULEURS[teinte] ?? 'bleu-fonce'}`, { 'bib-bouton--clair': clair, 'bib-bouton--icone': iconeSeule }, classes(classe)]
 ---
 
 {

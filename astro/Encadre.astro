@@ -12,14 +12,12 @@ interface Props {
   taille?: number
   couleur?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
 }
 
-const { Icone, taille, couleur, class: classe, className } = Astro.props
+const { Icone, taille, couleur, class: classe } = Astro.props
 ---
 
-<div class:list={['bib-encadre', 'surface-claire', classes(classe, className)]}>
+<div class:list={['bib-encadre', 'surface-claire', classes(classe)]}>
   {
     Icone && (
       <span class="bib-encadre__icone" aria-hidden="true">

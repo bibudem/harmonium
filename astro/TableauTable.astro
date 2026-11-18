@@ -7,16 +7,16 @@ import '../src/composants/tableau.css'
 import { semantiqueTableau } from './semantique-tableau.ts'
 import { classes, fusionnerStyles } from './styles.ts'
 
+
 interface Props {
-  size?: 'small' | 'medium'
+  taille?: 'compact' | 'normal'
   class?: string
-  className?: string
   style?: string | Record<string, string | number>
   [attribut: string]: unknown
 }
 
-const { size = 'medium', class: classe, className, style, stickyHeader: _collant, ...reste } = Astro.props
+const { taille = 'normal', class: classe, style, ...reste } = Astro.props
 const contenu = semantiqueTableau(Astro.slots.has('default') ? await Astro.slots.render('default') : '')
 ---
 
-<table class:list={['bib-tableau', { 'bib-tableau--compact': size === 'small' }, classes(classe, className)]} style={fusionnerStyles(style)} {...reste} set:html={contenu}></table>
+<table class:list={['bib-tableau', { 'bib-tableau--compact': taille === 'compact' }, classes(classe)]} style={fusionnerStyles(style)} {...reste} set:html={contenu}></table>

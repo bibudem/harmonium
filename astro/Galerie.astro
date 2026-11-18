@@ -8,13 +8,11 @@ import { classes } from './styles.ts'
 
 interface Props {
   class?: string
-  /** Contenu repris de React */
-  className?: string
 }
 
-const { class: classe, className } = Astro.props
+const { class: classe } = Astro.props
 ---
 
-<div class:list={['bib-galerie', classes(classe, className)]}>
+<div class:list={['bib-galerie', classes(classe)]}>
   <slot />
 </div>

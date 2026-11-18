@@ -23,7 +23,7 @@
 .bib-champ-liste {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--espace-0-5);
   min-width: 0;
   color: var(--couleur-texte);
   font-family: var(--police-sans);
@@ -40,7 +40,7 @@
   display: flex;
   align-items: center;
   min-height: var(--hauteur-controle);
-  padding-inline: 0.75rem;
+  padding-inline: var(--espace-1-5);
   border: 1px solid var(--couleur-texte-secondaire);
   border-radius: var(--rayon-controle);
   background: var(--couleur-surface);

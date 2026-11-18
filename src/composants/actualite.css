@@ -55,14 +55,14 @@
 }
 
 .bib-actualite {
-  --rayon-lien-etire: 0;
+  --bib-lien-etire-rayon: 0;
   position: relative;
   display: flex;
   gap: var(--espace-2);
   margin: 0;
-  padding-block: 1.25rem;
+  padding-block: var(--espace-2-5);
   list-style: none;
-  border-bottom: 1px solid var(--bib-actualite-filet, var(--bleu-200));
+  border-bottom: 1px solid var(--bib-actualite-filet, var(--bleu-20));
 }
 
 .bib-actualite--compact {
@@ -104,7 +104,7 @@
   width: 5.5rem;
   height: 5.5rem;
   overflow: hidden;
-  border-radius: var(--rayon-moyen);
+  border-radius: var(--rayon-carte);
 }
 
 .bib-actualite__vignette > img {
@@ -120,25 +120,25 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: var(--bleu-100);
+  background-color: var(--bleu-10);
   color: var(--bleu-fonce);
   line-height: 1;
   text-align: center;
 }
 
 .bib-actualite__jour {
-  font-size: 1.75rem;
+  font-size: var(--titre-3);
   font-weight: var(--graisse-forte);
 }
 
 .bib-actualite__mois {
-  margin-top: 0.125rem;
-  font-size: var(--texte-reduit);
+  margin-top: var(--espace-0-5);
+  font-size: var(--texte-petit);
   font-weight: var(--graisse-moyenne);
 }
 
 .bib-actualite__annee {
-  margin-top: 0.25rem;
+  margin-top: var(--espace-0-5);
   color: var(--couleur-texte-secondaire);
   font-size: var(--texte-minuscule);
 }
@@ -158,7 +158,7 @@
   gap: 0 0.5em;
   min-height: 1.25rem;
   margin: 0;
-  color: var(--bib-actualite-ligne, var(--rouge-orange-texte));
+  color: var(--bib-actualite-ligne, var(--couleur-texte-accent));
   font-size: var(--texte-petit);
   font-weight: var(--graisse-normale);
   letter-spacing: 0.00875rem;
@@ -172,15 +172,15 @@
 /* Icône de calendrier (CalendarBlank de Phosphor) devant la date d'un événement */
 .bib-actualite__calendrier {
   flex-shrink: 0;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: var(--taille-icone-moyenne);
+  height: var(--taille-icone-moyenne);
   background-color: var(--rouge-orange);
   mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20256%20256'%3E%3Cpath%20d='M208%2C32H184V24a8%2C8%2C0%2C0%2C0-16%2C0v8H88V24a8%2C8%2C0%2C0%2C0-16%2C0v8H48A16%2C16%2C0%2C0%2C0%2C32%2C48V208a16%2C16%2C0%2C0%2C0%2C16%2C16H208a16%2C16%2C0%2C0%2C0%2C16-16V48A16%2C16%2C0%2C0%2C0%2C208%2C32ZM72%2C48v8a8%2C8%2C0%2C0%2C0%2C16%2C0V48h80v8a8%2C8%2C0%2C0%2C0%2C16%2C0V48h24V80H48V48ZM208%2C208H48V96H208V208Z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
 .bib-actualite__titre {
   /* Laisse la place à la pastille, ancrée en bas à droite */
-  padding-right: 2.75rem;
+  padding-right: 2.75rem; /* hors échelle : largeur de la pastille */
   color: var(--couleur-texte);
   font-size: var(--texte-courant);
   font-weight: var(--graisse-moyenne);
@@ -221,7 +221,7 @@ a.bib-actualite__titre:focus-visible::after {
 /* Pastille : disque de la couleur du coin à 10 %, qui ne change pas au survol ; la flèche avance d'un cran
    (motif carte-lien) */
 .bib-actualite__coin {
-  --pastille-fond: color-mix(in srgb, currentColor 10%, transparent);
+  --bib-pastille-fleche-fond: color-mix(in srgb, currentColor 10%, transparent);
   position: absolute;
   right: 0;
   bottom: 1rem;
@@ -234,7 +234,7 @@ a.bib-actualite__titre:focus-visible::after {
 .bib-actualite--squelette .bib-actualite__vignette,
 .bib-actualite__barre {
   background-color: color-mix(in srgb, var(--bleu-fonce) 11%, transparent);
-  animation: bib-actualite-pulsation var(--duree-pulsation) var(--courbe-standard) var(--duree-longue-2) infinite;
+  animation: bib-actualite-pulsation var(--duree-pulsation) var(--courbe-standard) var(--duree-longue) infinite;
 }
 
 .bib-actualite__barre {

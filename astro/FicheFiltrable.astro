@@ -3,33 +3,31 @@
  * <FicheFiltrable> : une fiche de <ListeFiltrable> (nom, catégorie, description, puis le slot : des <Pastilles>,
  * par exemple). Produit le HTML documenté dans src/composants/liste-filtrable.css.
  *
- *   <FicheFiltrable nom="Zotero" lien="/informatique/logiciels/zotero" categorie="Gestion bibliographique" description="Gestionnaire de références bibliographiques">
+ *   <FicheFiltrable nom="Zotero" href="/informatique/logiciels/zotero" categorie="Gestion bibliographique" description="Gestionnaire de références bibliographiques">
  *     <Pastilles nom="Caractéristiques" pastilles={[…]} />
  *   </FicheFiltrable>
  *
- * `texte` : le texte cherché (par défaut, le nom et la description). Le nom est un h3 par défaut (`niveau`).
+ * `texte` : le texte cherché (par défaut, le nom et la description). Le nom est un h3 par défaut (`niveauTitre`).
  */
 import '../src/composants/liste-filtrable.css'
 import { classes } from './styles.ts'
 
 interface Props {
   nom: string
-  lien?: string
+  href?: string
   categorie?: string
   description?: string
   texte?: string
-  niveau?: 2 | 3 | 4 | 5 | 6
+  niveauTitre?: 2 | 3 | 4 | 5 | 6
   class?: string
-  /** Contenu repris de React */
-  className?: string
 }
 
-const { nom, lien, categorie, description, texte, niveau = 3, class: classe, className } = Astro.props
-const Titre = `h${niveau}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+const { nom, href, categorie, description, texte, niveauTitre = 3, class: classe } = Astro.props
+const Titre = `h${niveauTitre}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 ---
 
-<li class:list={['bib-liste-filtrable__fiche', classes(classe, className)]} data-categorie={categorie ?? ''} data-texte={texte ?? `${nom} ${description ?? ''}`.trim()}>
-  <Titre class="bib-liste-filtrable__nom">{lien ? <a href={lien}>{nom}</a> : nom}</Titre>
+<li class:list={['bib-liste-filtrable__fiche', classes(classe)]} data-categorie={categorie ?? ''} data-texte={texte ?? `${nom} ${description ?? ''}`.trim()}>
+  <Titre class="bib-liste-filtrable__nom">{href ? <a href={href}>{nom}</a> : nom}</Titre>
   {categorie && <p class="bib-liste-filtrable__categorie">{categorie}</p>}
   {description && <p class="bib-liste-filtrable__description">{description}</p>}
   <slot />

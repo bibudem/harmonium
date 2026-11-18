@@ -48,17 +48,15 @@ interface Props {
   vide?: string
   nomFiltres?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const { titre, filtres = [], total, unite = 'résultat', unites = 'résultats', vide = 'Aucun résultat.', nomFiltres = 'Filtrer', class: classe, className, style } = Astro.props
+const { titre, filtres = [], total, unite = 'résultat', unites = 'résultats', vide = 'Aucun résultat.', nomFiltres = 'Filtrer', class: classe, style } = Astro.props
 const ids = filtres.map((f) => idUnique(`filtre-${f.cle}`))
 const annonce = `${total} ${total > 1 ? unites : unite}`
 ---
 
-<div class:list={['bib-tableau-filtrable', classes(classe, className)]} style={fusionnerStyles(style)} data-tableau-filtrable data-unite={unite} data-unites={unites} data-vide={vide}>
+<div class:list={['bib-tableau-filtrable', classes(classe)]} style={fusionnerStyles(style)} data-tableau-filtrable data-unite={unite} data-unites={unites} data-vide={vide}>
   {
     filtres.length > 0 && (
       <form class="bib-tableau-filtrable__filtres" aria-label={nomFiltres} data-filtres>

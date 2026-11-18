@@ -3,8 +3,8 @@ export const STYLES = `
   :host, *, *::before, *::after { box-sizing: border-box; }
   :host {
     display: block;
-    font-size: var(--bib-avis-size, var(--md-sys-typescale-title-medium-size, inherit));
-    background: var(--bib-avis-container-color, var(--md-sys-color-warningContainer, #ffe8ac));
+    font-size: var(--bib-avis-taille, inherit);
+    background: var(--bib-avis-fond, var(--jaune-40, #ffeab3));
   }
   :host([hidden]) { display: none; }
   /* Reçoit le focus quand l'avis est fermé (le bouton disparaît) : rien à montrer */
@@ -37,13 +37,13 @@ export const STYLES = `
     cursor: pointer;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
-    transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1), background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: color var(--duree-courte, 200ms) var(--courbe-standard, cubic-bezier(0.2, 0, 0, 1)), background-color var(--duree-courte, 200ms) var(--courbe-standard, cubic-bezier(0.2, 0, 0, 1));
   }
   .btn-close:hover { color: var(--bib-btn-close-hover-color, rgba(0, 0, 0, 0.8)); }
   .btn-close:focus-visible {
-    outline: var(--md-focus-ring-width, 3px) solid currentColor;
+    outline: var(--focus-epaisseur, 3px) solid currentColor;
     outline-offset: 3px;
-    border-radius: 99999px;
+    border-radius: var(--rayon-plein, 9999px);
   }
   .btn-close > svg { fill: currentColor; }
   /* Contraste élevé : le fond jaune disparaît, une bordure délimite l'avis */

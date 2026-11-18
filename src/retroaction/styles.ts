@@ -3,26 +3,26 @@
 // Les couleurs, rayons et tailles viennent des jetons d'Harmonium
 // (--couleur-fond-fort, --rayon-plein…), qui traversent la racine fantôme : le composant
 // suit leur thème. Ordre : réglage propre au composant
-// (--bib-retroaction-*), jeton du site, jeton Material (--md-sys-*), valeur par défaut.
+// (--bib-retroaction-*), jeton d'Harmonium, valeur par défaut.
 export const STYLES = `
   :host, *, *::before, *::after { box-sizing: border-box; }
   :host {
-    --_couleur: var(--bib-retroaction-couleur, var(--couleur-fond-fort, var(--md-sys-color-primary, rgb(64 95 144))));
+    --_couleur: var(--bib-retroaction-couleur, var(--couleur-fond-fort, #0b113a));
     --_couleur-survol: var(--bib-retroaction-couleur-survol, var(--couleur-fond-fort-survol, var(--_couleur)));
-    --_sur-couleur: var(--bib-retroaction-sur-couleur, var(--couleur-sur-fonce, var(--md-sys-color-on-primary, #fff)));
+    --_sur-couleur: var(--bib-retroaction-sur-couleur, var(--couleur-sur-fonce, #fff));
     --_accent: var(--bib-retroaction-accent, var(--couleur-accent, var(--_couleur)));
     --_focus: var(--bib-retroaction-focus, var(--couleur-focus, var(--_couleur)));
     --_texte: var(--bib-retroaction-texte, var(--couleur-texte, currentColor));
-    --_bordure: var(--couleur-bordure, var(--md-sys-color-outline, rgb(116 119 127)));
+    --_bordure: var(--couleur-bordure, #c3ccd5);
     --_surface: var(--couleur-surface, transparent);
     --_cible: var(--taille-cible, 44px);
     --_rayon-plein: var(--rayon-plein, 9999px);
     --_rayon-petit: var(--rayon-petit, 4px);
     --_graisse: var(--graisse-moyenne, 500);
-    --_taille-boutons: var(--md-sys-typescale-label-large-size, inherit);
+    --_taille-boutons: var(--bib-retroaction-taille-boutons, inherit);
 
     display: block;
-    font-size: var(--bib-comp-retroaction-usager-size, 0.875rem);
+    font-size: var(--bib-retroaction-taille, 0.875rem);
     line-height: 1.43;
     text-align: center;
     -webkit-font-smoothing: antialiased;
@@ -32,7 +32,7 @@ export const STYLES = `
   p { margin: 0; }
 
   .survey-title {
-    font-weight: var(--bib-comp-retroaction-usager-title-weight, var(--md-sys-typescale-title-medium-weight, var(--_graisse)));
+    font-weight: var(--bib-retroaction-graisse-titre, var(--_graisse));
   }
 
   .radio-group { display: flex; justify-content: center; gap: 2px; margin-top: 0.25rem; }
@@ -55,11 +55,11 @@ export const STYLES = `
     border-radius: var(--_rayon-plein);
     background: transparent;
     color: var(--_texte);
-    transition: background-color 150ms cubic-bezier(0.2, 0, 0, 1), color 150ms cubic-bezier(0.2, 0, 0, 1);
+    transition: background-color var(--duree-courte, 200ms) var(--courbe-standard, cubic-bezier(0.2, 0, 0, 1)), color var(--duree-courte, 200ms) var(--courbe-standard, cubic-bezier(0.2, 0, 0, 1));
   }
   @media (hover: hover) and (pointer: fine) {
     .btn-vote:hover:not([aria-disabled='true']) {
-      background-color: rgb(0 0 0 / 8%);
+      background-color: color-mix(in srgb, var(--couleur-voile, #000) 8%, transparent);
       background-color: color-mix(in srgb, currentColor 8%, transparent);
     }
   }
@@ -107,13 +107,13 @@ export const STYLES = `
     color: var(--_sur-couleur);
     font-size: var(--_taille-boutons);
     font-weight: var(--_graisse);
-    transition: background-color 150ms cubic-bezier(0.2, 0, 0, 1);
+    transition: background-color var(--duree-courte, 200ms) var(--courbe-standard, cubic-bezier(0.2, 0, 0, 1));
   }
   @media (hover: hover) and (pointer: fine) {
     .btn-submit:hover:not([aria-disabled='true']) { background-color: var(--_couleur-survol); }
   }
 
-  .erreur { display: inline-flex; align-items: center; gap: 0.45rem; margin-top: 0.8rem; font-weight: 600; }
+  .erreur { display: inline-flex; align-items: center; gap: 0.45rem; margin-top: 0.8rem; font-weight: var(--graisse-forte, 600); }
   .erreur:empty { display: none; }
   .erreur svg { flex: none; }
 

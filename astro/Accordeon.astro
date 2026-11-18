@@ -18,27 +18,26 @@
 import '../src/composants/accordeons.css'
 import { classes, fusionnerStyles, type Style } from './styles.ts'
 
+
 interface Props {
   /** Ouvert au premier affichage ; dans un groupe, le premier l'emporte */
-  defaultExpanded?: boolean | string
+  ouvert?: boolean | string
   /** Couleur propre à ce volet (celle du groupe par défaut) */
-  color?: 'bleuPrincipal' | 'neutre' | 'rose' | 'vertPale'
+  couleur?: 'bleuPrincipal' | 'neutre' | 'rose' | 'vert'
   id?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
   [attribut: string]: unknown
 }
 
-const COULEURS: Record<string, string> = { neutre: 'bib-accordeon--neutre', rose: 'bib-accordeon--rose', vertPale: 'bib-accordeon--vert' }
+const COULEURS: Record<string, string> = { neutre: 'bib-accordeon--neutre', rose: 'bib-accordeon--rose', vert: 'bib-accordeon--vert' }
 
-const { defaultExpanded = false, color, class: classe, className, style, sx: _sx, ...reste } = Astro.props
+const { ouvert: defaultExpanded = false, couleur: color, class: classe, style, ...reste } = Astro.props
 const ouvert = defaultExpanded === true || defaultExpanded === '' || defaultExpanded === 'true'
 ---
 
 <details
-  class:list={['bib-accordeon', color && COULEURS[color], classes(classe, className)]}
+  class:list={['bib-accordeon', color && COULEURS[color], classes(classe)]}
   style={fusionnerStyles(style)}
   open={ouvert || undefined}
   data-accordeon-groupe=""

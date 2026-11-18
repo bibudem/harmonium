@@ -18,7 +18,7 @@ import { classes } from './styles.ts'
 interface Pastille {
   libelle: string
   lien?: string
-  variante?: 'jaune' | 'rose' | 'bleu' | 'lieu' | 'neutre'
+  variante?: 'jaune' | 'rose' | 'bleu' | 'lieu' | 'neutre' | 'succes' | 'avertissement' | 'erreur' | 'info'
   icone?: IconePastille
   masque?: string
 }
@@ -28,17 +28,15 @@ interface Props {
   nom: string
   pastilles: Pastille[]
   class?: string
-  /** Contenu repris de React */
-  className?: string
   [attribut: `data-${string}`]: unknown
 }
 
-const { nom, pastilles, class: classe, className, ...reste } = Astro.props
+const { nom, pastilles, class: classe, ...reste } = Astro.props
 const classe_ = (p: Pastille) => ['bib-pastille', p.variante && `bib-pastille--${p.variante}`]
 const taille = (p: Pastille) => (p.icone === 'lieu' ? 14 : 16)
 ---
 
-<ul class:list={['bib-pastilles', classes(classe, className)]} aria-label={nom} {...reste}>
+<ul class:list={['bib-pastilles', classes(classe)]} aria-label={nom} {...reste}>
   {
     pastilles.map((p) => {
       const contenu = (

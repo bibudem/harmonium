@@ -64,20 +64,20 @@ export const STYLES = /* css */ `
     box-shadow: var(--_ombre);
   }
 
-  .titre-carte { margin: 0 0 0.25rem; font-size: 1rem; line-height: 1.3; }
-  .texte-carte { margin: 0 0 0.75rem; font-size: 0.875rem; line-height: 1.4; }
+  .titre-carte { margin: 0 0 0.25rem; font-size: var(--texte-courant, 1rem); line-height: 1.3; }
+  .texte-carte { margin: 0 0 0.75rem; font-size: var(--texte-petit, 0.889rem); line-height: 1.4; }
   .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
 
   .bouton {
     padding: 0.5rem 1.25rem;
     /* Transparente, mais visible en mode contraste élevé (forced-colors) */
     border: 1px solid transparent;
-    border-radius: 9999px;
+    border-radius: var(--rayon-plein, 9999px);
     background-color: var(--_bouton-fond);
     color: var(--_bouton-texte);
     font: inherit;
-    font-size: 0.875rem;
-    font-weight: 500;
+    font-size: var(--texte-petit, 0.889rem);
+    font-weight: var(--graisse-moyenne, 500);
     cursor: pointer;
   }
   .bouton:hover { background-color: var(--_bouton-survol); }
@@ -101,35 +101,35 @@ export const STYLES = /* css */ `
     border-radius: var(--_rayon);
     background-color: var(--_fond);
     color: var(--_texte);
-    font-size: 0.9375rem;
+    font-size: var(--texte-petit, 0.889rem);
   }
   .panneau::backdrop {
-    background-color: rgb(0 0 0 / 50%);
+    background-color: color-mix(in srgb, var(--couleur-voile, #000) 50%, transparent);
     background-color: color-mix(in srgb, var(--_voile) 50%, transparent);
   }
   .panneau p { margin: 0 0 0.75rem; }
   .panneau a { color: inherit; }
-  .titre-panneau { margin: 0 0 0.75rem; font-size: 1.375rem; }
+  .titre-panneau { margin: 0 0 0.75rem; font-size: var(--titre-4, 1.44rem); }
 
   .categorie { margin-block-end: 0.75rem; padding-block: 0.75rem; border-block: 1px solid var(--_bordure); }
   .categorie p { margin: 0.25rem 0 0.5rem; }
   .categorie summary { cursor: pointer; }
   .categorie ul { margin: 0.5rem 0 0; padding-left: 1.25rem; }
-  .choix { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; cursor: pointer; }
+  .choix { display: flex; align-items: center; gap: 0.5rem; font-weight: var(--graisse-forte, 600); cursor: pointer; }
   .choix input { width: 1.125rem; height: 1.125rem; }
 
   /* Mobile : bande compacte en bas de l'écran */
   @media (max-width: 599.98px) {
     .carte { right: 0; bottom: 0; width: 100%; padding: 0.75rem 1rem; border-width: 1px 0 0; border-radius: 0; }
-    .texte-carte { margin-bottom: 0.5rem; font-size: 0.8125rem; }
+    .texte-carte { margin-bottom: 0.5rem; font-size: var(--texte-minuscule, 0.79rem); }
     .panneau { padding: 1rem; }
   }
 
   /* Écran peu haut (téléphone couché, zoom à 400 %) : la carte prend moins de place */
   @media (max-height: 30rem) {
     .carte { padding: 0.5rem 0.75rem; }
-    .titre-carte { font-size: 0.9375rem; }
-    .texte-carte { margin-bottom: 0.375rem; font-size: 0.8125rem; line-height: 1.3; }
+    .titre-carte { font-size: var(--texte-petit, 0.889rem); }
+    .texte-carte { margin-bottom: 0.375rem; font-size: var(--texte-minuscule, 0.79rem); line-height: 1.3; }
     .bouton { padding: 0.25rem 1rem; }
     .panneau { padding: 0.75rem; }
   }

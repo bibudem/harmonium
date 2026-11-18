@@ -7,10 +7,9 @@ interface Props {
   taille?: number | string
   nom?: string
   class?: string
-  className?: string
 }
-const { viewBox, taille = '1.5rem', nom, class: classe, className } = Astro.props
+const { viewBox, taille = '1.5rem', nom, class: classe } = Astro.props
 if (!viewBox?.trim()) throw new Error('IconeSvg : viewBox est requis.')
 const informative = Boolean(nom?.trim())
 ---
-<svg class:list={['bib-icone-svg', classes(classe, className)]} viewBox={viewBox} width={taille} height={taille} fill="currentColor" role={informative ? 'img' : undefined} aria-label={informative ? nom : undefined} aria-hidden={informative ? undefined : 'true'} focusable="false"><slot /></svg>
+<svg class:list={['bib-icone-svg', classes(classe)]} viewBox={viewBox} width={taille} height={taille} fill="currentColor" role={informative ? 'img' : undefined} aria-label={informative ? nom : undefined} aria-hidden={informative ? undefined : 'true'} focusable="false"><slot /></svg>

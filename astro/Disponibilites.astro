@@ -17,16 +17,14 @@ interface Props {
   fiches: { libelle: string; oclc: string }[]
   api?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
 }
 
-const { fiches, api, class: classe, className } = Astro.props
+const { fiches, api, class: classe } = Astro.props
 for (const { oclc } of fiches) if (!/^\d+$/.test(oclc)) throw new Error(`Disponibilites : numéro OCLC invalide (${oclc})`)
 const notice = (oclc: string) => `https://umontreal.on.worldcat.org/oclc/${oclc}`
 ---
 
-<div class:list={['bib-fiches-etat', classes(classe, className)]} data-disponibilites data-api={api}>
+<div class:list={['bib-fiches-etat', classes(classe)]} data-disponibilites data-api={api}>
   <ul class="bib-fiches-etat__liste">
     {
       fiches.map(({ libelle, oclc }) => (

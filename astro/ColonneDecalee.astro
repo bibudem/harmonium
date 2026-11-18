@@ -3,29 +3,25 @@
  * <ColonneDecalee> (aussi : GrilleDecalee) : produit le HTML documenté dans
  * src/composants/colonne-decalee.css et importe cette feuille. Aucun JavaScript.
  *
- *   <ColonneDecalee offset={1}>…</ColonneDecalee>
+ *   <ColonneDecalee decalage={1}>…</ColonneDecalee>
  */
 import '../src/composants/colonne-decalee.css'
 import { classes, fusionnerStyles, type Style } from './styles.ts'
 
+
 interface Props {
   /** Colonnes de marge de chaque côté, de 0 à 6 (défaut 0) */
-  offset?: number | string
+  decalage?: number | string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
-  /** Hérités de MUI, ignorés */
-  columnSpacing?: unknown
-  spacing?: unknown
   [attribut: string]: unknown
 }
 
-const { offset = 0, class: classe, className, style, columnSpacing: _c, spacing: _s, ...reste } = Astro.props
+const { decalage: offset = 0, class: classe, style, ...reste } = Astro.props
 const valeur = Number(offset)
 const decalage = Number.isFinite(valeur) ? Math.min(Math.max(valeur, 0), 6) : 0
 ---
 
-<div class:list={['bib-colonne-decalee', classes(classe, className)]} style={fusionnerStyles({ '--bib-decalage': decalage }, style)} {...reste}>
+<div class:list={['bib-colonne-decalee', classes(classe)]} style={fusionnerStyles({ '--bib-decalage': decalage }, style)} {...reste}>
   <div class="bib-colonne-decalee__colonne"><slot /></div>
 </div>

@@ -12,42 +12,44 @@
  * .bib-bouton__debut. Un PDF ou un nouvel onglet s'annonce en texte masqué (.bib-masque) après
  * le libellé.
  *
- * Variantes : --plein et --contour ; --texte est un alias conservé. Couleurs : --bleu-fonce (défaut), --bleu-principal.
+ * Variantes : --plein et --contour. Couleurs : --bleu-fonce (défaut), --bleu-principal.
  * Fond foncé : --clair. Placement : --droite, --centre, --gauche. Autres : --contour-bleu,
- * --contour-blanc (fond foncé), --mt1, --mt4.
+ * --contour-blanc (fond foncé). Icône seule : --icone (nom dans aria-label).
  *
  * Habillage commun, personnalisable par les rôles : --bib-bouton-plein-fond, --bib-bouton-plein-texte, --bib-bouton-plein-fond-survol ;
  * secondaire à contour : --bib-bouton-texte-fond, --bib-bouton-texte-couleur, --bib-bouton-texte-bordure,
  * --bib-bouton-texte-fond-survol ; plein sur fond foncé : --bib-bouton-clair-fond,
  * --bib-bouton-clair-texte, --bib-bouton-clair-fond-survol.
  */
+@import './commun/masque.css';
+
 .bib-bouton {
   --_fleche-droite: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20256%20256'%3E%3Cpath%20d='M221.66%2C133.66l-72%2C72a8%2C8%2C0%2C0%2C1-11.32-11.32L196.69%2C136H40a8%2C8%2C0%2C0%2C1%2C0-16H196.69L138.34%2C61.66a8%2C8%2C0%2C0%2C1%2C11.32-11.32l72%2C72A8%2C8%2C0%2C0%2C1%2C221.66%2C133.66Z'/%3E%3C/svg%3E");
   --_fleche-gauche: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20256%20256'%3E%3Cpath%20d='M224%2C128a8%2C8%2C0%2C0%2C1-8%2C8H59.31l58.35%2C58.34a8%2C8%2C0%2C0%2C1-11.32%2C11.32l-72-72a8%2C8%2C0%2C0%2C1%2C0-11.32l72-72a8%2C8%2C0%2C0%2C1%2C11.32%2C11.32L59.31%2C120H216A8%2C8%2C0%2C0%2C1%2C224%2C128Z'/%3E%3C/svg%3E");
   --_fleche-externe: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20256%20256'%3E%3Cpath%20d='M200%2C64V168a8%2C8%2C0%2C0%2C1-16%2C0V83.31L69.66%2C197.66a8%2C8%2C0%2C0%2C1-11.32-11.32L172.69%2C72H88a8%2C8%2C0%2C0%2C1%2C0-16H192A8%2C8%2C0%2C0%2C1%2C200%2C64Z'/%3E%3C/svg%3E");
 
   /* Couleurs propres à chaque variante, redéfinies plus bas */
-  --bouton-fond: transparent;
-  --bouton-texte: var(--couleur-accent);
-  --bouton-fond-survol: color-mix(in srgb, var(--couleur-accent) 6%, transparent);
-  --bouton-texte-survol: var(--bouton-texte);
-  --bouton-bordure: currentColor;
+  --_bouton-fond: transparent;
+  --_bouton-texte: var(--couleur-accent);
+  --_bouton-fond-survol: color-mix(in srgb, var(--couleur-accent) 6%, transparent);
+  --_bouton-texte-survol: var(--_bouton-texte);
+  --_bouton-bordure: currentColor;
 
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--espace-1);
   box-sizing: border-box;
   /* Jamais plus large que son conteneur ; un mot trop long pour la largeur
      (texte agrandi sur 320 px) se coupe plutôt que de déborder (WCAG 1.4.10) */
   max-width: 100%;
-  min-height: 3.125rem;
+  min-height: var(--hauteur-controle);
   margin-top: var(--espace-2);
-  padding: 6px 20px 6px 25px;
-  border: 1px solid var(--bouton-bordure);
+  padding: var(--espace-0-5) var(--espace-2-5) var(--espace-0-5) var(--espace-3);
+  border: 1px solid var(--_bouton-bordure);
   border-radius: var(--rayon-plein);
-  background-color: var(--bouton-fond);
-  color: var(--bouton-texte);
+  background-color: var(--_bouton-fond);
+  color: var(--_bouton-texte);
   font-family: var(--police-sans);
   font-size: var(--texte-petit);
   font-weight: var(--graisse-normale);
@@ -61,29 +63,29 @@
   text-transform: none;
   cursor: pointer;
   transition:
-    background-color var(--duree-moyenne-1) var(--courbe-standard),
-    color var(--duree-moyenne-1) var(--courbe-standard),
-    border-color var(--duree-moyenne-1) var(--courbe-standard);
+    background-color var(--duree-moyenne) var(--courbe-standard),
+    color var(--duree-moyenne) var(--courbe-standard),
+    border-color var(--duree-moyenne) var(--courbe-standard);
 }
 
 .bib-bouton:not(:disabled):not([aria-disabled='true']):hover {
-  background-color: var(--bouton-fond-survol);
-  color: var(--bouton-texte-survol);
+  background-color: var(--_bouton-fond-survol);
+  color: var(--_bouton-texte-survol);
 }
 
 .bib-bouton__libelle p {
   margin: 0;
 }
 
-/* Le SVG vient de React : il ne porte pas l.attribut de portée d.Astro */
+/* Le SVG est fourni par le contenu : il ne porte pas l'attribut de portée d'Astro */
 .bib-bouton > .bib-bouton__fin {
   flex-shrink: 0;
-  width: 24px;
-  height: 24px;
+  width: var(--taille-icone);
+  height: var(--taille-icone);
   background-color: currentColor;
   mask: var(--_fleche-droite) center / contain no-repeat;
   margin-inline-end: -4px;
-  transition: transform var(--duree-courte-4) var(--courbe-standard-deceleree);
+  transition: transform var(--duree-courte) var(--courbe-entree);
 }
 
 /* Survol : la flèche avance d'un cran vers sa destination (→ vers
@@ -103,12 +105,12 @@
 
 .bib-bouton > .bib-bouton__debut {
   flex-shrink: 0;
-  width: 24px;
-  height: 24px;
+  width: var(--taille-icone);
+  height: var(--taille-icone);
   background-color: currentColor;
   mask: var(--_fleche-gauche) center / contain no-repeat;
   margin-inline-start: -4px;
-  transition: transform var(--duree-courte-4) var(--courbe-standard-deceleree);
+  transition: transform var(--duree-courte) var(--courbe-entree);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -121,93 +123,80 @@
 
 /* ---- Plein ---- */
 /* Survol : bleu principal, comme les boutons des listes de liens. Le
-   bleu foncé survol de la source (presque noir) se distinguait à peine.
+   bleu foncé assombri (presque noir) se distinguerait à peine.
    Blanc sur bleu principal : 7,10:1. */
 .bib-bouton--plein {
-  --bouton-bordure: var(--bouton-fond);
-  --bouton-fond: var(--bib-bouton-plein-fond, var(--couleur-fond-fort));
-  --bouton-texte: var(--bib-bouton-plein-texte, var(--couleur-sur-fonce));
-  --bouton-fond-survol: var(--bib-bouton-plein-fond-survol, var(--couleur-fond-fort-survol));
+  --_bouton-bordure: var(--_bouton-fond);
+  --_bouton-fond: var(--bib-bouton-plein-fond, var(--couleur-fond-fort));
+  --_bouton-texte: var(--bib-bouton-plein-texte, var(--couleur-sur-fonce));
+  --_bouton-fond-survol: var(--bib-bouton-plein-fond-survol, var(--couleur-fond-fort-survol));
 }
 
 .bib-bouton--plein.bib-bouton--bleu-principal {
-  --bouton-fond: var(--bib-bouton-plein-fond, var(--bleu-principal));
-  --bouton-fond-survol: var(--bib-bouton-plein-fond-survol, var(--bleu-principal-fonce));
+  --_bouton-fond: var(--bib-bouton-plein-fond, var(--bleu-principal));
+  --_bouton-fond-survol: var(--bib-bouton-plein-fond-survol, var(--bleu-principal-fonce));
 }
 
 /* ---- Texte et contour ---- */
-.bib-bouton--texte.bib-bouton--bleu-fonce,
 .bib-bouton--contour.bib-bouton--bleu-fonce {
-  --bouton-texte: var(--couleur-texte);
-  --bouton-fond-survol: color-mix(in srgb, var(--couleur-texte) 6%, transparent);
+  --_bouton-texte: var(--couleur-texte);
+  --_bouton-fond-survol: color-mix(in srgb, var(--couleur-texte) 6%, transparent);
 }
 
 .bib-bouton--contour {
-  --bouton-bordure: currentColor;
+  --_bouton-bordure: currentColor;
 }
 
-/* Ancienne classe « texte » : conserve un contour visible, comme le secondaire. */
-.bib-bouton--texte:not(.bib-bouton--clair),
+/* Secondaire : contour visible */
 .bib-bouton--contour:not(.bib-bouton--clair) {
-  --bouton-fond: var(--bib-bouton-texte-fond, transparent);
-  --bouton-bordure: var(--bib-bouton-texte-bordure, currentColor);
+  --_bouton-fond: var(--bib-bouton-texte-fond, transparent);
+  --_bouton-bordure: var(--bib-bouton-texte-bordure, currentColor);
 }
 
-.bib-bouton--texte.bib-bouton--bleu-principal:not(.bib-bouton--clair),
 .bib-bouton--contour.bib-bouton--bleu-principal:not(.bib-bouton--clair) {
-  --bouton-texte: var(--bib-bouton-texte-couleur, var(--couleur-accent));
-  --bouton-fond-survol: var(--bib-bouton-texte-fond-survol, color-mix(in srgb, var(--couleur-accent) 6%, transparent));
+  --_bouton-texte: var(--bib-bouton-texte-couleur, var(--couleur-accent));
+  --_bouton-fond-survol: var(--bib-bouton-texte-fond-survol, color-mix(in srgb, var(--couleur-accent) 6%, transparent));
 }
 
-.bib-bouton--texte.bib-bouton--bleu-fonce:not(.bib-bouton--clair),
 .bib-bouton--contour.bib-bouton--bleu-fonce:not(.bib-bouton--clair) {
-  --bouton-texte: var(--bib-bouton-texte-couleur, var(--couleur-texte));
-  --bouton-fond-survol: var(--bib-bouton-texte-fond-survol, color-mix(in srgb, var(--couleur-texte) 6%, transparent));
+  --_bouton-texte: var(--bib-bouton-texte-couleur, var(--couleur-texte));
+  --_bouton-fond-survol: var(--bib-bouton-texte-fond-survol, color-mix(in srgb, var(--couleur-texte) 6%, transparent));
 }
 
 /* ---- Fond foncé (light) ---- */
 /* Variante : jaune plein aussi sur fond foncé (--bib-bouton-clair-fond, -texte, -fond-survol) */
 .bib-bouton--clair.bib-bouton--plein {
-  --bouton-fond: var(--bib-bouton-clair-fond, var(--couleur-sur-fonce));
-  --bouton-texte: var(--bib-bouton-clair-texte, var(--bleu-fonce));
-  --bouton-fond-survol: var(--bib-bouton-clair-fond-survol, var(--bleu-100));
+  --_bouton-fond: var(--bib-bouton-clair-fond, var(--couleur-sur-fonce));
+  --_bouton-texte: var(--bib-bouton-clair-texte, var(--bleu-fonce));
+  --_bouton-fond-survol: var(--bib-bouton-clair-fond-survol, var(--bleu-10));
 }
 
-.bib-bouton--clair.bib-bouton--texte,
-.bib-bouton--clair.bib-bouton--contour {
-  --bouton-texte: var(--couleur-sur-fonce);
-  --bouton-fond-survol: color-mix(in srgb, var(--couleur-sur-fonce) 12%, transparent);
+.bib-bouton--clair.bib-bouton--clair.bib-bouton--contour {
+  --_bouton-texte: var(--couleur-sur-fonce);
+  --_bouton-fond-survol: color-mix(in srgb, var(--couleur-sur-fonce) 12%, transparent);
 }
 
-/* ---- Classes utilitaires du thème de la source ---- */
+/* ---- Contours sans flèche : bleu, et blanc pour un fond foncé ---- */
 .bib-bouton--contour-bleu {
-  --bouton-fond: transparent;
-  --bouton-texte: var(--couleur-accent);
-  --bouton-bordure: var(--couleur-accent);
-  --bouton-fond-survol: var(--bleu-principal);
-  --bouton-texte-survol: var(--couleur-sur-fonce);
+  --_bouton-fond: transparent;
+  --_bouton-texte: var(--couleur-accent);
+  --_bouton-bordure: var(--couleur-accent);
+  --_bouton-fond-survol: var(--bleu-principal);
+  --_bouton-texte-survol: var(--couleur-sur-fonce);
 }
 
 /* Contour blanc sans flèche, pour un fond foncé */
 .bib-bouton--contour-blanc {
-  --bouton-fond: transparent;
-  --bouton-texte: var(--couleur-sur-fonce);
-  --bouton-bordure: var(--couleur-sur-fonce);
-  --bouton-fond-survol: var(--couleur-sur-fonce);
-  --bouton-texte-survol: var(--bleu-fonce);
+  --_bouton-fond: transparent;
+  --_bouton-texte: var(--couleur-sur-fonce);
+  --_bouton-bordure: var(--couleur-sur-fonce);
+  --_bouton-fond-survol: var(--couleur-sur-fonce);
+  --_bouton-texte-survol: var(--bleu-fonce);
 }
 
 .bib-bouton--contour-bleu > .bib-bouton__fin,
 .bib-bouton--contour-blanc > .bib-bouton__fin {
   display: none;
-}
-
-.bib-bouton--mt1 {
-  margin-top: 8px;
-}
-
-.bib-bouton--mt4 {
-  margin-top: 32px;
 }
 
 .bib-bouton--droite,
@@ -241,18 +230,6 @@
 }
 
 /* Texte masqué, qui annonce un PDF ou un nouvel onglet */
-.bib-bouton .bib-masque {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0 0 0 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
-}
-
 /* Tailles : même cible minimale de 44 px ; le texte peut toujours revenir à la ligne. */
 .bib-bouton--petit {
   min-height: var(--hauteur-controle);
@@ -260,9 +237,26 @@
 }
 
 .bib-bouton--grand {
-  min-height: 3.5rem;
+  min-height: var(--hauteur-controle-grande);
   padding-inline: var(--espace-3);
   font-size: var(--texte-courant);
+}
+
+/* Icône seule : un carré rond de la hauteur du bouton ; son nom va dans aria-label
+   (une infobulle peut le redire à l'écran). L'icône est un SVG Phosphor en currentColor. */
+.bib-bouton--icone {
+  width: 3.125rem;
+  padding: 0;
+}
+
+.bib-bouton--icone.bib-bouton--petit {
+  width: var(--hauteur-controle);
+}
+
+.bib-bouton--icone svg {
+  flex: none;
+  width: 1.5em;
+  height: 1.5em;
 }
 
 .bib-bouton:focus-visible {
@@ -272,8 +266,8 @@
 }
 
 .bib-bouton:not(:disabled):not([aria-disabled='true']):active {
-  background-color: var(--bouton-fond-survol);
-  color: var(--bouton-texte-survol);
+  background-color: var(--_bouton-fond-survol);
+  color: var(--_bouton-texte-survol);
 }
 
 .bib-bouton:disabled,

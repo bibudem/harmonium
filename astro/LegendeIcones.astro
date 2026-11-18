@@ -19,15 +19,13 @@ import { classes, fusionnerStyles, type Style } from './styles.ts'
 interface Props {
   forme?: 'cartes' | 'panneau'
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const { forme = 'cartes', class: classe, className, style } = Astro.props
+const { forme = 'cartes', class: classe, style } = Astro.props
 ---
 
-<div class:list={['bib-legende-icones', { 'bib-legende-icones--panneau': forme === 'panneau' }, classes(classe, className)]} style={fusionnerStyles(style)}>
+<div class:list={['bib-legende-icones', { 'bib-legende-icones--panneau': forme === 'panneau' }, classes(classe)]} style={fusionnerStyles(style)}>
   <ul class="bib-legende-icones__liste">
     <slot />
   </ul>

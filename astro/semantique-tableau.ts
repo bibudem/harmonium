@@ -1,8 +1,8 @@
 /*
  * Sémantique des tableaux, réglée à la construction sur le HTML du slot (usage interne).
  *
- * Astro n'a pas de contexte entre composants pour choisir <th> ou <td> (MUI le faisait par
- * contexte React). On rend donc le contenu, puis on change les cellules d'en-tête en
+ * Astro n'a pas de contexte entre composants pour choisir <th> ou <td> (il n'y a pas de
+ * contexte partagé). On rend donc le contenu, puis on change les cellules d'en-tête en
  * <th scope="col"> et on ajoute la portée aux <th> écrits à la main qui n'en ont pas
  * (scope="row" dans le corps).
  */

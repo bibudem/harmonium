@@ -1,0 +1,43 @@
+---
+/**
+ * État vide : une liste qui n'a rien à montrer. Le titre dit ce qui se passe, le texte dit quoi faire.
+ *
+ *   <EtatVide titre="Aucun événement n’est prévu ce mois-ci" icone="calendrier">
+ *     Consultez le calendrier des mois suivants.
+ *     <Fragment slot="actions"><Bouton href="/evenements/">Voir tous les événements</Bouton></Fragment>
+ *   </EtatVide>
+ */
+import '../src/composants/etat-vide.css'
+import { classes } from './styles.ts'
+
+const ICONES = {
+  recherche: 'M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z',
+  calendrier: 'M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Z',
+  boite: 'M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32Zm0,16V152h-28.7A15.86,15.86,0,0,0,168,156.69L148.69,176H107.31L88,156.69A15.86,15.86,0,0,0,76.69,152H48V48Zm0,160H48V168H76.69L96,187.31A15.86,15.86,0,0,0,107.31,192h41.38A15.86,15.86,0,0,0,160,187.31L179.31,168H208v40Z',
+} as const
+
+interface Props {
+  titre: string
+  /** 2 à 6 : un vrai titre ; absent : un paragraphe en gras */
+  niveauTitre?: 2 | 3 | 4 | 5 | 6
+  icone?: keyof typeof ICONES
+  compact?: boolean
+  class?: string
+}
+
+const { titre, niveauTitre, icone = 'boite', compact = false, class: classe } = Astro.props
+const Titre = (niveauTitre ? `h${niveauTitre}` : 'p') as 'h3'
+---
+
+<div class:list={['bib-etat-vide', { 'bib-etat-vide--compact': compact }, classes(classe)]}>
+  {
+    !compact && (
+      <span class="bib-etat-vide__icone" aria-hidden="true">
+        <svg viewBox="0 0 256 256" width="32" height="32" fill="currentColor" focusable="false"><path d={ICONES[icone]} /></svg>
+      </span>
+    )
+  }
+  <Titre class="bib-etat-vide__titre">{titre}</Titre>
+  {Astro.slots.has('default') && <p class="bib-etat-vide__texte"><slot /></p>}
+  {Astro.slots.has('actions') && <div class="bib-etat-vide__actions"><slot name="actions" /></div>}
+</div>

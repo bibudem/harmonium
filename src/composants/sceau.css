@@ -1,8 +1,9 @@
 /*
  * Sceau des bibliothèques de l'UdeM (le « U » entouré du nom en cercle) : deux images SVG
  * empilées, le U et l'anneau de texte, plutôt qu'un SVG en ligne (l'anneau pèse 21 Ko : en fichier,
- * le navigateur le garde en cache). Couleurs figées dans les fichiers (texte blanc : à poser sur
- * fond foncé).
+ * le navigateur le garde en cache). Couleurs figées dans les fichiers : l'anneau existe en deux versions, texte
+ * blanc sur fond foncé (bib-sceau-anneau.svg), texte noir sur fond clair
+ * (bib-sceau-anneau-noir.svg).
  *
  *   <span class="bib-sceau" role="img" aria-label="Les bibliothèques, Université de Montréal – Accueil">
  *     <img class="bib-sceau__u" src="…/dist/bib-sceau-u.svg" alt="" width="302" height="302" loading="lazy">

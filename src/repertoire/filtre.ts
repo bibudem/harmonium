@@ -69,7 +69,7 @@ export function texteStatut(nombre: number, page: number, pages: number) {
 // Numéros affichés, comme une pagination classique : premières et
 // dernières pages, la page courante et ses voisines, des ellipses entre.
 // `voisines` : pages montrées de chaque côté de la page courante (siblingCount
-// de MUI, boundaryCount 1). Le nombre de cases reste constant (2 × voisines
+// de la pagination, une page de bord). Le nombre de cases reste constant (2 × voisines
 // + 5) : une ellipse ne remplace jamais une seule page.
 export function numeros(page: number, pages: number, voisines: number): number[] {
   if (pages <= 2 * voisines + 5) return Array.from({ length: pages }, (_, i) => i + 1)

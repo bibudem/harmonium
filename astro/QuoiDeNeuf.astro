@@ -7,7 +7,7 @@
  *
  *   <QuoiDeNeuf onglets={[{ id: 'evenements', label: 'Événements' }, { id: 'nouvelles', label: 'Nouvelles' }]}>
  *     <ListeEvenements id="evenements" />
- *     <ColonneActualites id="nouvelles" title="Nouvelles">…</ColonneActualites>
+ *     <ColonneActualites id="nouvelles" titre="Nouvelles">…</ColonneActualites>
  *   </QuoiDeNeuf>
  *
  * Un onglet par colonne, dans le même ordre ; `id` est celui du h3 de la colonne.
@@ -20,16 +20,14 @@ interface Props {
   /** Nom de la liste d'onglets (sous 900 px) */
   nom?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const { onglets, class: classe, className, style } = Astro.props
+const { onglets, class: classe, style } = Astro.props
 if (!Array.isArray(onglets) || !onglets.length) throw new Error('QuoiDeNeuf : la propriété `onglets` est obligatoire.')
 ---
 
-<div class:list={['bib-quoi-de-neuf', classes(classe, className)]} style={fusionnerStyles(style)} data-quoi-de-neuf>
+<div class:list={['bib-quoi-de-neuf', classes(classe)]} style={fusionnerStyles(style)} data-quoi-de-neuf>
   <div class="bib-quoi-de-neuf__onglets" data-onglets>
     <span class="bib-quoi-de-neuf__indicateur" aria-hidden="true" data-indicateur></span>
     {

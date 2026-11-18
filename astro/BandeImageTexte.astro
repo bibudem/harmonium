@@ -4,15 +4,15 @@
  * src/composants/bande-image-texte.css et importe cette feuille ; la colonne décalée est celle
  * d'Harmonium (<ColonneDecalee>).
  *
- *   <BandeImageTexte Image={photo} align="left">
+ *   <BandeImageTexte image={photo} alignement="gauche">
  *     <h3>Titre</h3><p>Texte.</p>
- *     <Fragment slot="footer"><Bouton href="/services/">Voir</Bouton></Fragment>
+ *     <Fragment slot="pied"><Bouton href="/services/">Voir</Bouton></Fragment>
  *   </BandeImageTexte>
  *
- * - `align="right"` met l'image à gauche. `compact` : vignette à côté du titre sous 900 px.
- * - Slot « titre » : le titre passe au-dessus des deux colonnes. Slot « footer » : les boutons.
+ * - `alignement="droite"` met le texte à droite et l'image à gauche. `compact` : vignette à côté du titre sous 900 px.
+ * - Slot « titre » : le titre passe au-dessus des deux colonnes. Slot « pied » : les boutons.
  * - `legende` : légende sous l'image (HTML) ; l'image et elle forment une <figure>.
- * - `offset` : décalage de chaque côté, en colonnes (0,5 par défaut ; 0 pour s'aligner sur les
+ * - `decalage` : décalage de chaque côté, en colonnes (0,5 par défaut ; 0 pour s'aligner sur les
  *   carrousels et les grilles).
  */
 import '../src/composants/bande-image-texte.css'
@@ -21,11 +21,13 @@ import { Picture } from 'astro:assets'
 import ColonneDecalee from './ColonneDecalee.astro'
 import { classes, fusionnerStyles, type Style } from './styles.ts'
 
+
 interface Props {
-  align?: 'left' | 'right'
-  Image: ImageMetadata | string
-  imageWidth?: number
-  imageHeight?: number
+  /** Côté du texte : à gauche (image à droite, par défaut) ou à droite */
+  alignement?: 'gauche' | 'droite'
+  image: ImageMetadata | string
+  largeurImage?: number
+  hauteurImage?: number
   /** Vignette à côté du titre sous 900 px (voir plus haut) */
   compact?: boolean
   /** Légende sous l'image (HTML) : l'image et elle forment une <figure> */
@@ -33,31 +35,29 @@ interface Props {
   /** Texte de remplacement : seulement si l'image porte un message (texte, logo de campagne) ; vide par défaut, l'image est décorative */
   alt?: string
   /** Décalage de chaque côté, en colonnes (voir plus haut) */
-  offset?: number
+  decalage?: number
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
   [attribut: string]: unknown
 }
 
-const { align = 'left', Image, imageWidth, imageHeight, compact = false, legende, alt = '', offset = 0.5, class: classe, className, style, ...reste } = Astro.props
-if (align !== 'left' && align !== 'right') throw new Error(`BandeImageTexte : align « ${align} » invalide (left ou right).`)
-if (Image === undefined) throw new Error('BandeImageTexte : la propriété `Image` est requise.')
-// Un slot « footer » posé mais vide (bloc sans boutons) ne compte pas :
+const { alignement: align = 'gauche', image, largeurImage: imageWidth, hauteurImage: imageHeight, compact = false, legende, alt = '', decalage: offset = 0.5, class: classe, style, ...reste } = Astro.props
+if (align !== 'gauche' && align !== 'droite') throw new Error(`BandeImageTexte : alignement « ${align} » invalide (gauche ou droite).`)
+if (image === undefined) throw new Error('BandeImageTexte : la propriété `image` est requise.')
+// Un slot « pied » posé mais vide (bloc sans boutons) ne compte pas :
 // sinon le pied vide ajoutait sa marge
-const aPied = Astro.slots.has('footer') && (await Astro.slots.render('footer')).trim() !== ''
+const aPied = Astro.slots.has('pied') && (await Astro.slots.render('pied')).trim() !== ''
 ---
 
-<ColonneDecalee offset={offset} class={classes('bib-bande-image-texte', classe, className)} style={fusionnerStyles(style)} {...reste}>
+<ColonneDecalee decalage={offset} class={classes('bib-bande-image-texte', classe)} style={fusionnerStyles(style)} {...reste}>
   {Astro.slots.has('titre') && <div class="bib-bande-image-texte__titre-large"><slot name="titre" /></div>}
-  <div class:list={['bib-bande-image-texte__rangee', `bib-bande-image-texte__rangee--image-${align === 'left' ? 'droite' : 'gauche'}`, { 'bib-bande-image-texte__rangee--compact': compact }]} data-revelation="groupe">
+  <div class:list={['bib-bande-image-texte__rangee', `bib-bande-image-texte__rangee--image-${align === 'gauche' ? 'droite' : 'gauche'}`, { 'bib-bande-image-texte__rangee--compact': compact }]} data-revelation="groupe">
     <div class="bib-bande-image-texte__colonne-texte">
       <div class="bib-bande-image-texte__contenu"><slot /></div>
       {
         aPied && (
           <div class="bib-bande-image-texte__pied">
-            <slot name="footer" />
+            <slot name="pied" />
           </div>
         )
       }
@@ -66,17 +66,17 @@ const aPied = Astro.slots.has('footer') && (await Astro.slots.render('footer')).
       {
         legende ? (
           <figure>
-            {typeof Image === 'string' ? (
-              <img src={Image} width={imageWidth} height={imageHeight} alt={alt} loading="lazy" decoding="async" />
+            {typeof image === 'string' ? (
+              <img src={image} width={imageWidth} height={imageHeight} alt={alt} loading="lazy" decoding="async" />
             ) : (
-              <Picture src={Image} formats={['avif', 'webp']} fallbackFormat="webp" widths={[480, 768, 1024, 1536].filter((l) => l < Image.width).concat(Math.min(Image.width, 1536))} sizes="(min-width: 1536px) 690px, (min-width: 900px) 46vw, 92vw" alt={alt} loading="lazy" />
+              <Picture src={image} formats={['avif', 'webp']} fallbackFormat="webp" widths={[480, 768, 1024, 1536].filter((l) => l < image.width).concat(Math.min(image.width, 1536))} sizes="(min-width: 1536px) 690px, (min-width: 900px) 46vw, 92vw" alt={alt} loading="lazy" />
             )}
             <figcaption set:html={legende} />
           </figure>
-        ) : typeof Image === 'string' ? (
-          <img src={Image} width={imageWidth} height={imageHeight} alt={alt} loading="lazy" decoding="async" />
+        ) : typeof image === 'string' ? (
+          <img src={image} width={imageWidth} height={imageHeight} alt={alt} loading="lazy" decoding="async" />
         ) : (
-          <Picture src={Image} formats={['avif', 'webp']} fallbackFormat="webp" widths={[480, 768, 1024, 1536].filter((l) => l < Image.width).concat(Math.min(Image.width, 1536))} sizes="(min-width: 1536px) 690px, (min-width: 900px) 46vw, 92vw" alt={alt} loading="lazy" />
+          <Picture src={image} formats={['avif', 'webp']} fallbackFormat="webp" widths={[480, 768, 1024, 1536].filter((l) => l < image.width).concat(Math.min(image.width, 1536))} sizes="(min-width: 1536px) 690px, (min-width: 900px) 46vw, 92vw" alt={alt} loading="lazy" />
         )
       }
     </div>

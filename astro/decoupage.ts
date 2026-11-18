@@ -1,7 +1,7 @@
 /*
  * Découpe le HTML rendu d'un slot en ses nœuds de premier niveau.
  *
- * En React, un carrousel reçoit ses diapositives comme enfants
+ * Un carrousel reçoit ses diapositives comme enfants
  * distincts (Children.toArray). Un composant Astro, lui, ne reçoit
  * qu'un slot déjà rendu en une seule chaîne : on la redécoupe, un enfant par
  * diapositive (Carrousel).

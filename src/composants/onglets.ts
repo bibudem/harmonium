@@ -119,7 +119,7 @@ function initialiser(racine: HTMLElement) {
   // Un seul seuil, 900 px, pour le carrousel et l'orientation annoncée
   const large = window.matchMedia('(width >= 900px)')
   const reduit = window.matchMedia('(prefers-reduced-motion: reduce)')
-  const enCarrousel = () => racine.dataset.orientationLarge === 'horizontal' && !!indicateur && !large.matches
+  const enCarrousel = () => !!indicateur && !large.matches
   let actuel = 0
 
   // Position de défilement de chaque panneau (ils sont côte à côte)
@@ -264,17 +264,12 @@ function initialiser(racine: HTMLElement) {
     if (index < 0) return
     const dernier = onglets.length - 1
     let suivant: number
-    // L'axe libre garde le défilement normal de la page (motif APG).
-    const verticale = liste.getAttribute('aria-orientation') === 'vertical'
-    if (verticale && (evenement.key === 'ArrowLeft' || evenement.key === 'ArrowRight')) return
-    if (!verticale && (evenement.key === 'ArrowUp' || evenement.key === 'ArrowDown')) return
+    // Rangée horizontale : Haut et Bas gardent le défilement normal de la page (motif APG).
     switch (evenement.key) {
       case 'ArrowRight':
-      case 'ArrowDown':
         suivant = index === dernier ? 0 : index + 1
         break
       case 'ArrowLeft':
-      case 'ArrowUp':
         suivant = index === 0 ? dernier : index - 1
         break
       case 'Home':
@@ -291,15 +286,7 @@ function initialiser(racine: HTMLElement) {
     choisir(suivant, true, 'instantane')
   })
 
-  // Orientation annoncée selon la mise en page réelle (CSS), sans changer le
-  // rendu : seul l'attribut ARIA suit la largeur.
-  const orientationLarge = racine.dataset.orientationLarge
-  if (orientationLarge) {
-    const appliquer = () => liste.setAttribute('aria-orientation', large.matches ? orientationLarge : 'horizontal')
-    appliquer()
-    large.addEventListener('change', appliquer)
-    nettoyages.push(() => large.removeEventListener('change', appliquer))
-  }
+  liste.setAttribute('aria-orientation', 'horizontal')
 
   // Onglet de départ : celui du groupe (adresse, puis choix gardé) s'il
   // existe dans ce jeu, sinon l'onglet par défaut du HTML

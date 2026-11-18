@@ -19,23 +19,22 @@ import '../src/composants/tableau.css'
 import { semantiqueTableau } from './semantique-tableau.ts'
 import { classes, fusionnerStyles, type Style } from './styles.ts'
 
+
 interface Props {
   /** Nom du tableau, repris par la zone défilante */
   titre?: string
   /** Cellules plus serrées */
-  size?: 'small' | 'medium'
+  taille?: 'compact' | 'normal'
   /** Style du <table> (largeur minimale) */
   style?: Style
   class?: string
-  /** Contenu repris de React */
-  className?: string
   [attribut: string]: unknown
 }
 
-const { titre, size = 'medium', style, class: classe, className, ...reste } = Astro.props
+const { titre, taille = 'normal', style, class: classe, ...reste } = Astro.props
 const contenu = semantiqueTableau(Astro.slots.has('default') ? await Astro.slots.render('default') : '')
 ---
 
 <div role="region" aria-label={titre ?? 'Tableau'} tabindex="0" class="bib-tableau-zone" data-tableau-defilant>
-  <table class:list={['bib-tableau', { 'bib-tableau--compact': size === 'small' }, classes(classe, className)]} aria-label={titre} style={fusionnerStyles(style)} {...reste} set:html={contenu}></table>
+  <table class:list={['bib-tableau', { 'bib-tableau--compact': taille === 'compact' }, classes(classe)]} aria-label={titre} style={fusionnerStyles(style)} {...reste} set:html={contenu}></table>
 </div>

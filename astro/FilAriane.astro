@@ -16,8 +16,6 @@ interface Maillon {
   /** Langue du libellé, s'il diffère de celle de la page */
   lang?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
 }
 
 interface Props {
@@ -26,10 +24,10 @@ interface Props {
   lang?: string
 }
 
-const { maillons, lang, class: classe, className } = Astro.props
+const { maillons, lang, class: classe } = Astro.props
 ---
 
-<nav class:list={['bib-fil-ariane', classes(classe, className)]} aria-label="Fil d'Ariane" lang={lang}>
+<nav class:list={['bib-fil-ariane', classes(classe)]} aria-label="Fil d'Ariane" lang={lang}>
   <ol>
     {
       maillons.map((m, i) => (

@@ -9,7 +9,7 @@
  *   </HoraireSemaine>
  *
  * Le slot est le texte de repli, affiché sans JavaScript ou si l'API ne répond pas. `titre` (« Horaire de la
- * semaine ») est un h3 par défaut (`niveau`). `api` : une autre adresse de l'API (essais).
+ * semaine ») est un h3 par défaut (`niveauTitre`). `api` : une autre adresse de l'API (essais).
  */
 import '../src/composants/horaire-semaine.css'
 import EtatErreur from './EtatErreur.astro'
@@ -20,21 +20,19 @@ interface Props {
   bibliotheque: string
   service: string
   titre?: string
-  niveau?: 2 | 3 | 4 | 5 | 6
+  niveauTitre?: 2 | 3 | 4 | 5 | 6
   api?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
 }
 
-const { bibliotheque, service, titre = 'Horaire de la semaine', niveau = 3, api, class: classe, className } = Astro.props
-const Titre = `h${niveau}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+const { bibliotheque, service, titre = 'Horaire de la semaine', niveauTitre = 3, api, class: classe } = Astro.props
+const Titre = `h${niveauTitre}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 const id = idUnique('horaire-semaine')
 const CHEVRON_GAUCHE = 'M168.49,199.51a12,12,0,0,1-17,17l-80-80a12,12,0,0,1,0-17l80-80a12,12,0,0,1,17,17L97,128Z'
 const CHEVRON_DROIT = 'M184.49,136.49l-80,80a12,12,0,0,1-17-17L159,128,87.51,56.49a12,12,0,1,1,17-17l80,80A12,12,0,0,1,184.49,136.49Z'
 ---
 
-<section class:list={['bib-horaire-semaine', classes(classe, className)]} id={id} aria-labelledby={`${id}-titre`} data-horaire-semaine data-bibliotheque={bibliotheque} data-service={service} data-api={api}>
+<section class:list={['bib-horaire-semaine', classes(classe)]} id={id} aria-labelledby={`${id}-titre`} data-horaire-semaine data-bibliotheque={bibliotheque} data-service={service} data-api={api}>
   <div class="bib-horaire-semaine__entete">
     <div>
       <Titre class="bib-horaire-semaine__titre" id={`${id}-titre`}>{titre}</Titre>

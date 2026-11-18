@@ -91,9 +91,9 @@
 .bib-repertoire__puce {
   display: inline-flex;
   align-items: center;
-  gap: 0.375rem;
-  min-height: 2rem;
-  padding: 0.25rem 0.625rem 0.25rem 0.875rem;
+  gap: var(--espace-0-5);
+  min-height: var(--hauteur-controle-compacte);
+  padding: var(--espace-0-5) var(--espace-1) var(--espace-0-5) var(--espace-1-5);
   border: 1px solid transparent;
   border-radius: var(--rayon-plein);
   background: var(--couleur-teinte);
@@ -108,8 +108,8 @@
 .bib-repertoire__puce::after {
   content: '';
   flex: none;
-  width: 18px;
-  height: 18px;
+  width: var(--taille-icone-moyenne);
+  height: var(--taille-icone-moyenne);
   background-color: var(--couleur-accent);
   mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20256%20256'%3E%3Cpath%20d='M208.49%2C191.51a12%2C12%2C0%2C0%2C1-17%2C17L128%2C145%2C64.49%2C208.49a12%2C12%2C0%2C0%2C1-17-17L111%2C128%2C47.51%2C64.49a12%2C12%2C0%2C0%2C1%2C17-17L128%2C111l63.51-63.52a12%2C12%2C0%2C0%2C1%2C17%2C17L145%2C128Z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
@@ -210,7 +210,7 @@
 }
 
 .bib-repertoire__details .bib-repertoire__fonction {
-  margin-block: var(--espace-1) 0.75rem;
+  margin-block: var(--espace-1) var(--espace-1-5);
   font-weight: var(--graisse-forte);
 }
 
@@ -236,7 +236,7 @@
 }
 
 .bib-repertoire__contacts {
-  gap: 0.75rem;
+  gap: var(--espace-1-5);
 }
 
 .bib-repertoire__contacts a,
@@ -244,7 +244,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--espace-1);
-  min-height: 24px;
+  min-height: var(--taille-cible-min);
   font-size: var(--texte-petit);
   font-weight: var(--graisse-normale);
 }
@@ -261,8 +261,8 @@
 /* Icônes de contact (Phone, EnvelopeSimple, MicrosoftTeamsLogo de Phosphor) */
 .bib-repertoire__icone {
   flex: none;
-  width: 25px;
-  height: 25px;
+  width: var(--taille-icone);
+  height: var(--taille-icone);
   background-color: var(--couleur-accent);
   mask-position: center;
   mask-repeat: no-repeat;
@@ -321,7 +321,7 @@
   place-items: center;
   min-width: max(var(--taille-cible), 2.25rem);
   height: max(var(--taille-cible), 2.25rem);
-  padding-inline: 0.375rem;
+  padding-inline: var(--espace-0-5);
   border: 1px solid transparent;
   border-radius: var(--rayon-plein);
   background: transparent;
@@ -354,7 +354,7 @@
 
 @media (width >= 600px) {
   .bib-repertoire__pagination ul {
-    gap: 0.25rem;
+    gap: var(--espace-0-5);
   }
 
   .bib-repertoire__pages--large {

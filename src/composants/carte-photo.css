@@ -29,13 +29,13 @@
   height: 100%;
   min-height: 13.75rem;
   box-sizing: border-box;
-  padding: 1.25rem 1.25rem 1.35rem;
+  padding: var(--espace-2-5);
   overflow: hidden;
   border-radius: var(--rayon-carte);
   /* Texte blanc sur voile sombre, sur toute la photo */
   color: var(--couleur-sur-fonce);
   text-decoration: none;
-  transition: box-shadow var(--duree-courte-4) var(--courbe-standard);
+  transition: box-shadow var(--duree-courte) var(--courbe-standard);
 }
 
 .bib-carte-photo:hover {
@@ -45,7 +45,7 @@
 .bib-carte-photo__photo {
   position: absolute;
   inset: 0;
-  z-index: -2;
+  z-index: var(--z-fond);
   display: block;
   width: 100%;
   height: 100%;
@@ -56,7 +56,7 @@
 .bib-carte-photo picture {
   position: absolute;
   inset: 0;
-  z-index: -2;
+  z-index: var(--z-fond);
 }
 
 .bib-carte-photo picture > .bib-carte-photo__photo {
@@ -68,14 +68,22 @@
   content: '';
   position: absolute;
   inset: 0;
-  z-index: -1;
-  background: linear-gradient(112deg, rgb(9 9 10 / 0.9) 0%, rgb(30 30 32 / 0.65) 45%, rgb(6 6 7 / 0.25) 100%);
+  z-index: var(--z-dessous);
+  background: var(
+    --bib-carte-photo-voile,
+    linear-gradient(
+      112deg,
+      color-mix(in srgb, var(--couleur-voile) 90%, transparent) 0%,
+      color-mix(in srgb, var(--couleur-voile) 65%, transparent) 45%,
+      color-mix(in srgb, var(--couleur-voile) 25%, transparent) 100%
+    )
+  );
 }
 
 .bib-carte-photo__texte {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--espace-1);
   max-inline-size: 80%;
 }
 
@@ -86,7 +94,7 @@
 }
 
 .bib-carte-photo__description {
-  color: #f4f4f5;
+  color: var(--bib-carte-photo-description, var(--gris-50));
   line-height: 1.5;
 }
 
@@ -101,14 +109,14 @@
   background-color: var(--bib-carte-photo-fleche-fond, var(--jaune));
   color: var(--bib-carte-photo-fleche-texte, var(--bleu-fonce));
   transition:
-    translate var(--duree-courte-4) var(--courbe-standard),
-    background-color var(--duree-courte-4) var(--courbe-standard);
+    translate var(--duree-courte) var(--courbe-standard),
+    background-color var(--duree-courte) var(--courbe-standard);
 }
 
 .bib-carte-photo__fleche::before {
   content: '';
-  inline-size: 1.5rem;
-  block-size: 1.5rem;
+  inline-size: var(--taille-icone);
+  block-size: var(--taille-icone);
   background-color: currentcolor;
   mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20256%20256'%3E%3Cpath%20d='M220.24%2C132.24l-72%2C72a6%2C6%2C0%2C0%2C1-8.48-8.48L201.51%2C134H40a6%2C6%2C0%2C0%2C1%2C0-12H201.51L139.76%2C60.24a6%2C6%2C0%2C0%2C1%2C8.48-8.48l72%2C72A6%2C6%2C0%2C0%2C1%2C220.24%2C132.24Z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
@@ -120,12 +128,12 @@
 
   .bib-carte-photo:hover .bib-carte-photo__fleche {
     translate: 3px 0;
-    background-color: var(--bib-carte-photo-fleche-fond-survol, var(--jaune-pale));
+    background-color: var(--bib-carte-photo-fleche-fond-survol, var(--jaune-40));
   }
 }
 
 .bib-carte-photo:focus-visible .bib-carte-photo__fleche {
-  background-color: var(--bib-carte-photo-fleche-fond-survol, var(--jaune-pale));
+  background-color: var(--bib-carte-photo-fleche-fond-survol, var(--jaune-40));
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -40,20 +40,20 @@
   align-items: center;
   gap: var(--espace-1);
   box-sizing: border-box;
-  min-height: 2.5rem;
-  padding: 0.25rem var(--espace-2) 0.25rem 1.125rem;
+  min-height: var(--hauteur-controle);
+  padding: var(--espace-0-5) var(--espace-2) var(--espace-0-5) var(--espace-2);
   border: 1.5px solid var(--couleur-surface);
   border-radius: var(--rayon-plein);
   background-color: var(--couleur-surface);
   color: var(--couleur-texte);
-  font-size: var(--texte-reduit);
+  font-size: var(--texte-petit);
   font-weight: var(--graisse-moyenne);
   line-height: 1.2;
   cursor: pointer;
   list-style: none;
   transition:
-    background-color var(--duree-courte-4) var(--courbe-standard),
-    border-color var(--duree-courte-4) var(--courbe-standard);
+    background-color var(--duree-courte) var(--courbe-standard),
+    border-color var(--duree-courte) var(--courbe-standard);
 }
 
 .bib-sommaire__pastille::-webkit-details-marker {
@@ -62,15 +62,15 @@
 
 .bib-sommaire__chevron {
   display: block;
-  width: 1rem;
-  height: 1rem;
+  width: var(--taille-icone-petite);
+  height: var(--taille-icone-petite);
   background-color: currentColor;
   mask: var(--_chevron) center / contain no-repeat;
-  transition: rotate var(--duree-courte-4) var(--courbe-standard);
+  transition: rotate var(--duree-courte) var(--courbe-standard);
 }
 
 .bib-sommaire__details[open] .bib-sommaire__pastille {
-  border-color: var(--bleu-100);
+  border-color: var(--bleu-10);
   background-color: var(--couleur-teinte);
 }
 
@@ -80,7 +80,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   .bib-sommaire__pastille:hover {
-    border-color: var(--bleu-100);
+    border-color: var(--bleu-10);
     background-color: var(--couleur-teinte);
   }
 }
@@ -111,9 +111,9 @@
   transform-origin: top left;
   /* Fermeture : plus brève, même chemin */
   transition:
-    opacity var(--duree-courte-4) var(--courbe-standard),
-    translate var(--duree-courte-4) var(--courbe-standard),
-    scale var(--duree-courte-4) var(--courbe-standard);
+    opacity var(--duree-courte) var(--courbe-standard),
+    translate var(--duree-courte) var(--courbe-standard),
+    scale var(--duree-courte) var(--courbe-standard);
 }
 
 /* Le panneau glisse depuis la pastille en apparaissant */
@@ -124,8 +124,8 @@
 }
 
 .bib-sommaire__details[open] .bib-sommaire__panneau {
-  transition-duration: var(--duree-moyenne-1);
-  transition-timing-function: var(--courbe-emphase-deceleree);
+  transition-duration: var(--duree-moyenne);
+  transition-timing-function: var(--courbe-entree);
 }
 
 @starting-style {
@@ -139,7 +139,7 @@
 /* Le contenu du <details> reste affiché le temps du fondu de fermeture */
 @supports selector(::details-content) {
   .bib-sommaire__details::details-content {
-    transition: content-visibility var(--duree-courte-4) allow-discrete;
+    transition: content-visibility var(--duree-courte) allow-discrete;
   }
 }
 
@@ -148,13 +148,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.75rem;
-  padding: var(--espace-1) 0.75rem;
+  min-height: var(--hauteur-controle);
+  padding: var(--espace-1) var(--espace-1-5);
   border-radius: var(--rayon-tres-petit);
   color: var(--couleur-texte);
   text-align: center;
   text-decoration: none;
-  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+  transition: background-color var(--duree-courte) var(--courbe-standard);
 }
 
 /* Survol : le fond seul, sans soulignement */

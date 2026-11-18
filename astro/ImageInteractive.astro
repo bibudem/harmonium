@@ -24,18 +24,16 @@ interface Props {
   zones: Zone[]
   numerotee?: boolean
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const { image, alt, zones, numerotee = false, class: classe, className, style } = Astro.props
+const { image, alt, zones, numerotee = false, class: classe, style } = Astro.props
 if (!image || alt === undefined || !zones?.length) throw new Error('ImageInteractive : les propriétés `image`, `alt` et `zones` sont obligatoires.')
 const Liste = numerotee ? 'ol' : 'ul'
 const position = (z: Zone) => `top: ${z.haut}%; left: ${z.gauche}%; width: ${z.largeur}%; height: ${z.hauteur}%`
 ---
 
-<div class:list={['bib-image-interactive', classes(classe, className)]} style={fusionnerStyles(style)} data-image-interactive>
+<div class:list={['bib-image-interactive', classes(classe)]} style={fusionnerStyles(style)} data-image-interactive>
   <Liste class="bib-image-interactive__zones">
     {zones.map((z) => <li data-zone={z.id} data-position={position(z)}>{z.libelle}</li>)}
   </Liste>

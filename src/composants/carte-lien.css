@@ -8,17 +8,17 @@
  *   </div>
  *
  * - .bib-lien-etire : le seul lien de la carte, sur son titre ; son ::after couvre la carte
- *   (--rayon-lien-etire pour l'arrondi). Son nom accessible reste court : le titre.
+ *   (--bib-lien-etire-rayon pour l'arrondi). Son nom accessible reste court : le titre.
  * - .bib-carte-lien : la carte qui le contient (position: relative). Avec .bib-anneau-carte, le focus
  *   du lien est tracé sur toute la carte : anneau double (contour de focus de la bande, liseré
- *   --carte-anneau-interieur), lisible sur tout fond.
+ *   --bib-carte-anneau-interieur), lisible sur tout fond.
  * - .bib-pastille-fleche : → pour une page du site, ↗ (modificateur --externe) pour un autre site.
  *   Décorative (aria-hidden) : le lien de la carte porte le nom et les annonces. Au survol
  *   (pointeurs fins seulement : au toucher, il resterait après le tapotement) et au focus, la flèche
  *   avance d'un cran vers sa destination et la pastille prend ses couleurs « actives ».
  *   Taille : --taille-pastille ; --petite : --taille-pastille-petite. Couleurs, que définit la carte
- *   qui la contient : --pastille-fond, --pastille-encre, --pastille-contour et leurs variantes
- *   « -actif » (--pastille-echelle-active pour l'échelle) ; sans elles, transparente, de la couleur
+ *   qui la contient : --bib-pastille-fleche-fond, --bib-pastille-fleche-encre, --bib-pastille-fleche-contour et leurs variantes
+ *   « -actif » (--bib-pastille-fleche-echelle-active pour l'échelle) ; sans elles, transparente, de la couleur
  *   du texte.
  *   Pastille à contour des cartes neutres (carte compacte neutre, carte à image --surface) : à l'état
  *   actif, elle se remplit de --bib-pastille-active-fond (défaut --couleur-fond-fort, bleu foncé) et
@@ -26,6 +26,8 @@
  *   fois pour toutes sur :root (ex. --jaune et --bleu-fonce, 11,9:1).
  * - .bib-masque : texte masqué, qui annonce un PDF ou un nouvel onglet.
  */
+@import './commun/masque.css';
+
 .bib-carte-lien {
   position: relative;
 }
@@ -41,7 +43,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: var(--rayon-lien-etire, var(--rayon-carte));
+  border-radius: var(--bib-lien-etire-rayon, var(--rayon-carte));
 }
 
 .bib-anneau-carte .bib-lien-etire:focus-visible {
@@ -49,9 +51,9 @@
 }
 
 .bib-anneau-carte:has(.bib-lien-etire:focus-visible) {
-  outline: 3px solid var(--couleur-focus-bande, var(--couleur-focus));
+  outline: 3px solid var(--bib-section-focus, var(--couleur-focus));
   outline-offset: 2px;
-  box-shadow: 0 0 0 2px var(--carte-anneau-interieur, var(--couleur-surface));
+  box-shadow: 0 0 0 2px var(--bib-carte-anneau-interieur, var(--couleur-surface));
 }
 
 .bib-pastille-fleche {
@@ -64,19 +66,19 @@
   box-sizing: border-box;
   width: var(--taille-pastille);
   height: var(--taille-pastille);
-  border: 1px solid var(--pastille-contour, transparent);
+  border: 1px solid var(--bib-pastille-fleche-contour, transparent);
   border-radius: var(--rayon-plein);
-  background-color: var(--pastille-fond, transparent);
-  color: var(--pastille-encre, currentColor);
+  background-color: var(--bib-pastille-fleche-fond, transparent);
+  color: var(--bib-pastille-fleche-encre, currentColor);
   /* Repère visuel seulement : le clic traverse jusqu'au lien de la carte. Agrandie au survol
      (scale), la pastille passe dans son propre calque, au-dessus du ::after du lien étiré, et
      captait le clic. */
   pointer-events: none;
   transition:
-    background-color var(--duree-courte-4) var(--courbe-standard),
-    border-color var(--duree-courte-4) var(--courbe-standard),
-    color var(--duree-courte-4) var(--courbe-standard),
-    scale var(--duree-courte-4) var(--courbe-standard-deceleree);
+    background-color var(--duree-courte) var(--courbe-standard),
+    border-color var(--duree-courte) var(--courbe-standard),
+    color var(--duree-courte) var(--courbe-standard),
+    scale var(--duree-courte) var(--courbe-entree);
 }
 
 .bib-pastille-fleche--petite {
@@ -89,19 +91,19 @@
 }
 
 .bib-pastille-fleche__fleche {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: var(--taille-icone);
+  height: var(--taille-icone);
   background-color: currentColor;
   mask: var(--_fleche) center / contain no-repeat;
-  transition: transform var(--duree-courte-4) var(--courbe-standard-deceleree);
+  transition: transform var(--duree-courte) var(--courbe-entree);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .bib-carte-lien:hover .bib-pastille-fleche {
-    border-color: var(--pastille-contour-actif, var(--pastille-contour, transparent));
-    background-color: var(--pastille-fond-actif, var(--pastille-fond, transparent));
-    color: var(--pastille-encre-actif, var(--pastille-encre, currentColor));
-    scale: var(--pastille-echelle-active, 1);
+    border-color: var(--bib-pastille-fleche-contour-actif, var(--bib-pastille-fleche-contour, transparent));
+    background-color: var(--bib-pastille-fleche-fond-actif, var(--bib-pastille-fleche-fond, transparent));
+    color: var(--bib-pastille-fleche-encre-actif, var(--bib-pastille-fleche-encre, currentColor));
+    scale: var(--bib-pastille-fleche-echelle-active, 1);
   }
 
   .bib-carte-lien:hover .bib-pastille-fleche__fleche {
@@ -114,9 +116,9 @@
 }
 
 .bib-carte-lien:has(.bib-lien-etire:focus-visible) .bib-pastille-fleche {
-  border-color: var(--pastille-contour-actif, var(--pastille-contour, transparent));
-  background-color: var(--pastille-fond-actif, var(--pastille-fond, transparent));
-  color: var(--pastille-encre-actif, var(--pastille-encre, currentColor));
+  border-color: var(--bib-pastille-fleche-contour-actif, var(--bib-pastille-fleche-contour, transparent));
+  background-color: var(--bib-pastille-fleche-fond-actif, var(--bib-pastille-fleche-fond, transparent));
+  color: var(--bib-pastille-fleche-encre-actif, var(--bib-pastille-fleche-encre, currentColor));
 }
 
 
@@ -132,18 +134,6 @@
     forced-color-adjust: none;
     background-color: CanvasText;
   }
-}
-
-.bib-masque {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0 0 0 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

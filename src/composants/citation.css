@@ -11,8 +11,8 @@
  */
 .bib-citation {
   position: relative;
-  margin: var(--bib-citation-marge, var(--espace-element, 1rem)) 0;
-  padding: 0 0 0 30px;
+  margin: var(--bib-citation-marge, var(--espace-element, var(--espace-2))) 0;
+  padding: 0 0 0 var(--espace-4);
 }
 
 .bib-citation::before {

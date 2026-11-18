@@ -107,21 +107,21 @@
   background-color: var(--_fond);
   box-shadow: var(--ombre-2);
   pointer-events: auto;
-  transition: transform var(--duree-moyenne-4) var(--courbe-emphase-deceleree);
+  transition: transform var(--duree-longue) var(--courbe-entree);
 }
 
 /* Sans JavaScript (scripting: none), la rangée reste dépliée */
 @media (scripting: enabled) {
   .bib-liens-rapides__panneau[data-replie] {
     transform: translateX(calc(100% - var(--_poignee)));
-    transition: transform var(--duree-courte-4) var(--courbe-emphase-acceleree);
+    transition: transform var(--duree-courte) var(--courbe-sortie);
   }
 
   /* Repliée, les liens sortent de l'ordre de tabulation et de l'arbre d'accessibilité, après la fin du
      glissement */
   .bib-liens-rapides__panneau[data-replie] .bib-liens-rapides__liste {
     visibility: hidden;
-    transition: visibility 0s linear var(--duree-courte-4);
+    transition: visibility 0s linear var(--duree-courte);
   }
 }
 
@@ -138,27 +138,27 @@
   align-items: center;
   justify-content: center;
   width: var(--_poignee);
-  min-height: 48px;
+  min-height: var(--hauteur-controle);
   padding: 0;
   border-radius: inherit;
   color: var(--_texte);
   /* Le survol couvre toute la poignée, coins arrondis compris */
-  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+  transition: background-color var(--duree-courte) var(--courbe-standard);
 }
 
 /* Infobulle « Liens rapides » à gauche de la poignée, tant que la rangée est repliée */
 .bib-liens-rapides__poignee[aria-expanded='true'] {
-  --infobulle-visibilite: hidden;
-  --infobulle-opacite: 0;
+  --bib-infobulle-visibilite: hidden;
+  --bib-infobulle-opacite: 0;
 }
 
 /* La flèche (CaretLeft de Phosphor) pointe vers où la rangée va : à gauche pour sortir, à droite pour rentrer */
 .bib-liens-rapides__chevron {
-  width: 24px;
-  height: 24px;
+  width: var(--taille-icone);
+  height: var(--taille-icone);
   background-color: currentcolor;
   mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20256%20256'%3E%3Cpath%20d='M168.49%2C199.51a12%2C12%2C0%2C0%2C1-17%2C17l-80-80a12%2C12%2C0%2C0%2C1%2C0-17l80-80a12%2C12%2C0%2C0%2C1%2C17%2C17L97%2C128Z'/%3E%3C/svg%3E") center / contain no-repeat;
-  transition: rotate var(--duree-courte-4) var(--courbe-standard);
+  transition: rotate var(--duree-courte) var(--courbe-standard);
 }
 
 .bib-liens-rapides__poignee[aria-expanded='true'] .bib-liens-rapides__chevron {
@@ -167,8 +167,8 @@
 
 .bib-liens-rapides__panneau .bib-liens-rapides__liste {
   display: flex;
-  gap: 0.25rem;
-  padding: 6px 8px 6px 0;
+  gap: var(--espace-0-5);
+  padding: var(--espace-0-5) var(--espace-1) var(--espace-0-5) 0;
 }
 
 /* Icône et libellé court dessous, comme la barre mobile */
@@ -177,13 +177,13 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.25rem;
+  gap: var(--espace-0-5);
   min-width: 4.5rem;
-  min-height: 3.5rem;
-  padding: 0.375rem var(--espace-1);
+  min-height: var(--hauteur-controle-grande);
+  padding: var(--espace-0-5) var(--espace-1);
   border-radius: var(--rayon-tres-petit);
   text-decoration: none;
-  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+  transition: background-color var(--duree-courte) var(--courbe-standard);
 }
 
 .bib-liens-rapides__panneau .bib-liens-rapides__lien:hover {
@@ -203,7 +203,7 @@
   background-color: var(--_fond);
   box-shadow: var(--ombre-2);
   translate: 0 var(--bib-liens-rapides-decalage, 0px);
-  transition: translate var(--duree-courte-4) var(--courbe-standard);
+  transition: translate var(--duree-courte) var(--courbe-standard);
 }
 
 /* Le doigt la déplace : elle le suit sans retard */
@@ -214,7 +214,7 @@
 /* Le focus dans la barre la ramène entière */
 .bib-liens-rapides__mobile:focus-within {
   translate: 0;
-  transition: translate var(--duree-courte-4) var(--courbe-standard);
+  transition: translate var(--duree-courte) var(--courbe-standard);
 }
 
 /* Avec le texte agrandi, les boutons passent sur une deuxième ligne au lieu de sortir de l'écran (WCAG
@@ -234,10 +234,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.25rem;
+  gap: var(--espace-0-5);
   min-width: 4rem;
-  min-height: 3.5rem;
-  padding: 0.375rem 0.25rem;
+  min-height: var(--hauteur-controle-grande);
+  padding: var(--espace-0-5) var(--espace-0-5);
   border-radius: var(--rayon-tres-petit);
   text-decoration: none;
 }

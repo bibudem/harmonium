@@ -22,12 +22,10 @@ interface Props {
   titre?: string
   touches: Touche[]
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const { titre, touches, class: classe, className, style } = Astro.props
+const { titre, touches, class: classe, style } = Astro.props
 if (!touches?.length) throw new Error('Telecommande : la propriété `touches` est obligatoire.')
 
 let numero = 0
@@ -46,7 +44,7 @@ const description = [
 const taille = (svg: string, px: number) => svg.replace(/\swidth="[^"]*"/, '').replace(/\sheight="[^"]*"/, '').replace('<svg', `<svg width="${px}" height="${px}" aria-hidden="true" focusable="false"`)
 ---
 
-<div class:list={['bib-telecommande', classes(classe, className)]} style={fusionnerStyles(style)}>
+<div class:list={['bib-telecommande', classes(classe)]} style={fusionnerStyles(style)}>
   <div class="bib-telecommande__appareil" role="img" aria-label={description}>
     {titre && <div class="bib-telecommande__etiquette">{titre}</div>}
     <div class="bib-telecommande__grille" style={`--bib-telecommande-colonnes: ${colonnes}`}>

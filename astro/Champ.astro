@@ -1,5 +1,5 @@
 ---
-/** Champ natif : le libellé, l’aide et l’erreur sont toujours reliés au contrôle. */
+/** Champ natif : le libellé, l’aide et l’erreur, au-dessus du contrôle, lui sont toujours reliés. */
 import '../src/composants/champ.css'
 import { classes } from './styles.ts'
 import { idUnique } from './ids.ts'
@@ -16,19 +16,18 @@ interface Props {
   multiligne?: boolean
   options?: { valeur: string; libelle: string }[]
   class?: string
-  className?: string
   [attribut: string]: unknown
 }
-const { libelle, name, id = idUnique('champ'), type = 'text', valeur = '', aide, erreur, required = false, disabled = false, multiligne = false, options, class: classe, className, ...reste } = Astro.props
+const { libelle, name, id = idUnique('champ'), type = 'text', valeur = '', aide, erreur, required = false, disabled = false, multiligne = false, options, class: classe, ...reste } = Astro.props
 if (!libelle?.trim() || !name?.trim()) throw new Error('Champ : libellé et name sont requis.')
 const description = [reste['aria-describedby'], aide && `${id}-aide`, erreur && `${id}-erreur`].filter(Boolean).join(' ') || undefined
 const attributs = { ...reste, id, name, required, disabled, 'aria-describedby': description, 'aria-invalid': erreur ? 'true' : undefined }
 ---
-<div class:list={['bib-champ', classes(classe, className)]}>
+<div class:list={['bib-champ', classes(classe)]}>
   <label for={id}>{libelle}{required && <span> (obligatoire)</span>}</label>
+  {aide && <p class="bib-champ__aide" id={`${id}-aide`}>{aide}</p>}
+  {erreur && <p class="bib-champ__erreur" id={`${id}-erreur`}><strong>Erreur : </strong>{erreur}</p>}
   {options ? <select {...attributs}>{options.map((option) => <option value={option.valeur} selected={option.valeur === valeur}>{option.libelle}</option>)}</select>
     : multiligne ? <textarea {...attributs}>{valeur}</textarea>
     : <input {...attributs} type={type} value={valeur} />}
-  {aide && <p class="bib-champ__aide" id={`${id}-aide`}>{aide}</p>}
-  {erreur && <p class="bib-champ__erreur" id={`${id}-erreur`}><strong>Erreur : </strong>{erreur}</p>}
 </div>

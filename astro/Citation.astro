@@ -14,16 +14,14 @@ interface Props {
   /** Attribution affichée sous la citation */
   source?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: string | Record<string, string | number>
   [attribut: string]: unknown
 }
 
-const { cite, source, class: classe, className, style, ...reste } = Astro.props
+const { cite, source, class: classe, style, ...reste } = Astro.props
 ---
 
-<figure class:list={['bib-citation', classes(classe, className)]} style={fusionnerStyles(style)}>
+<figure class:list={['bib-citation', classes(classe)]} style={fusionnerStyles(style)}>
   <blockquote class="bib-citation__texte" cite={cite} {...reste}><slot /></blockquote>
   {source && <figcaption class="bib-citation__source">{source}</figcaption>}
 </figure>

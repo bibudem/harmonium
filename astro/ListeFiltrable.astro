@@ -9,7 +9,7 @@
  *   <ListeFiltrable nom="Logiciels" total={73} unite="logiciel" unites="logiciels" categories={categories}
  *     consigne="Recherchez un logiciel ou filtrez par catégorie :"
  *     videRecherche="Aucun logiciel ne correspond à « {q} »." videCategorie="Aucun logiciel dans cette catégorie.">
- *     {logiciels.map((l) => <FicheFiltrable nom={l.nom} lien={l.lien} categorie={l.categorie} description={l.description} />)}
+ *     {logiciels.map((l) => <FicheFiltrable nom={l.nom} href={l.lien} categorie={l.categorie} description={l.description} />)}
  *     <Fragment slot="vide">Vérifiez l’orthographe ou <a href="mailto:…">écrivez-nous</a> si vous cherchez un logiciel précis.</Fragment>
  *   </ListeFiltrable>
  */
@@ -31,29 +31,14 @@ interface Props {
   videRecherche?: string
   videCategorie?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
 }
 
-const {
-  nom,
-  total,
-  categories = [],
-  unite = 'résultat',
-  unites = 'résultats',
-  consigne,
-  placeholder = 'Nom ou description',
-  toutes = 'Toutes',
-  videRecherche,
-  videCategorie,
-  class: classe,
-  className,
-} = Astro.props
+const { nom, total, categories = [], unite = 'résultat', unites = 'résultats', consigne, placeholder = 'Nom ou description', toutes = 'Toutes', videRecherche, videCategorie, class: classe } = Astro.props
 const id = idUnique('liste-filtrable')
 const tries = [...categories].sort((a, b) => a.localeCompare(b, 'fr'))
 ---
 
-<div class:list={['bib-liste-filtrable', classes(classe, className)]} data-liste-filtrable data-unite={unite} data-unites={unites} data-vide-recherche={videRecherche} data-vide-categorie={videCategorie}>
+<div class:list={['bib-liste-filtrable', classes(classe)]} data-liste-filtrable data-unite={unite} data-unites={unites} data-vide-recherche={videRecherche} data-vide-categorie={videCategorie}>
   <form class="bib-liste-filtrable__filtres" role="search" aria-label={nom} data-filtres hidden>
     {consigne && <p class="bib-liste-filtrable__consigne">{consigne}</p>}
     <div class="bib-liste-filtrable__champs">

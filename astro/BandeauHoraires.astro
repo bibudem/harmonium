@@ -25,12 +25,10 @@ interface Props {
   api?: string
   sous?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const { bibliotheques, defaut, urlTous = '/horaires/', libelleTous = 'Tous les horaires', surBanniere = false, api, sous, class: classe, className, style, ...reste } = Astro.props
+const { bibliotheques, defaut, urlTous = '/horaires/', libelleTous = 'Tous les horaires', surBanniere = false, api, sous, class: classe, style, ...reste } = Astro.props
 
 if (!Array.isArray(bibliotheques) || bibliotheques.length === 0) throw new Error('BandeauHoraires : la propriété `bibliotheques` est obligatoire.')
 const choisie = defaut ?? bibliotheques[0].code
@@ -42,7 +40,7 @@ const idChoix = idUnique('bandeau-horaires-choix')
     ainsi sa place, juste sous l'en-tête. */}
 <div>
   <section
-    class:list={['bib-bandeau-horaires', 'theme-clair', { 'bib-bandeau-horaires--sur-banniere': surBanniere }, classes(classe, className)]}
+    class:list={['bib-bandeau-horaires', 'theme-clair', { 'bib-bandeau-horaires--sur-banniere': surBanniere }, classes(classe)]}
     style={fusionnerStyles(style)}
     aria-labelledby={idTitre}
     data-bandeau-horaires

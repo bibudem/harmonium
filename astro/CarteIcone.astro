@@ -4,9 +4,9 @@
  * src/composants/carte-icone.css et importe cette feuille (et carte-lien.css). `fullWidth` rend la carte
  * compacte en rangée (<CarteLienCompacte>).
  *
- *   <CarteIcone title="Services" Icon={BooksIcon} color="bleuPrincipal" moreText="Voir les services" href="/services/" />
+ *   <CarteIcone titre="Services" Icone={BooksIcon} couleur="bleuPrincipal" textePlus="Voir les services" href="/services/" />
  *
- * Couleurs : primary, bleuPrincipal (défaut), vertFonce, rose300, jaune. `small` : 290 × 332 px.
+ * Couleurs : bleuPrincipal (défaut), vertFonce, rose, jaune, neutre. `petite` : 290 × 332 px.
  */
 import '../src/composants/carte-icone.css'
 import '../src/composants/carte-lien.css'
@@ -16,39 +16,39 @@ import { classes, fusionnerStyles, type Style } from './styles.ts'
 import { lienCarte } from './liens.ts'
 import { idUnique } from './ids.ts'
 
-type Couleur = 'primary' | 'bleuPrincipal' | 'vertFonce' | 'rose300' | 'jaune' | 'neutre'
+type Couleur = 'bleuPrincipal' | 'vertFonce' | 'rose' | 'jaune' | 'neutre'
+
 
 interface Props {
-  title: string
-  Icon?: any
-  color?: Couleur
-  moreText?: string
+  titre?: string
+  Icone?: any
+  couleur?: Couleur
+  textePlus?: string
   /** Avec fullWidth : libellé collé sous le titre, hors du lien (« Méthode recommandée ») */
   etiquette?: string
   /** Sans lien : carte d'annonce, sans flèche */
   href?: string
   target?: string
   rel?: string
-  small?: boolean
-  fullWidth?: boolean
+  /** Petit format (290 × 332 px) */
+  petite?: boolean
+  pleineLargeur?: boolean
   niveauTitre?: 2 | 3 | 4 | 5 | 6 | null
   id?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const COULEUR_CSS: Record<Couleur, string> = { primary: 'bleu-principal', bleuPrincipal: 'bleu-principal', vertFonce: 'vert-fonce', rose300: 'rose-300', jaune: 'jaune', neutre: 'neutre' }
-const COULEURS: Couleur[] = ['primary', 'bleuPrincipal', 'vertFonce', 'rose300', 'jaune', 'neutre']
-const CLAIRES: Couleur[] = ['rose300', 'jaune', 'neutre']
+const COULEUR_CSS: Record<Couleur, string> = { bleuPrincipal: 'bleu-principal', vertFonce: 'vert-fonce', rose: 'rose', jaune: 'jaune', neutre: 'neutre' }
+const COULEURS: Couleur[] = ['bleuPrincipal', 'vertFonce', 'rose', 'jaune', 'neutre']
+const CLAIRES: Couleur[] = ['rose', 'jaune', 'neutre']
 
-const { title, Icon, color = 'bleuPrincipal', moreText, etiquette, href, target, rel, small = false, fullWidth = false, niveauTitre = 3, class: classe, className, style, ...reste } = Astro.props
+const { titre: title, Icone: Icon, couleur: color = 'bleuPrincipal', textePlus: moreText, etiquette, href, target, rel, petite = false, pleineLargeur: fullWidth = false, niveauTitre = 3, class: classe, style, ...reste } = Astro.props
 
-if (title === undefined) throw new Error('CarteIcone : la propriété `title` est obligatoire.')
+if (title === undefined) throw new Error('CarteIcone : la propriété `titre` est obligatoire.')
 if (href !== undefined && typeof href !== 'string') throw new Error('CarteIcone : la propriété `href` doit être une chaîne.')
 
-// Comme la source, une couleur inconnue retombe sur le bleu principal
+// Une couleur inconnue retombe sur le bleu principal
 const Titre = (niveauTitre === null ? 'div' : `h${niveauTitre}`) as 'h3' | 'div'
 const couleur = COULEURS.includes(color) ? color : 'bleuPrincipal'
 const { externe, afficherFleche, cible, rel: relFinal, annonce } = href ? lienCarte(href, target, rel, Astro.site?.origin ?? Astro.url.origin) : { externe: false, afficherFleche: false, cible: undefined, rel: undefined, annonce: undefined }
@@ -60,7 +60,7 @@ const idPlus = moreText && href ? idUnique('carte-plus') : undefined
     <CarteLienCompacte
       element="div"
       niveauTitre={niveauTitre}
-      couleur={couleur === 'primary' ? 'bleuPrincipal' : couleur}
+      couleur={couleur}
       titre={title}
       description={moreText}
       etiquette={etiquette}
@@ -68,13 +68,13 @@ const idPlus = moreText && href ? idUnique('carte-plus') : undefined
       target={target}
       rel={rel}
       Icone={Icon}
-      class={classes(classe, className)}
+      class={classes(classe)}
       style={style}
       {...reste}
     />
   ) : (
     <div
-      class:list={['bib-carte-icone', 'bib-carte-lien', 'bib-anneau-carte', `bib-carte-icone--${COULEUR_CSS[couleur]}`, { 'bib-carte-icone--petite': small, 'surface-claire': CLAIRES.includes(couleur), 'bib-carte-icone--sans-lien': !href }, classes(classe, className)]}
+      class:list={['bib-carte-icone', 'bib-carte-lien', 'bib-anneau-carte', `bib-carte-icone--${COULEUR_CSS[couleur]}`, { 'bib-carte-icone--petite': petite, 'surface-claire': CLAIRES.includes(couleur), 'bib-carte-icone--sans-lien': !href }, classes(classe)]}
       style={fusionnerStyles(style)}
       {...reste}
     >

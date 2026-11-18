@@ -40,22 +40,10 @@ interface Props {
   vide?: string
   id?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const {
-  nouvelles,
-  sujets = [],
-  rss,
-  sourceParDefaut = 'Les bibliothèques',
-  vide = 'Aucune nouvelle pour le moment.',
-  id = 'liste-nouvelles',
-  class: classe,
-  className,
-  style,
-} = Astro.props
+const { nouvelles, sujets = [], rss, sourceParDefaut = 'Les bibliothèques', vide = 'Aucune nouvelle pour le moment.', id = 'liste-nouvelles', class: classe, style } = Astro.props
 
 const FILTRES = [
   { valeur: 'tout', libelle: 'Tout', type: '' },
@@ -82,7 +70,7 @@ const groupes = triees.reduce<{ annee: number; items: typeof triees }[]>((acc, i
 const annonce = (n: number) => `${n} ${n > 1 ? 'éléments affichés' : 'élément affiché'}`
 ---
 
-<div id={id} class:list={['bib-liste-nouvelles', classes(classe, className)]} style={fusionnerStyles(style)} data-liste-nouvelles>
+<div id={id} class:list={['bib-liste-nouvelles', classes(classe)]} style={fusionnerStyles(style)} data-liste-nouvelles>
   <div class="bib-liste-nouvelles__reglages">
     <div class="bib-liste-nouvelles__filtres" role="group" aria-label="Filtrer les nouvelles">
       {

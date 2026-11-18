@@ -33,7 +33,7 @@
   display: block;
   margin: 0 0 var(--espace-1);
   color: var(--bib-recherche-etiquette, var(--couleur-accent));
-  font-size: var(--texte-tres-petit);
+  font-size: var(--texte-minuscule);
   font-weight: var(--graisse-forte);
   letter-spacing: 0.08em;
   line-height: 1.4;
@@ -45,8 +45,8 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--espace-1);
-  min-height: 3.25rem;
-  padding: 0.25rem 0.25rem 0.25rem var(--espace-2);
+  min-height: var(--hauteur-controle-grande);
+  padding: var(--espace-0-5) var(--espace-0-5) var(--espace-0-5) var(--espace-2);
   border: 1px solid var(--couleur-texte-secondaire);
   border-radius: var(--rayon-plein);
   background-color: var(--couleur-surface);
@@ -54,7 +54,7 @@
 
 /* Avec un sélecteur de portée, la capsule devient un bloc arrondi sur deux rangées */
 .bib-recherche__champ:has(> :not(input, button, svg)) {
-  padding: 0.5rem;
+  padding: var(--espace-1);
   border-radius: var(--rayon-petit);
 }
 
@@ -63,7 +63,7 @@
 }
 
 .bib-recherche__champ:has(> :not(input, button, svg)) .bib-recherche__saisie {
-  padding-inline-start: 0.5rem;
+  padding-inline-start: var(--espace-1);
 }
 
 .bib-recherche__champ:has(.bib-recherche__saisie:focus-visible) {
@@ -112,7 +112,7 @@
   flex: none;
   align-items: center;
   justify-content: center;
-  gap: 0.375rem;
+  gap: var(--espace-0-5);
   width: var(--taille-cible);
   height: var(--taille-cible);
   padding: 0;
@@ -123,8 +123,8 @@
   font: inherit;
   cursor: pointer;
   transition:
-    background-color var(--duree-courte-4) var(--courbe-standard),
-    scale var(--duree-courte-2) var(--courbe-standard);
+    background-color var(--duree-courte) var(--courbe-standard),
+    scale var(--duree-tres-courte) var(--courbe-standard);
 }
 
 .bib-recherche__bouton:hover {
@@ -179,7 +179,7 @@
     width: auto;
     padding-inline: var(--espace-3);
     border-radius: var(--rayon-plein);
-    font-size: var(--texte-reduit);
+    font-size: var(--texte-petit);
     font-weight: var(--graisse-moyenne);
   }
 
@@ -204,7 +204,7 @@
   inset-inline: 0;
   max-height: min(70vh, 30rem);
   margin: 0;
-  padding: 0.5rem;
+  padding: var(--espace-1);
   overflow-y: auto;
   border: 1px solid var(--couleur-bordure);
   border-radius: var(--rayon-petit);
@@ -219,7 +219,7 @@
 
 .bib-recherche [role='option'] {
   max-inline-size: none;
-  padding: 0.625rem 0.75rem;
+  padding: var(--espace-1) var(--espace-1-5);
   border-radius: var(--rayon-minuscule);
   cursor: pointer;
 }

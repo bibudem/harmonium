@@ -117,7 +117,7 @@ function brancher(entete: HTMLElement) {
   function ouvrir(origine: HTMLButtonElement, nouveau: Mode) {
     declencheur = origine
     // Le rideau remplit la fenêtre sous l'en-tête, où qu'il soit (bandeau au-dessus, page défilée)
-    rideau!.style.setProperty('--haut-menu', `${Math.max(0, entete.getBoundingClientRect().bottom)}px`)
+    rideau!.style.setProperty('--_haut-menu', `${Math.max(0, entete.getBoundingClientRect().bottom)}px`)
     rideau!.hidden = false
     if (voile) voile.hidden = false
     changerMode(nouveau)
@@ -135,7 +135,7 @@ function brancher(entete: HTMLElement) {
     feuille!.style.height = ''
     const apres = feuille!.getBoundingClientRect().height
     feuille!.style.overflowY = 'hidden'
-    await feuille!.animate([{ height: `${avant}px` }, { height: `${apres}px` }], { duration: 300, easing: jeton('--courbe-emphase-deceleree', 'ease-out') }).finished.catch(() => {})
+    await feuille!.animate([{ height: `${avant}px` }, { height: `${apres}px` }], { duration: 300, easing: jeton('--courbe-entree', 'ease-out') }).finished.catch(() => {})
     feuille!.style.overflowY = ''
   }
 
@@ -151,7 +151,7 @@ function brancher(entete: HTMLElement) {
     const avant = feuille!.getBoundingClientRect().height
     feuille!.style.height = `${avant}px`
     feuille!.scrollTo({ top: 0, behavior: 'smooth' })
-    const sortie = jeton('--courbe-standard-acceleree', 'ease-in')
+    const sortie = jeton('--courbe-sortie', 'ease-in')
     await Promise.all(autres.map((e) => e.animate([{ opacity: 1, translate: '0 0' }, { opacity: 0, translate: '0 -1rem' }], { duration: 150, easing: sortie, fill: 'forwards' }).finished.catch(() => {})))
     changerMode('recherche')
     for (const e of autres) e.getAnimations().forEach((a) => a.cancel())
@@ -166,7 +166,7 @@ function brancher(entete: HTMLElement) {
     const avant = feuille!.getBoundingClientRect().height
     feuille!.style.height = `${avant}px`
     changerMode('complet')
-    const entree = jeton('--courbe-emphase-deceleree', 'ease-out')
+    const entree = jeton('--courbe-entree', 'ease-out')
     autresGroupes().forEach((e, i) => e.animate([{ opacity: 0, translate: '0 -1rem' }, { opacity: 1, translate: '0 0' }], { duration: 300, delay: 60 + i * 50, easing: entree, fill: 'backwards' }))
     await changerHauteur(avant)
     animation = false

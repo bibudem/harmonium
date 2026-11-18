@@ -4,7 +4,7 @@
  * feuille. Aucun JavaScript.
  *
  *   <Modalites>
- *     <Modalite Icon={BooksIcon}>Nombre maximum de documents : 100</Modalite>
+ *     <Modalite Icone={BooksIcon}>Nombre maximum de documents : 100</Modalite>
  *   </Modalites>
  */
 import '../src/composants/modalites.css'
@@ -12,14 +12,12 @@ import { classes } from './styles.ts'
 
 interface Props {
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: string
 }
 
-const { class: classe, className, style } = Astro.props
+const { class: classe, style } = Astro.props
 ---
 
-<ul class:list={['bib-modalites', classes(classe, className)]} style={style}>
+<ul class:list={['bib-modalites', classes(classe)]} style={style}>
   <slot />
 </ul>

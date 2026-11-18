@@ -41,6 +41,8 @@
      agrandi au lieu de le rogner */
   min-height: 500px;
   overflow: hidden;
+  /* Contour gris : la carte se détache du fond de la page, comme sa variante --surface */
+  border: 1px solid var(--bib-carte-image-bordure, var(--couleur-bordure));
   border-radius: var(--rayon-carte);
   background-color: var(--couleur-fond);
 }
@@ -84,8 +86,9 @@
 }
 
 @media (width >= 900px) {
+  /* 24 px : un titre de carte, pas un titre de section */
   .bib-carte-image .bib-carte-image__titre {
-    font-size: 1.875rem;
+    font-size: var(--texte-tres-grand);
   }
 }
 
@@ -101,12 +104,12 @@
   font-size: var(--texte-courant);
 }
 
-/* Pastille : disque de la couleur des liens à 10 %, comme la source */
+/* Pastille : disque de la couleur des liens à 10 % */
 .bib-carte-image__pied {
-  --pastille-fond: color-mix(in srgb, currentColor 10%, transparent);
+  --bib-pastille-fleche-fond: color-mix(in srgb, currentColor 10%, transparent);
 }
 
-/* Survol : léger voile, comme le CardActionArea de MUI (opacité 0,04) */
+/* Survol : léger voile (opacité 0,04) */
 .bib-carte-image::before {
   content: '';
   position: absolute;
@@ -116,7 +119,7 @@
   background-color: currentColor;
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--duree-moyenne-1) var(--courbe-standard);
+  transition: opacity var(--duree-moyenne) var(--courbe-standard);
 }
 
 .bib-carte-image:hover::before {
@@ -145,18 +148,18 @@
 
 @media (width >= 900px) {
   .bib-carte-image--surface .bib-carte-image__titre {
-    font-size: 1.375rem;
+    font-size: var(--texte-tres-grand);
   }
 }
 
 /* La description suit le titre ; seule la pastille descend en bas à droite */
 .bib-carte-image--surface .bib-carte-image__pied {
-  --pastille-contour: var(--couleur-contour);
-  --pastille-fond: var(--couleur-surface);
-  --pastille-encre: var(--couleur-texte);
-  --pastille-contour-actif: var(--bib-pastille-active-fond, var(--couleur-fond-fort));
-  --pastille-fond-actif: var(--bib-pastille-active-fond, var(--couleur-fond-fort));
-  --pastille-encre-actif: var(--bib-pastille-active-encre, var(--couleur-sur-fonce));
+  --bib-pastille-fleche-contour: var(--couleur-contour);
+  --bib-pastille-fleche-fond: var(--couleur-surface);
+  --bib-pastille-fleche-encre: var(--couleur-texte);
+  --bib-pastille-fleche-contour-actif: var(--bib-pastille-active-fond, var(--couleur-fond-fort));
+  --bib-pastille-fleche-fond-actif: var(--bib-pastille-active-fond, var(--couleur-fond-fort));
+  --bib-pastille-fleche-encre-actif: var(--bib-pastille-active-encre, var(--couleur-sur-fonce));
   flex-direction: column;
   flex-grow: 1;
   align-items: stretch;
@@ -184,7 +187,7 @@
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory;
-  padding: 8px;
+  padding: var(--espace-1);
   margin: -8px;
 }
 

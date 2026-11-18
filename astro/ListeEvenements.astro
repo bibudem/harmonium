@@ -4,7 +4,7 @@
  * l'Université par défaut) par bib-listes-dynamiques.min.js, dans le navigateur. Produit le HTML documenté dans
  * src/composants/actualite.css, dans une <ColonneActualites>.
  *
- *   <ListeEvenements limit={3} moreLink="https://calendrier.umontreal.ca/activites?organisateurs=les-bibliotheques" repliImage="/images/evenement.svg" />
+ *   <ListeEvenements limit={3} lienPlus="https://calendrier.umontreal.ca/activites?organisateurs=les-bibliotheques" repliImage="/images/evenement.svg" />
  *
  * `service` : l'adresse d'un autre flux RSS. `repliImage` : l'image décorative d'un événement sans vignette (ou
  * dont la vignette ne se charge pas). Pendant le chargement, un squelette garde la place ; en cas d'échec, un
@@ -15,19 +15,18 @@ import ColonneActualites from './ColonneActualites.astro'
 import EtatErreur from './EtatErreur.astro'
 import type { Style } from './styles.ts'
 
+
 interface Props {
-  title?: string
+  titre?: string
   id?: string
   service?: string
-  limit?: number
-  moreText?: string
-  moreLink?: string
+  limite?: number
+  textePlus?: string
+  lienPlus?: string
   repliImage?: string
   titreMasque?: boolean
   plusCentre?: boolean
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
@@ -43,13 +42,13 @@ function urlValide(valeur: unknown, defaut: string) {
   }
 }
 
-const { title = 'Événements', id, service, limit: limiteDemandee = 3, moreText = 'Tous nos événements', moreLink, repliImage, titreMasque, plusCentre, class: classe, className, style } = Astro.props
+const { titre: title = 'Événements', id, service, limite: limiteDemandee = 3, textePlus: moreText = 'Tous nos événements', lienPlus: moreLink, repliImage, titreMasque, plusCentre, class: classe, style } = Astro.props
 const limite = typeof limiteDemandee === 'number' && limiteDemandee > 0 ? limiteDemandee : 3
 const urlService = urlValide(service, SERVICE_URL)
 const urlPlus = urlValide(moreLink, MORE_LINK)
 ---
 
-<ColonneActualites title={title} id={id} moreText={moreText} moreLink={urlPlus} externe titreMasque={titreMasque} plusCentre={plusCentre} class={classe} className={className} style={style}>
+<ColonneActualites titre={title} id={id} textePlus={moreText} lienPlus={urlPlus} externe titreMasque={titreMasque} plusCentre={plusCentre} class={classe} style={style}>
   <div class="bib-actualites-dynamique" data-liste-evenements data-service={urlService} data-limite={limite} data-repli-image={repliImage} aria-busy="true">
     <ul class="bib-actualites" data-etat="chargement">
       {Array.from({ length: limite }, () => <Actualite vignette compact squelette />)}

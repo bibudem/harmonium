@@ -12,7 +12,7 @@
  *     </div>
  *   </div>
  *
- * Couleurs : --bleu-principal, --vert-fonce, --rose-300, --jaune, --neutre (blanc à contour ; ajouter surface-claire sur les trois
+ * Couleurs : --bleu-principal, --vert-fonce, --rose, --jaune, --neutre (blanc à contour ; ajouter surface-claire sur les trois
  * dernières : fonds clairs). Contrastes calculés (WCAG 2.x) : texte blanc 7,10:1 sur bleu principal, 11,26:1
  * sur vert foncé, plus au survol ; bleu foncé ≥ 11:1 sur rose 300 et sur jaune ; la flèche, qui distingue
  * lien interne et externe, passe au rouge orangé foncé (3,74:1) sur la pastille rose 500.
@@ -46,7 +46,7 @@
   /* Exception voulue à « transform et opacity seulement » : l'élargissement
      de la source déplace les cartes voisines, ce que transform ne fait pas.
      La règle globale de mouvement réduit coupe cette transition. */
-  transition: width var(--duree-moyenne-1) var(--courbe-emphase);
+  transition: width var(--duree-moyenne) var(--courbe-standard);
 }
 
 .bib-carte-icone.bib-carte-icone--petite {
@@ -81,7 +81,7 @@
   border-radius: inherit;
   background-color: var(--_survol);
   opacity: 0;
-  transition: opacity var(--duree-moyenne-2) var(--courbe-standard);
+  transition: opacity var(--duree-moyenne) var(--courbe-standard);
 }
 
 .bib-carte-icone:not(.bib-carte-icone--sans-lien):hover::before {
@@ -105,15 +105,15 @@
   --_fleche: var(--couleur-sur-fonce);
 }
 
-.bib-carte-icone--rose-300 {
-  --_fond: var(--rose-300);
-  --_survol: var(--rose-500);
+.bib-carte-icone--rose {
+  --_fond: var(--rose);
+  --_survol: var(--rouge-orange-40);
   --_encre: var(--couleur-texte);
   --_icone: color-mix(in srgb, var(--rouge-orange) 53%, transparent);
-  --_fleche: var(--rouge-orange-texte-sur-clair);
+  --_fleche: var(--rouge-orange-fonce);
 }
 
-/* Le #ffdb81 et le #bc8800 que la source écrivait en dur, dérivés du jaune */
+/* Variante jaune : nuances dérivées du jaune */
 .bib-carte-icone--jaune {
   --_fond: var(--jaune);
   --_survol: color-mix(in srgb, var(--jaune) 68%, var(--couleur-surface));
@@ -124,8 +124,8 @@
 
 /* Pastille pleine de la teinte de survol, flèche de la couleur de la carte */
 .bib-carte-icone {
-  --pastille-fond: var(--_survol);
-  --pastille-encre: var(--_fleche);
+  --bib-pastille-fleche-fond: var(--_survol);
+  --bib-pastille-fleche-encre: var(--_fleche);
 }
 
 /* Blanc (neutre) : surface blanche à contour gris (3,7:1, WCAG 1.4.11), icône bleu principal, pastille à
@@ -136,13 +136,13 @@
   --_encre: var(--couleur-texte);
   --_icone: var(--bleu-principal);
   --_fleche: var(--couleur-texte);
-  --pastille-contour: var(--couleur-contour);
-  --pastille-fond: var(--couleur-surface);
-  --pastille-encre: var(--couleur-texte);
-  --pastille-contour-actif: var(--bib-pastille-active-fond, var(--couleur-fond-fort));
-  --pastille-fond-actif: var(--bib-pastille-active-fond, var(--couleur-fond-fort));
-  --pastille-encre-actif: var(--bib-pastille-active-encre, var(--couleur-sur-fonce));
-  --carte-anneau-interieur: var(--couleur-texte);
+  --bib-pastille-fleche-contour: var(--couleur-contour);
+  --bib-pastille-fleche-fond: var(--couleur-surface);
+  --bib-pastille-fleche-encre: var(--couleur-texte);
+  --bib-pastille-fleche-contour-actif: var(--bib-pastille-active-fond, var(--couleur-fond-fort));
+  --bib-pastille-fleche-fond-actif: var(--bib-pastille-active-fond, var(--couleur-fond-fort));
+  --bib-pastille-fleche-encre-actif: var(--bib-pastille-active-encre, var(--couleur-sur-fonce));
+  --bib-carte-anneau-interieur: var(--couleur-texte);
   box-shadow: inset 0 0 0 1px var(--couleur-contour);
 }
 
@@ -181,8 +181,8 @@
   }
 
   .bib-carte-icone__titre {
-    padding-block-start: 1.6667rem;
-    font-size: 1.75rem;
+    padding-block-start: var(--espace-carte);
+    font-size: var(--titre-3);
   }
 }
 

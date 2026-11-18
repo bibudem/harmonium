@@ -13,13 +13,11 @@ interface Props {
   externe?: boolean
   petite?: boolean
   class?: string
-  /** Contenu repris de React */
-  className?: string
 }
 
-const { externe = false, petite = false, class: classe, className } = Astro.props
+const { externe = false, petite = false, class: classe } = Astro.props
 ---
 
-<span class:list={['bib-pastille-fleche', { 'bib-pastille-fleche--externe': externe, 'bib-pastille-fleche--petite': petite }, classes(classe, className)]} aria-hidden="true">
+<span class:list={['bib-pastille-fleche', { 'bib-pastille-fleche--externe': externe, 'bib-pastille-fleche--petite': petite }, classes(classe)]} aria-hidden="true">
   <span class="bib-pastille-fleche__fleche"></span>
 </span>

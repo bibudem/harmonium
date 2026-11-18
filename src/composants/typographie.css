@@ -1,16 +1,16 @@
 /*
- * Texte typographié : `bib-typographie` plus une variante, sur la balise de son choix. Les variantes suivent
- * les noms de MUI.
+ * Texte typographié : `bib-typographie` plus une variante, sur la balise de son choix : la variante
+ * donne l'apparence, la balise garde le niveau logique de la page.
  *
- *   <h2 class="bib-typographie bib-typographie--h2">Titre</h2>
- *   <h1 class="bib-typographie bib-typographie--h2">Un h1 qui a l'apparence d'un h2</h1>
- *   <p class="bib-typographie bib-typographie--body1">Texte courant.</p>
+ *   <h2 class="bib-typographie bib-typographie--titre-2">Titre</h2>
+ *   <h1 class="bib-typographie bib-typographie--titre-2">Un h1 qui a l'apparence d'un titre 2</h1>
+ *   <p class="bib-typographie bib-typographie--texte">Texte courant.</p>
  *
- * Variantes : --display1 à --display5, --titreSuperHero, --titreSuperHeroSmall, --h1 à --h6,
- * --h4Figtree, --subtitle1, --subtitle2, --body1, --body2, --button, --caption, --overline,
- * --legal, --inherit, --carteProfilLink, --textWhite. Modificateurs : --marge-bas, --paragraphe,
- * --sans-retour (une seule ligne, tronquée). Les tailles se resserrent aux seuils de 600, 900 et
- * 1200 px.
+ * Variantes : --titre-1 à --titre-6, --titre-editorial (Lora, taille d'un titre 4), --titre-banniere,
+ * --titre-banniere-petit, --affiche-1 à --affiche-5, --sous-titre, --sous-titre-petit, --texte,
+ * --texte-petit, --bouton, --legende, --surtitre, --mention-legale, --herite, --lien-profil, --sur-fonce.
+ * Modificateurs : --marge-bas, --paragraphe, --sans-retour (une seule ligne, tronquée).
+
  */
 .bib-typographie {
   margin: 0;
@@ -26,7 +26,7 @@
 }
 
 .bib-typographie--paragraphe {
-  margin-bottom: 16px;
+  margin-bottom: var(--espace-2);
 }
 
 .bib-typographie--sans-retour {
@@ -36,43 +36,43 @@
 }
 
 /* ---- Titres (tailles mobiles, puis dès 900 px) ---- */
-.bib-typographie--h1,
-.bib-typographie--h2,
-.bib-typographie--h3,
-.bib-typographie--h4,
-.bib-typographie--h4Figtree,
-.bib-typographie--h5,
-.bib-typographie--h6 {
+.bib-typographie--titre-1,
+.bib-typographie--titre-2,
+.bib-typographie--titre-3,
+.bib-typographie--titre-editorial,
+.bib-typographie--titre-4,
+.bib-typographie--titre-5,
+.bib-typographie--titre-6 {
   margin-block: 0.5em;
   text-wrap: pretty;
 }
 
-.bib-typographie--h1 {
-  font-size: 3rem;
+.bib-typographie--titre-1 {
+  font-size: var(--titre-1);
   font-weight: var(--graisse-forte);
   line-height: 1.1;
 }
 
-.bib-typographie--h2 {
-  font-size: 2.5rem;
+.bib-typographie--titre-2 {
+  font-size: var(--titre-2);
   font-weight: var(--graisse-forte);
   line-height: 1.1;
 }
 
-.bib-typographie--h3 {
-  font-size: 1.5rem;
-  font-weight: 700;
+.bib-typographie--titre-3 {
+  font-size: var(--titre-3);
+  font-weight: var(--graisse-grasse);
   line-height: 1.2;
 }
 
-.bib-typographie--h4,
-.bib-typographie--h4Figtree {
-  font-size: 1.25rem;
+.bib-typographie--titre-editorial,
+.bib-typographie--titre-4 {
+  font-size: var(--titre-4);
   font-weight: var(--graisse-moyenne);
   line-height: 1.2;
 }
 
-.bib-typographie--h4 {
+.bib-typographie--titre-editorial {
   font-family: var(--police-serif);
   font-weight: var(--graisse-normale);
   /* Chiffres tabulaires désactivés : dans Lora, ils élargissent aussi
@@ -80,194 +80,125 @@
   font-variant-numeric: lining-nums proportional-nums;
 }
 
-.bib-typographie--h5 {
-  font-size: 1.125rem;
-  font-weight: 700;
+.bib-typographie--titre-5 {
+  font-size: var(--titre-5);
+  font-weight: var(--graisse-grasse);
   line-height: 1.1;
 }
 
-.bib-typographie--h6 {
-  font-size: 1rem;
+.bib-typographie--titre-6 {
+  font-size: var(--titre-6);
   font-weight: var(--graisse-normale);
   line-height: 1.2;
 }
 
+/* Dès 900 px, les jetons --titre-* passent au rapport 1,25 */
 @media (min-width: 900px) {
-  .bib-typographie--h1 {
-    font-size: 6.875rem;
-  }
-
-  .bib-typographie--h2 {
-    font-size: 3.5rem;
-  }
-
-  .bib-typographie--h3 {
-    font-size: 2.25rem;
+  .bib-typographie--titre-3 {
     font-weight: var(--graisse-forte);
-  }
-
-  .bib-typographie--h4,
-  .bib-typographie--h4Figtree {
-    font-size: 1.875rem;
-  }
-
-  .bib-typographie--h6 {
-    font-size: 1.125rem;
   }
 }
 
 /* ---- Texte ---- */
-.bib-typographie--body1,
-.bib-typographie--subtitle1 {
-  font-size: 1rem;
+.bib-typographie--texte,
+.bib-typographie--sous-titre {
+  font-size: var(--texte-courant);
   font-weight: var(--graisse-moyenne);
   line-height: 1.5;
 }
 
-.bib-typographie--body2,
-.bib-typographie--subtitle2,
-.bib-typographie--button {
-  font-size: 0.875rem;
+.bib-typographie--texte-petit,
+.bib-typographie--sous-titre-petit,
+.bib-typographie--bouton {
+  font-size: var(--texte-petit);
   font-weight: var(--graisse-moyenne);
   line-height: 1.5;
 }
 
-.bib-typographie--caption {
-  font-size: 0.75rem;
+.bib-typographie--legende {
+  font-size: var(--texte-minuscule);
   font-weight: var(--graisse-normale);
   line-height: 1.5;
 }
 
-.bib-typographie--overline {
-  font-size: 0.75rem;
+.bib-typographie--surtitre {
+  font-size: var(--texte-minuscule);
   font-weight: var(--graisse-moyenne);
   line-height: 1.5;
   text-transform: uppercase;
 }
 
-.bib-typographie--legal {
-  font-size: 0.857rem;
+.bib-typographie--mention-legale {
+  font-size: var(--texte-petit);
   font-weight: var(--graisse-moyenne);
   line-height: 1.2;
 }
 
-.bib-typographie--inherit {
+.bib-typographie--herite {
   font: inherit;
 }
 
 /* ---- Titres de bannière ---- */
-.bib-typographie--titreSuperHero,
-.bib-typographie--titreSuperHeroSmall {
+.bib-typographie--titre-banniere,
+.bib-typographie--titre-banniere-petit {
   font-weight: var(--graisse-forte);
   line-height: 1.1;
 }
 
-.bib-typographie--titreSuperHero {
-  padding-bottom: 1rem;
-  font-size: 2.5rem;
+.bib-typographie--titre-banniere {
+  padding-bottom: var(--espace-2);
+  font-size: var(--affiche-1);
 }
 
-.bib-typographie--titreSuperHeroSmall {
-  padding-bottom: 2.5rem;
-  font-size: 2.1rem;
+.bib-typographie--titre-banniere-petit {
+  padding-bottom: var(--espace-5);
+  font-size: var(--affiche-2);
 }
 
 /* ---- Affichage ---- */
-.bib-typographie--display1 {
-  font-size: 2.5rem;
+.bib-typographie--affiche-1 {
+  font-size: var(--affiche-1);
   font-weight: var(--graisse-forte);
   line-height: 1;
 }
 
-.bib-typographie--display2 {
-  font-size: 2rem;
+.bib-typographie--affiche-2 {
+  font-size: var(--affiche-2);
   line-height: 1.2;
 }
 
-.bib-typographie--display3 {
-  font-size: 1.65rem;
+.bib-typographie--affiche-3 {
+  font-size: var(--titre-3);
   line-height: 1.2;
 }
 
-.bib-typographie--display4 {
-  font-size: 1.5rem;
+.bib-typographie--affiche-4 {
+  font-size: var(--titre-4);
   line-height: 1.2;
 }
 
-.bib-typographie--display5 {
-  font-size: 1.375rem;
+.bib-typographie--affiche-5 {
+  font-size: var(--titre-5);
   line-height: 1.2;
 }
 
-@media (min-width: 600px) {
-  .bib-typographie--titreSuperHero {
-    font-size: 3.75rem;
-  }
-
-  .bib-typographie--titreSuperHeroSmall {
-    font-size: 3rem;
-  }
-
-  .bib-typographie--display1 {
-    font-size: 4rem;
-  }
-
-  .bib-typographie--display2 {
-    font-size: 3rem;
-  }
-}
-
-@media (min-width: 900px) {
-  .bib-typographie--titreSuperHero {
-    font-size: 4.5rem;
-  }
-
-  .bib-typographie--titreSuperHeroSmall {
-    font-size: 3.5rem;
-  }
-
-  .bib-typographie--display1 {
-    font-size: 6.5rem;
-  }
-
-  .bib-typographie--display2 {
-    font-size: 3.5rem;
-  }
-
-  .bib-typographie--display3 {
-    font-size: 2.125rem;
-  }
-
-  .bib-typographie--display4 {
-    font-size: 1.625rem;
-  }
-
-  .bib-typographie--display5 {
-    font-size: 1.5rem;
-  }
-}
-
-@media (min-width: 1200px) {
-  .bib-typographie--titreSuperHeroSmall {
-    font-size: 4rem;
-  }
-}
+/* Affichage : les jetons --affiche-* et --titre-* changent eux-mêmes dès 900 px */
 
 /* ---- Variantes spéciales ---- */
-.bib-typographie--carteProfilLink {
+.bib-typographie--lien-profil {
   display: flex;
   align-items: center;
-  margin-top: 10px;
+  margin-top: var(--espace-1);
   overflow: hidden;
   color: var(--couleur-accent);
-  font-size: 0.875rem;
+  font-size: var(--texte-petit);
   font-weight: var(--graisse-normale);
   text-decoration: underline solid;
   text-overflow: ellipsis;
   cursor: pointer;
 }
 
-.bib-typographie--textWhite {
+.bib-typographie--sur-fonce {
   color: var(--couleur-sur-fonce);
 }
 

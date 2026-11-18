@@ -14,14 +14,14 @@
  * --bib-fil-ariane-transition. Le soulignement reste : un lien se reconnaît sans la couleur.
  */
 .bib-fil-ariane {
-  margin-block-end: var(--espace-4, 2rem);
+  margin-block-end: var(--espace-4, var(--espace-4));
   font-size: var(--texte-petit, 0.875rem);
 }
 
 .bib-fil-ariane ol {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25rem var(--espace-1, 0.5rem);
+  gap: var(--espace-0-5) var(--espace-1, var(--espace-1));
   margin: 0;
   padding: 0;
   list-style: none;
@@ -30,7 +30,7 @@
 .bib-fil-ariane li {
   display: flex;
   align-items: center;
-  gap: var(--espace-1, 0.5rem);
+  gap: var(--espace-1, var(--espace-1));
   margin: 0;
 }
 
@@ -48,7 +48,7 @@
 .bib-fil-ariane a {
   display: inline-flex;
   align-items: center;
-  min-height: 24px;
+  min-height: var(--taille-cible-min);
   color: var(--bib-fil-ariane-lien, var(--couleur-lien));
   transition: var(--bib-fil-ariane-transition, none);
 }

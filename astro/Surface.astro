@@ -3,33 +3,32 @@
  * <Surface> : produit le HTML documenté dans src/composants/surface.css et importe cette
  * feuille. Aucun JavaScript.
  *
- *   <Surface variant="outlined" component="section">…</Surface>
+ *   <Surface variante="contour" balise="section">…</Surface>
  */
 import '../src/composants/surface.css'
 import { classes, fusionnerStyles } from './styles.ts'
 
+
 interface Props {
   /** 0 retire l'ombre ; toute autre valeur donne l'ombre légère du thème */
-  elevation?: number
-  variant?: 'elevation' | 'outlined'
+  ombre?: number
+  variante?: 'ombre' | 'contour'
   /** Coins droits */
-  square?: boolean
+  coinsDroits?: boolean
   /** Balise rendue (div par défaut) */
-  component?: string
+  balise?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: string | Record<string, string | number>
   [attribut: string]: unknown
 }
 
-const { elevation = 1, variant = 'elevation', square = false, component = 'div', class: classe, className, style, ...reste } = Astro.props
+const { ombre: elevation = 1, variante = 'ombre', coinsDroits: square = false, balise: component = 'div', class: classe, style, ...reste } = Astro.props
 const Balise = (typeof component === 'string' ? component : 'div') as 'div' | 'section' | 'article' | 'aside' | 'li' | 'nav' | 'header' | 'footer'
-const contour = variant === 'outlined'
+const contour = variante === 'contour'
 ---
 
 <Balise
-  class:list={['bib-surface', 'surface-claire', { 'bib-surface--contour': contour, 'bib-surface--sans-ombre': !contour && elevation <= 0, 'bib-surface--carre': square }, classes(classe, className)]}
+  class:list={['bib-surface', 'surface-claire', { 'bib-surface--contour': contour, 'bib-surface--sans-ombre': !contour && elevation <= 0, 'bib-surface--carre': square }, classes(classe)]}
   style={fusionnerStyles(style)}
   {...reste}><slot /></Balise
 >

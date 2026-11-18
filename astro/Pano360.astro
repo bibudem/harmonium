@@ -24,12 +24,10 @@ interface Props {
   module?: string
   feuille?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const { image, apercu, alt, titre, legende, module, feuille, class: classe, className, style } = Astro.props
+const { image, apercu, alt, titre, legende, module, feuille, class: classe, style } = Astro.props
 if (!image || !apercu || !alt) throw new Error('Pano360 : les propriétés `image`, `apercu` et `alt` sont obligatoires.')
 
 const id = idUnique('pano360')
@@ -38,7 +36,7 @@ const nom = titre ? `Visite virtuelle 360° : ${titre}` : 'Visite virtuelle 360�
 ---
 
 <figure
-  class:list={['bib-pano360', classes(classe, className)]}
+  class:list={['bib-pano360', classes(classe)]}
   style={fusionnerStyles(style)}
   data-pano360
   data-image={image}

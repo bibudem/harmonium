@@ -49,25 +49,8 @@ interface Props {
   /** id du rideau */
   id?: string
   class?: string
-  className?: string
 }
-const {
-  nom,
-  accueil = '/',
-  logoSite,
-  institution,
-  liens = [],
-  courante,
-  libelleAccueil = 'Accueil',
-  action,
-  menuBureau = false,
-  bandeau = false,
-  superpose = false,
-  soulignement = false,
-  id = idUnique('menu'),
-  class: classe,
-  className,
-} = Astro.props
+const { nom, accueil = '/', logoSite, institution, liens = [], courante, libelleAccueil = 'Accueil', action, menuBureau = false, bandeau = false, superpose = false, soulignement = false, id = idUnique('menu'), class: classe } = Astro.props
 if (!nom?.trim()) throw new Error('Entete : le nom du site est requis.')
 const logo = (l: string | Logo) => (typeof l === 'string' ? { src: l } : l)
 const sansBarre = (url: string) => (url.length > 1 ? url.replace(/\/+$/, '') : url)
@@ -86,7 +69,7 @@ const chevron = '<path d="M216.49,104.49l-80,80a12,12,0,0,1-17,0l-80-80a12,12,0,
 const marqueInstitution = institution && logo(institution.logo)
 const marqueSite = logoSite && logo(logoSite)
 ---
-<header class:list={['bib-entete', { 'bib-entete--menu-bureau': menuBureau, 'bib-entete--bandeau': bandeau, 'bib-entete--superpose': superpose, 'bib-entete--soulignement': soulignement }, classes(classe, className)]} data-entete>
+<header class:list={['bib-entete', { 'bib-entete--menu-bureau': menuBureau, 'bib-entete--bandeau': bandeau, 'bib-entete--superpose': superpose, 'bib-entete--soulignement': soulignement }, classes(classe)]} data-entete>
   <div class="bib-entete__barre">
     <div class="bib-entete__marque">
       {institution && marqueInstitution && (

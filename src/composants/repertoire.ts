@@ -60,7 +60,7 @@ function initialiser(racine: HTMLElement, signal?: AbortSignal) {
   }
 
   // replaceState : choisir un filtre ne crée pas d'entrée d'historique et
-  // ne fait pas défiler la page (la source faisait les deux).
+  // ne fait pas défiler la page.
   function ecrireAncre() {
     const option = filtreBib.selectedOptions[0]
     const base = location.pathname + location.search

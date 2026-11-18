@@ -29,10 +29,10 @@
  * seulement (chaque diapositive s'annonce déjà « n sur N »). Une flèche avance d'une page : la première
  * diapositive coupée à droite vient au début, ou l'inverse en reculant.
  */
+@import './commun/masque.css';
+
 /* Titre, description, cartes et bouton « voir tout » : --espace-bloc
-   entre les groupes (45 px dans la source), --espace-grille entre les
-   cartes (25 px, puis 40 px dès 600 px dans la source, par l'addition de
-   trois marges) */
+   entre les groupes, --espace-grille entre les cartes */
 .bib-carrousel {
   display: flex;
   flex-direction: column;
@@ -78,11 +78,11 @@
   /* Les cartes à révélation se règlent sur sa largeur (100cqi) */
   container-type: inline-size;
   /* Le contour de focus d'une carte ne doit pas être rogné */
-  padding-block: 4px;
+  padding-block: var(--espace-0-5);
   margin-block: -4px;
 }
 
-/* Avec les boutons, la barre de défilement fait doublon (la source n'en
+/* Avec les boutons, la barre de défilement fait doublon (on n'en
    avait pas) ; sans JS, elle reste la seule commande visible */
 [data-pret] .bib-carrousel__piste {
   scrollbar-width: none;
@@ -97,10 +97,10 @@
    noir n'y est pas une couleur affichée). Au bout de la piste, plus de
    fondu. Sans JS, pas d'attribut : la barre de défilement suffit. */
 .bib-carrousel__piste[data-suite] {
-  --fondu: clamp(1.5rem, 5vw, 3rem);
+  --_fondu: clamp(1.5rem, 5vw, 3rem);
 
   /* Discret : la dernière bande ne descend qu'à 40 % d'opacité */
-  mask-image: linear-gradient(to right, black calc(100% - var(--fondu)), rgb(0 0 0 / 40%));
+  mask-image: linear-gradient(to right, black calc(100% - var(--_fondu)), rgb(0 0 0 / 40%)); /* hors échelle : un masque ne lit que l’opacité */
 }
 
 /* Barre de progression : le gap du carrousel l'éloignerait trop des
@@ -115,22 +115,36 @@
   scroll-snap-align: start;
 }
 
+/* Dès 600 px, les flèches se placent à droite du titre de la rangée, sur sa
+   ligne ; la description passe dessous, sur toute la largeur. La rangée
+   s'efface (display: contents) pour que titre, description et flèches soient
+   des cellules de la même grille. */
 @media (width >= 600px) {
+  .bib-carrousel__entete {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: var(--espace-4);
+    align-items: center;
+  }
+
   .bib-carrousel__rangee {
-    flex-direction: row;
+    display: contents;
   }
 
-  /* Sans description, les flèches se rangent à droite du titre : seules
-     sur leur ligne, elles creusaient 66 px de plus entre titre et cartes */
-  .bib-carrousel__entete--sans-description {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-  }
-
-  .bib-carrousel__entete--sans-description .bib-carrousel__titre {
-    flex: 1 1 auto;
+  .bib-carrousel__titre {
+    grid-area: 1 / 1;
     min-width: 0;
+  }
+
+  /* Le titre garde sa marge basse dans le flux : on l'ôte pour que les
+     flèches se centrent sur le texte du titre */
+  .bib-carrousel__titre > :last-child {
+    margin-bottom: 0;
+  }
+
+  .bib-carrousel__description {
+    grid-area: 2 / 1 / 3 / -1;
+    margin-top: var(--espace-2);
   }
 
   .bib-carrousel__entete--sans-description .bib-carrousel__description {
@@ -138,11 +152,10 @@
   }
 
   .bib-carrousel__commandes-entete {
-    align-items: flex-end;
+    grid-area: 1 / 2;
     margin-top: 0;
-    padding-left: var(--espace-4);
-    /* Pas de marge négative comme le edge="end" de MUI : hors d'une
-       Section (sans gouttière), elle faisait déborder la page de 12 px. */
+    /* Pas de marge négative : hors d'une Section (sans gouttière), elle
+       ferait déborder la page. */
   }
 }
 
@@ -157,13 +170,13 @@
 
 .bib-carrousel__commande {
   display: inline-flex;
-  padding: 8px;
+  padding: var(--espace-1);
   border: 0;
   border-radius: var(--rayon-plein);
   background: transparent;
   color: var(--couleur-lien);
   cursor: pointer;
-  transition: background-color var(--duree-courte-3) var(--courbe-standard);
+  transition: background-color var(--duree-courte) var(--courbe-standard);
 }
 
 .bib-carrousel__commande:hover {
@@ -182,7 +195,8 @@
 }
 
 .bib-carrousel__commande[aria-disabled='true'] {
-  opacity: 0.38;
+  color: var(--couleur-texte-secondaire);
+  opacity: 0.6;
   cursor: default;
 }
 
@@ -196,7 +210,7 @@
    fond noir. La marge interne compense le contour : même taille. */
 @media (forced-colors: active) {
   .bib-carrousel__commande {
-    padding: 6px;
+    padding: var(--espace-0-5);
     border: 2px solid ButtonText;
   }
 
@@ -227,7 +241,7 @@
   left: 0;
   border-radius: inherit;
   background-color: var(--couleur-lien);
-  transition: transform var(--duree-courte-2) linear;
+  transition: transform var(--duree-tres-courte) linear;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -244,18 +258,6 @@
   .bib-carrousel__curseur {
     background-color: CanvasText;
   }
-}
-
-.bib-carrousel .bib-masque {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0 0 0 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
 }
 
 .bib-carrousel__piste:focus-visible {

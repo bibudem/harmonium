@@ -27,13 +27,11 @@
   position: relative;
   width: 100%;
   overflow-x: auto;
-  border-radius: var(--rayon-minuscule);
-  background-color: var(--couleur-fond);
+  /* Contour gris et fond blanc, sans ombre : minimal, il ne flotte pas sur la page */
+  border: 1px solid var(--bib-tableau-bordure, var(--couleur-bordure));
+  border-radius: var(--rayon-petit);
+  background-color: var(--couleur-surface);
   color: var(--couleur-texte);
-  box-shadow:
-    0 2px 1px -1px color-mix(in srgb, var(--bleu-fonce) 20%, transparent),
-    0 1px 1px 0 color-mix(in srgb, var(--bleu-fonce) 14%, transparent),
-    0 1px 3px 0 color-mix(in srgb, var(--bleu-fonce) 12%, transparent);
 }
 
 @media (forced-colors: active) {
@@ -51,11 +49,11 @@
 }
 
 .bib-tableau__cellule {
-  padding: 16px;
+  padding: var(--espace-2);
   /* Filet du bas seulement, sans fond : la feuille d'un thème hôte (WordPress, gabarit) qui encadre
      ou colore th et td ne s'y ajoute pas */
   border: 0;
-  border-bottom: 1px solid var(--couleur-bordure);
+  border-bottom: 1px solid var(--bib-tableau-filet, var(--gris-200));
   background: none;
   color: var(--couleur-texte);
   font-size: var(--texte-petit);
@@ -65,8 +63,22 @@
   vertical-align: inherit;
 }
 
+/* Colonnes : un filet vertical très clair entre les cellules */
+.bib-tableau__cellule + .bib-tableau__cellule {
+  border-inline-start: 1px solid var(--bib-tableau-filet, var(--gris-200));
+}
+
+/* En-tête : fond teinté, texte appuyé, filet gris dessous : il ne se lit pas comme une rangée */
 .bib-tableau thead .bib-tableau__cellule {
+  border-bottom-color: var(--bib-tableau-bordure, var(--couleur-bordure));
+  background-color: var(--bib-tableau-entete-fond, var(--couleur-teinte));
+  font-weight: var(--graisse-forte);
   line-height: 1.5rem;
+}
+
+/* Titre de rangée : appuyé, comme l'en-tête */
+.bib-tableau tbody th.bib-tableau__cellule {
+  font-weight: var(--graisse-forte);
 }
 
 /* Dernière rangée sans filet */
@@ -76,7 +88,7 @@
 
 .bib-tableau--compact td,
 .bib-tableau--compact th {
-  padding: 6px 16px;
+  padding: var(--espace-0-5) var(--espace-2);
 }
 
 .bib-tableau__cellule--centre {

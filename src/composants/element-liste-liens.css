@@ -23,27 +23,29 @@
  */
 .bib-element-liste-liens {
   /* Pastille (PastilleFleche) : pleine, plus vive et un peu plus grande au survol */
-  --pastille-fond: var(--bleu-fonce);
-  --pastille-fond-actif: var(--bleu-principal);
-  --pastille-encre: var(--couleur-sur-fonce);
-  --pastille-echelle-active: 1.1;
-  --rayon-lien-etire: var(--rayon-moyen);
-  --carte-fond: color-mix(in srgb, currentColor 4%, transparent);
-  --carte-fond-survol: color-mix(in srgb, currentColor 8%, transparent);
+  --bib-pastille-fleche-fond: var(--bleu-fonce);
+  --bib-pastille-fleche-fond-actif: var(--bleu-principal);
+  --bib-pastille-fleche-encre: var(--couleur-sur-fonce);
+  --bib-pastille-fleche-echelle-active: 1.1;
+  --bib-lien-etire-rayon: var(--rayon-carte);
+  --_carte-fond: color-mix(in srgb, currentColor 4%, transparent);
+  --_carte-fond-survol: color-mix(in srgb, currentColor 8%, transparent);
 
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--espace-element);
-  padding: var(--espace-element) 1.25rem;
-  border-radius: var(--rayon-moyen);
-  background-color: var(--carte-fond);
-  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+  padding: var(--espace-element) var(--espace-2-5);
+  /* Contour gris clair, en liste comme en grille */
+  border: 1px solid var(--bib-liste-liens-bordure, var(--gris-200));
+  border-radius: var(--rayon-carte);
+  background-color: var(--_carte-fond);
+  transition: background-color var(--duree-courte) var(--courbe-standard);
 }
 
 /* Espace entre les cartes, et sous le texte d'introduction */
 .bib-element-liste-liens + .bib-element-liste-liens {
-  margin-top: 0.75rem;
+  margin-top: var(--espace-1-5);
 }
 
 .bib-element-liste-liens:first-child {
@@ -51,17 +53,17 @@
 }
 
 .bib-element-liste-liens--vert-fonce {
-  --pastille-fond: var(--vert-pale);
-  --pastille-fond-actif: var(--couleur-sur-fonce);
-  --pastille-encre: var(--bleu-fonce);
-  --carte-fond: color-mix(in srgb, currentColor 7%, transparent);
-  --carte-fond-survol: color-mix(in srgb, currentColor 14%, transparent);
+  --bib-pastille-fleche-fond: var(--vert);
+  --bib-pastille-fleche-fond-actif: var(--couleur-sur-fonce);
+  --bib-pastille-fleche-encre: var(--bleu-fonce);
+  --_carte-fond: color-mix(in srgb, currentColor 7%, transparent);
+  --_carte-fond-survol: color-mix(in srgb, currentColor 14%, transparent);
 }
 
 .bib-element-liste-liens__texte {
   flex: 1 1 auto;
   width: 100%;
-  margin-block: 4px;
+  margin-block: var(--espace-0-5);
 }
 
 /* Même taille quel que soit le niveau (h2 sans titre de bloc, h3 sinon) */
@@ -87,17 +89,17 @@
    se soulève (déplacement et ombre) : effet retiré à la demande. */
 @media (hover: hover) and (pointer: fine) {
   .bib-element-liste-liens:hover {
-    background-color: var(--carte-fond-survol);
+    background-color: var(--_carte-fond-survol);
   }
 }
 
 .bib-element-liste-liens:has(.bib-element-liste-liens__lien:focus-visible) {
-  background-color: var(--carte-fond-survol);
+  background-color: var(--_carte-fond-survol);
 }
 
 .bib-element-liste-liens__description {
-  padding-top: 0.25rem;
-  /* 17 px au texte par défaut, comme la source ; suit le réglage de
+  padding-top: var(--espace-0-5);
+  /* 17 px au texte par défaut ; suit le réglage de
      texte du navigateur */
   font-size: var(--texte-courant);
   line-height: 1.4;
@@ -106,7 +108,7 @@
 .bib-element-liste-liens__bouton,
 .bib-element-liste-liens__pastille {
   flex: none;
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--espace-1-5);
 }
 
 /* Repère visuel seulement (aria-hidden) : le clic traverse jusqu'au lien
@@ -119,13 +121,13 @@
 /* Bouton secondaire (à contour), sur tous les fonds : contour et texte de
    la couleur du texte de la bande (bleu foncé sur fond clair, blanc sur
    fond foncé), fond transparent. La carte entière est le lien ; le bouton
-   plein bleu foncé de la source se voyait à peine sur le vert foncé. */
+   plein bleu foncé se verrait à peine sur le vert foncé. */
 .bib-element-liste-liens__bouton {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  min-height: 3.125rem;
-  padding: 6px 16px 6px 25px;
+  gap: var(--espace-1);
+  min-height: var(--hauteur-controle);
+  padding: var(--espace-0-5) var(--espace-2) var(--espace-0-5) var(--espace-3);
   border: 1px solid currentColor;
   border-radius: var(--rayon-plein);
   background-color: transparent;
@@ -148,7 +150,7 @@
    pastille : .bib-carte-lien de global.css). Survol réservé aux pointeurs fins :
    au toucher, un survol fantôme resterait après le tapotement. */
 .bib-element-liste-liens__bouton > .bib-element-liste-liens__fleche {
-  transition: transform var(--duree-courte-4) var(--courbe-standard-deceleree);
+  transition: transform var(--duree-courte) var(--courbe-entree);
   will-change: transform;
 }
 
@@ -164,7 +166,7 @@
 }
 
 .bib-element-liste-liens__bouton {
-  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+  transition: background-color var(--duree-courte) var(--courbe-standard);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -236,8 +238,8 @@
 /* Flèche du bouton (Phosphor) : → pour une page du site, ↗ pour un autre site */
 .bib-element-liste-liens__fleche {
   display: block;
-  width: 24px;
-  height: 24px;
+  width: var(--taille-icone);
+  height: var(--taille-icone);
   background-color: currentColor;
   mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20256%20256'%3E%3Cpath%20d='M221.66%2C133.66l-72%2C72a8%2C8%2C0%2C0%2C1-11.32-11.32L196.69%2C136H40a8%2C8%2C0%2C0%2C1%2C0-16H196.69L138.34%2C61.66a8%2C8%2C0%2C0%2C1%2C11.32-11.32l72%2C72A8%2C8%2C0%2C0%2C1%2C221.66%2C133.66Z'/%3E%3C/svg%3E") center / contain no-repeat;
 }

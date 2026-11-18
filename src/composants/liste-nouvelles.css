@@ -87,9 +87,9 @@
 }
 
 .bib-liste-nouvelles__filtre {
-  min-height: 2.75rem;
-  padding: var(--espace-1) 1.25rem;
-  border: 1px solid var(--bleu-200);
+  min-height: var(--hauteur-controle);
+  padding: var(--espace-1) var(--espace-2-5);
+  border: 1px solid var(--bleu-20);
   border-radius: var(--rayon-plein);
   background-color: transparent;
   color: var(--couleur-texte);
@@ -100,8 +100,8 @@
   cursor: pointer;
   touch-action: manipulation;
   transition:
-    background-color var(--duree-courte-4) var(--courbe-standard),
-    color var(--duree-courte-4) var(--courbe-standard);
+    background-color var(--duree-courte) var(--courbe-standard),
+    color var(--duree-courte) var(--courbe-standard);
 }
 
 .bib-liste-nouvelles__filtre:hover {
@@ -136,9 +136,9 @@
 .bib-liste-nouvelles__sujet {
   display: inline-flex;
   align-items: center;
-  gap: 0.375rem;
-  min-height: 2.25rem;
-  padding: 0.25rem 0.75rem;
+  gap: var(--espace-0-5);
+  min-height: var(--hauteur-controle-compacte);
+  padding: var(--espace-0-5) var(--espace-1-5);
   border: 1px solid var(--couleur-bordure);
   border-radius: var(--rayon-tres-petit);
   background-color: var(--couleur-surface);
@@ -150,8 +150,8 @@
   cursor: pointer;
   touch-action: manipulation;
   transition:
-    background-color var(--duree-courte-4) var(--courbe-standard),
-    border-color var(--duree-courte-4) var(--courbe-standard);
+    background-color var(--duree-courte) var(--courbe-standard),
+    border-color var(--duree-courte) var(--courbe-standard);
 }
 
 .bib-liste-nouvelles__sujet:hover {
@@ -167,8 +167,8 @@
 /* Icône d'étiquette au repos, coche quand le sujet est choisi */
 .bib-liste-nouvelles__icone-sujet {
   flex-shrink: 0;
-  width: 1rem;
-  height: 1rem;
+  width: var(--taille-icone-petite);
+  height: var(--taille-icone-petite);
   background-color: var(--couleur-accent);
   mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20256%20256'%3E%3Cpath%20d%3D'M243.31%2C136%2C144%2C36.69A15.86%2C15.86%2C0%2C0%2C0%2C132.69%2C32H40a8%2C8%2C0%2C0%2C0-8%2C8v92.69A15.86%2C15.86%2C0%2C0%2C0%2C36.69%2C144L136%2C243.31a16%2C16%2C0%2C0%2C0%2C22.63%2C0l84.68-84.68a16%2C16%2C0%2C0%2C0%2C0-22.63Zm-96%2C96L48%2C132.69V48h84.69L232%2C147.31ZM96%2C84A12%2C12%2C0%2C1%2C1%2C84%2C72%2C12%2C12%2C0%2C0%2C1%2C96%2C84Z'%2F%3E%3C%2Fsvg%3E") center / contain no-repeat;
 }
@@ -183,7 +183,7 @@
   align-items: center;
   justify-self: start;
   gap: var(--espace-1);
-  min-height: 2.75rem;
+  min-height: var(--hauteur-controle);
   color: var(--couleur-lien);
   font-weight: var(--graisse-moyenne);
   text-decoration: underline;
@@ -225,7 +225,7 @@
 
 @media (width >= 900px) {
   .bib-liste-nouvelles .bib-liste-nouvelles__titre-annee {
-    font-size: 2.25rem;
+    font-size: var(--titre-2);
     font-weight: var(--graisse-forte);
   }
 }

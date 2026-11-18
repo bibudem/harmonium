@@ -20,7 +20,7 @@
  * Événements (sur l'élément, propagés, annulables) : « bib:show » avant l'affichage,
  * « bib:hide » avant la fermeture.
  *
- * Propriétés CSS : --bib-avis-container-color (fond), --bib-avis-size (taille du texte),
+ * Propriétés CSS : --bib-avis-fond (fond), --bib-avis-taille (taille du texte),
  * --bib-avis-spacing-inline (marges latérales), --bib-btn-close-color,
  * --bib-btn-close-hover-color.
  *

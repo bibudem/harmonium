@@ -2,7 +2,7 @@
  * Icône carrée : icône dans un carré de couleur (10,875 × 11,875 rem, centré), pour illustrer
  * une carte ou un bloc.
  *
- *   <div class="bib-icone-carree" style="--bib-icone-carree-fond: var(--rose-500)">
+ *   <div class="bib-icone-carree" style="--bib-icone-carree-fond: var(--rouge-orange-40)">
  *     <div class="bib-icone-carree__icone" aria-hidden="true"><svg viewBox="0 0 256 256">…</svg></div>
  *   </div>
  *
@@ -17,7 +17,7 @@
  *
  *   <div class="bib-icone-carree-texte">
  *     <div class="bib-icone-carree-texte__texte"><h3>Notre mission</h3><p>Texte…</p></div>
- *     <div class="bib-icone-carree" style="--bib-icone-carree-fond: var(--vert-pale)">…</div>
+ *     <div class="bib-icone-carree" style="--bib-icone-carree-fond: var(--vert)">…</div>
  *   </div>
  */
 .bib-icone-carree {

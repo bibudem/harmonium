@@ -1,0 +1,140 @@
+/*
+ * Pagination : passer d'une page de résultats à l'autre (actualités, événements, résultats d'une liste).
+ * « Précédente », les numéros de page autour de la page courante, « Suivante ». Sur téléphone, les numéros
+ * cèdent la place à « Page 3 sur 12 » : deux grandes cibles au pouce plutôt qu'une rangée de petits chiffres.
+ *
+ *   <nav class="bib-pagination" aria-label="Pagination">
+ *     <a class="bib-pagination__voisine bib-pagination__voisine--precedente" href="?page=2" rel="prev"><svg … aria-hidden="true">…</svg><span class="bib-masque">Page </span>Précédente</a>
+ *     <ul class="bib-pagination__pages">
+ *       <li><a class="bib-pagination__page" href="?page=1" aria-label="Page 1">1</a></li>
+ *       <li class="bib-pagination__ellipse" aria-hidden="true">…</li>
+ *       <li><a class="bib-pagination__page" href="?page=3" aria-label="Page 3" aria-current="page">3</a></li>
+ *       <li><a class="bib-pagination__page" href="?page=12" aria-label="Page 12">12</a></li>
+ *     </ul>
+ *     <p class="bib-pagination__resume">Page 3 sur 12</p>
+ *     <a class="bib-pagination__voisine bib-pagination__voisine--suivante" href="?page=4" rel="next"><span class="bib-masque">Page </span>Suivante<svg … aria-hidden="true">…</svg></a>
+ *   </nav>
+ *
+ * Première page : pas de lien « Précédente » ; dernière page : pas de « Suivante ». La page courante reste un
+ * lien (aria-current="page"), comme le recommande le patron de pagination le plus répandu : elle se lit dans la
+ * liste et garde sa place au clavier.
+ *
+ * Variables : --bib-pagination-courante-fond et -texte (page courante : bleu foncé, texte blanc).
+ */
+.bib-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espace-1) var(--espace-2);
+  margin-block: var(--espace-4) 0;
+  font-family: var(--police-sans);
+  color: var(--couleur-texte);
+}
+
+.bib-pagination__pages {
+  display: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espace-0-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bib-pagination__pages > li {
+  margin: 0;
+}
+
+.bib-pagination__resume {
+  flex: 1 0 100%;
+  order: -1;
+  margin: 0;
+  text-align: center;
+  font-size: var(--texte-petit);
+  color: var(--couleur-texte-secondaire);
+}
+
+:is(.bib-pagination__page, .bib-pagination__voisine) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espace-1);
+  box-sizing: border-box;
+  min-block-size: var(--hauteur-controle);
+  border-radius: var(--rayon-plein);
+  color: var(--couleur-texte);
+  font-weight: var(--graisse-forte);
+  text-decoration: none;
+  transition: background-color var(--duree-courte) var(--courbe-standard);
+}
+
+.bib-pagination__page {
+  min-inline-size: var(--hauteur-controle);
+  padding-inline: var(--espace-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.bib-pagination__voisine {
+  padding-inline: var(--espace-2);
+  border: 1px solid var(--couleur-contour);
+}
+
+.bib-pagination__voisine > svg {
+  flex: none;
+}
+
+.bib-pagination__voisine--suivante {
+  margin-inline-start: auto;
+}
+
+:is(.bib-pagination__page, .bib-pagination__voisine):hover {
+  background-color: var(--couleur-teinte);
+  color: var(--couleur-texte);
+}
+
+:is(.bib-pagination__page, .bib-pagination__voisine):focus-visible {
+  outline: var(--focus-epaisseur) solid var(--couleur-focus);
+  outline-offset: var(--focus-retrait);
+}
+
+.bib-pagination__page[aria-current='page'] {
+  background-color: var(--bib-pagination-courante-fond, var(--couleur-fond-fort));
+  color: var(--bib-pagination-courante-texte, var(--couleur-sur-fonce));
+}
+
+.bib-pagination__ellipse {
+  min-inline-size: 1.5rem;
+  color: var(--couleur-texte-secondaire);
+  text-align: center;
+}
+
+@media (width >= 600px) {
+  .bib-pagination {
+    justify-content: center;
+  }
+
+  .bib-pagination__pages {
+    display: flex;
+  }
+
+  .bib-pagination__resume {
+    display: none;
+  }
+
+  .bib-pagination__voisine--suivante {
+    margin-inline-start: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.bib-pagination__page, .bib-pagination__voisine) {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .bib-pagination__page[aria-current='page'] {
+    border: 2px solid CanvasText;
+  }
+}

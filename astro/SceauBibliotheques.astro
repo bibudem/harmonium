@@ -2,7 +2,7 @@
 /*
  * <SceauBibliotheques> : le sceau des bibliothèques de l'UdeM. Produit le HTML documenté dans
  * src/composants/sceau.css et importe cette feuille. Les deux images SVG sont celles d'Harmonium
- * (dist/bib-sceau-u.svg et bib-sceau-anneau.svg) ; le texte tourne au survol du lien parent avec
+ * (dist/bib-sceau-u.svg, et bib-sceau-anneau.svg ou, sur fond clair, bib-sceau-anneau-noir.svg) ; le texte tourne au survol du lien parent avec
  * bib-sceau.min.js (facultatif).
  *
  *   <a href="/"><SceauBibliotheques /></a>
@@ -10,20 +10,21 @@
 import '../src/composants/sceau.css'
 import u from '../src/composants/sceau-u.svg?url'
 import anneau from '../src/composants/sceau-anneau.svg?url'
+import anneauNoir from '../src/composants/sceau-anneau-noir.svg?url'
 import { classes } from './styles.ts'
 
 interface Props {
   /** Nom accessible du sceau (le lien parent n'a pas d'autre texte) */
   nom?: string
+  /** Fond sur lequel le sceau est posé : « fonce » (texte blanc) ou « clair » (texte noir) */
+  fond?: 'fonce' | 'clair'
   class?: string
-  /** Contenu repris de React */
-  className?: string
 }
 
-const { nom = 'Les bibliothèques, Université de Montréal – Accueil', class: classe, className } = Astro.props
+const { nom = 'Les bibliothèques, Université de Montréal – Accueil', fond = 'fonce', class: classe } = Astro.props
 ---
 
-<span class:list={['bib-sceau', classes(classe, className)]} role="img" aria-label={nom}>
+<span class:list={['bib-sceau', classes(classe)]} role="img" aria-label={nom}>
   <img class="bib-sceau__u" src={u} alt="" width="302" height="302" loading="lazy" decoding="async" />
-  <img class="bib-sceau__anneau" src={anneau} alt="" width="302" height="302" loading="lazy" decoding="async" />
+  <img class="bib-sceau__anneau" src={fond === 'clair' ? anneauNoir : anneau} alt="" width="302" height="302" loading="lazy" decoding="async" />
 </span>

@@ -2,11 +2,11 @@
  * Bannière : une photo sous un voile, avec le titre de la page (<h1>) en bas à gauche, et une ligne de
  * sous-titre ou des enfants (sommaire, boutons) facultatifs.
  *
- *   <div class="bib-banniere bib-banniere--vague">
+ *   <div class="bib-banniere bib-banniere--vague surface-foncee">
  *     <img class="bib-banniere__image" src="photo.jpg" alt="" fetchpriority="high">
  *     <div class="bib-banniere__texte">
  *       <div class="bib-banniere__colonne">
- *         <h1 class="bib-typographie bib-typographie--titreSuperHero bib-banniere__titre">Les bibliothèques</h1>
+ *         <h1 class="bib-typographie bib-typographie--titre-banniere bib-banniere__titre">Les bibliothèques</h1>
  *         <div class="bib-banniere__sous-titre">Étudier, chercher, créer.</div>
  *       </div>
  *     </div>
@@ -35,10 +35,10 @@
  */
 .bib-banniere {
   /* Hauteur totale, et ce que le contenu suivant peut en recouvrir */
-  --hauteur: 26rem;
+  --_hauteur: 26rem;
   --_entete: var(--bib-banniere-entete, 0rem);
   --_voile: var(--bib-banniere-voile, 50%);
-  --vague-taille: 210% 150%;
+  --_vague-taille: 210% 150%;
 
   display: flex;
   position: relative;
@@ -46,15 +46,11 @@
   flex-direction: column;
   justify-content: flex-end;
   width: 100%;
-  min-height: calc(var(--hauteur) - var(--_entete));
+  min-height: calc(var(--_hauteur) - var(--_entete));
   margin-bottom: var(--bib-banniere-marge-basse, 0);
   overflow: hidden;
   /* Sous la photo pendant son chargement (fondu) */
   background-color: var(--bleu-fonce);
-  color: var(--couleur-sur-fonce);
-  --couleur-lien: var(--couleur-sur-fonce);
-  --couleur-lien-survol: var(--couleur-sur-fonce);
-  --couleur-focus: var(--couleur-sur-fonce);
 }
 
 /* Voile uniforme */
@@ -70,7 +66,7 @@
 .bib-banniere--vague::before {
   background-color: transparent;
   background-image: radial-gradient(
-    ellipse var(--vague-taille) at var(--vague-x, 0%) 100%,
+    ellipse var(--_vague-taille) at var(--_vague-x, 0%) 100%,
     color-mix(in srgb, var(--bleu-fonce) 74%, transparent),
     color-mix(in srgb, var(--bleu-fonce) 70%, transparent) 50%,
     color-mix(in srgb, var(--bleu-fonce) 58%, transparent) 68%,
@@ -100,7 +96,7 @@
   height: 100%;
   object-fit: cover;
   object-position: 50% var(--bib-banniere-cadrage, 50%);
-  transition: opacity var(--duree-longue-2) var(--courbe-standard-deceleree);
+  transition: opacity var(--duree-longue) var(--courbe-entree);
 }
 
 .bib-banniere__image[data-fondu] {
@@ -108,7 +104,7 @@
 }
 
 .bib-banniere--petite {
-  --hauteur: 15rem;
+  --_hauteur: 15rem;
 }
 
 /* Avec un sommaire (panneau de liens qui déborde de la bannière) : rien n'est rogné */
@@ -119,36 +115,36 @@
 
 @media (width >= 600px) {
   .bib-banniere {
-    --hauteur: 30rem;
+    --_hauteur: 30rem;
   }
 
   .bib-banniere--petite {
-    --hauteur: 16rem;
+    --_hauteur: 16rem;
   }
 }
 
 @media (width >= 900px) {
   .bib-banniere {
-    --hauteur: 34rem;
-    --vague-taille: 100% 175%;
+    --_hauteur: 34rem;
+    --_vague-taille: 100% 175%;
   }
 
   .bib-banniere--petite {
-    --hauteur: 18rem;
+    --_hauteur: 18rem;
   }
 }
 
 /* Très grands écrans : à hauteur fixe, la bannière devenait une mince bande ; elle suit la largeur (le quart) */
 @media (width >= 1536px) {
   .bib-banniere:not(.bib-banniere--petite, .bib-banniere--section) {
-    --hauteur: max(34rem, 25vw);
+    --_hauteur: max(34rem, 25vw);
   }
 }
 
 @media (width >= 1200px) {
   /* Glissée sous un en-tête transparent : le texte reste sous lui */
   .bib-banniere {
-    min-height: var(--hauteur);
+    min-height: var(--_hauteur);
     margin-top: calc(-1 * var(--_entete));
     padding-top: var(--_entete);
   }
@@ -159,7 +155,7 @@
   width: 100%;
   max-width: var(--largeur-max);
   margin-inline: auto;
-  padding: 48px 16px;
+  padding: var(--espace-6) var(--espace-2);
 }
 
 .bib-banniere--petite .bib-banniere__texte {
@@ -177,12 +173,12 @@
 
 /* Titre long : environ 70 % de la taille normale, lignes équilibrées */
 .bib-banniere--titre-long .bib-banniere__titre {
-  font-size: 2rem;
+  font-size: var(--titre-2);
   text-wrap: balance;
 }
 
 .bib-banniere__sous-titre {
-  margin-top: 8px;
+  margin-top: var(--espace-1);
 }
 
 .bib-banniere__enfants {
@@ -192,11 +188,11 @@
 
 @media (width >= 600px) {
   .bib-banniere--titre-long .bib-banniere__titre {
-    font-size: 2.75rem;
+    font-size: var(--titre-1);
   }
 
   .bib-banniere__texte {
-    padding-inline: 20px;
+    padding-inline: var(--espace-2-5);
   }
 
   .bib-banniere__colonne {
@@ -204,7 +200,7 @@
   }
 
   .bib-banniere__sous-titre {
-    margin-top: 12px;
+    margin-top: var(--espace-1-5);
   }
 
   .bib-banniere__enfants {
@@ -213,12 +209,8 @@
 }
 
 @media (width >= 900px) {
-  .bib-banniere--titre-long .bib-banniere__titre {
-    font-size: 3.25rem;
-  }
-
   .bib-banniere__texte {
-    padding: 64px 40px;
+    padding: var(--espace-8) var(--espace-5);
   }
 
   .bib-banniere__colonne {
@@ -230,23 +222,23 @@
   }
 
   .bib-banniere__sous-titre {
-    margin-top: 16px;
+    margin-top: var(--espace-2);
   }
 
   .bib-banniere__enfants {
-    padding: 0 3.75rem 4.25rem;
+    padding: 0 var(--espace-8) var(--espace-8);
   }
 }
 
 @media (width >= 1200px) {
   .bib-banniere__texte {
-    padding: 96px 64px;
+    padding: var(--espace-10) var(--espace-8);
   }
 }
 
 /* Ligne de sous-titre : collée au titre, qu'elle complète */
 .bib-banniere__sous-titre:has(> .bib-banniere__sous-titre-ligne) {
-  margin-top: 4px;
+  margin-top: var(--espace-0-5);
 }
 
 .bib-banniere:has(.bib-banniere__sous-titre-ligne) .bib-banniere__titre {
@@ -260,7 +252,7 @@
 
 @media (width >= 900px) {
   .bib-banniere__sous-titre:has(> .bib-banniere__sous-titre-ligne) {
-    margin-top: 8px;
+    margin-top: var(--espace-1);
   }
 
   .bib-banniere__sous-titre-ligne + :is([data-sommaire], .bib-bouton) {
@@ -271,9 +263,9 @@
 /* ---- Variante sous-pages : bande basse de 230 px, titre en paragraphe ----
    Le titre est collé à droite, mais un titre long s'étend jusqu'à la gauche : la vague est centrée sous lui. */
 .bib-banniere--section {
-  --hauteur: 230px;
-  --vague-x: 50%;
-  --vague-taille: 150% 260%;
+  --_hauteur: 230px;
+  --_vague-x: 50%;
+  --_vague-taille: 150% 260%;
 
   margin-bottom: 0;
 }
@@ -298,7 +290,7 @@
   min-width: 0;
   margin: 0;
   overflow-wrap: break-word;
-  font-size: 2.5rem;
+  font-size: var(--affiche-2);
   font-weight: var(--graisse-forte);
   line-height: 1.1;
 }
@@ -312,17 +304,14 @@
 
 @media (width >= 900px) {
   .bib-banniere--section {
-    --vague-taille: 105% 300%;
+    --_vague-taille: 105% 300%;
   }
 
   .bib-banniere--section .bib-banniere__colonne {
     width: 100%;
-    padding: var(--espace-2) 215px 48px 0;
+    padding: var(--espace-2) 215px var(--espace-6) 0; /* hors échelle : place de la vague, à droite */
   }
 
-  .bib-banniere__titre-section {
-    font-size: 3.5rem;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -21,13 +21,9 @@
  * viser.
  *
  * Couleurs, rayons et focus : jetons d'Harmonium (--couleur-fond-fort,
- * --rayon-plein…) s'ils existent, sinon jetons Material (--md-sys-*) ; voir styles.ts.
- * Propriétés CSS propres (elles l'emportent) : --bib-comp-retroaction-usager-size (taille du texte),
- * --bib-comp-retroaction-usager-title-weight (graisse de la question),
- * --bib-retroaction-couleur (pouce choisi, bouton d'envoi ; à défaut
- * --md-sys-color-primary), --bib-retroaction-sur-couleur, --bib-retroaction-accent (icône du
- * remerciement), --bib-retroaction-texte (question et pouces ; à défaut --couleur-texte),
- * --md-sys-typescale-label-large-size (taille du texte du bouton).
+ * --rayon-plein…), sinon valeurs par défaut ; voir styles.ts. Propriétés CSS propres
+ * (elles l'emportent) : --bib-retroaction-couleur, -couleur-survol, -sur-couleur, -accent,
+ * -focus, -texte, -taille, -graisse-titre, -taille-boutons.
  */
 import { STYLES } from './styles.ts'
 import { donneesVote } from './vote.ts'
@@ -37,16 +33,15 @@ const VERSION = '2.0.0'
 const DELAI_MS = 15_000
 const MAX = 500
 
-// Icônes « thumb_up » et « thumb_down » de Material Symbols
+// Icônes de Phosphor (comme le reste d'Harmonium) : ThumbsUp, ThumbsDown, CheckCircle et WarningCircle pleins
 const POUCE_HAUT =
-  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="24" height="24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M840-640q32 0 56 24t24 56v80q0 7-2 15t-4 15L794-168q-9 20-30 34t-44 14H280v-520l240-238q15-15 35.5-17.5T595-888q19 10 28 28t4 37l-45 183h258Zm-480 34v406h360l120-280v-80H480l54-220-174 174ZM160-120q-33 0-56.5-23.5T80-200v-360q0-33 23.5-56.5T160-640h120v80H160v360h120v80H160Zm200-80v-406 406Z"/></svg>'
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="24" height="24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M234,80.12A24,24,0,0,0,216,72H160V56a40,40,0,0,0-40-40,8,8,0,0,0-7.16,4.42L75.06,96H32a16,16,0,0,0-16,16v88a16,16,0,0,0,16,16H204a24,24,0,0,0,23.82-21l12-96A24,24,0,0,0,234,80.12ZM32,112H72v88H32ZM223.94,97l-12,96a8,8,0,0,1-7.94,7H88V105.89l36.71-73.43A24,24,0,0,1,144,56V80a8,8,0,0,0,8,8h64a8,8,0,0,1,7.94,9Z"/></svg>'
 const POUCE_BAS =
-  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="24" height="24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M120-320q-32 0-56-24t-24-56v-80q0-7 2-15t4-15l120-282q9-20 30-34t44-14h440v520L440-82q-15 15-35.5 17.5T365-72q-19-10-28-28t-4-37l45-183H120Zm480-34v-406H240L120-480v80h360l-54 220 174-174Zm200-486q33 0 56.5 23.5T880-760v360q0 33-23.5 56.5T800-320H680v-80h120v-360H680v-80h120Zm-200 80v406-406Z"/></svg>'
-// Cercle plein coché et cercle plein « ! »
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="24" height="24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M239.82,157l-12-96A24,24,0,0,0,204,40H32A16,16,0,0,0,16,56v88a16,16,0,0,0,16,16H75.06l37.78,75.58A8,8,0,0,0,120,240a40,40,0,0,0,40-40V184h56a24,24,0,0,0,23.82-27ZM72,144H32V56H72Zm150,21.29a7.88,7.88,0,0,1-6,2.71H152a8,8,0,0,0-8,8v24a24,24,0,0,1-19.29,23.54L88,150.11V56H204a8,8,0,0,1,7.94,7l12,96A7.87,7.87,0,0,1,222,165.29Z"/></svg>'
 const ICONE_MERCI =
-  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm4.6 7.7-5.5 5.5a1 1 0 0 1-1.4 0l-2.3-2.3a1 1 0 1 1 1.4-1.4l1.6 1.6 4.8-4.8a1 1 0 1 1 1.4 1.4Z"/></svg>'
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z"/></svg>'
 const ICONE_ERREUR =
-  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm-1 5.5a1 1 0 1 1 2 0V13a1 1 0 1 1-2 0V7.5ZM12 17.8a1.3 1.3 0 1 1 0-2.6 1.3 1.3 0 0 1 0 2.6Z"/></svg>'
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm-8,56a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm8,104a12,12,0,1,1,12-12A12,12,0,0,1,128,184Z"/></svg>'
 
 type Vote = 'oui' | 'non'
 

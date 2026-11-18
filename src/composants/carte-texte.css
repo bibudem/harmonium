@@ -47,7 +47,7 @@
   border-radius: inherit;
   background-color: var(--bleu-principal-fonce);
   opacity: 0;
-  transition: opacity var(--duree-moyenne-2) var(--courbe-standard);
+  transition: opacity var(--duree-moyenne) var(--courbe-standard);
 }
 
 .bib-carte-texte:hover::before {
@@ -60,7 +60,7 @@
 }
 
 .bib-carte-texte__titre {
-  font-size: 1.75rem;
+  font-size: var(--titre-3);
   font-weight: var(--graisse-moyenne);
   line-height: 1.2;
 }
@@ -74,7 +74,7 @@
 
 /* Pastille pleine, plus foncée que la carte (PastilleFleche) */
 .bib-carte-texte {
-  --pastille-fond: var(--bleu-principal-fonce);
+  --bib-pastille-fleche-fond: var(--bleu-principal-fonce);
 }
 
 @media (forced-colors: active) {

@@ -30,10 +30,10 @@
  * --bib-legende-icones-visuel (largeur du visuel : 5 rem, 6,5 rem dès 600 px).
  */
 .bib-legende-icones {
-  --tuile: var(--bib-legende-icones-tuile, color-mix(in srgb, var(--couleur-bordure) 30%, var(--couleur-surface)));
-  --taille-visuel: var(--bib-legende-icones-visuel, 5rem);
-  --taille-visuel-min: 4rem;
-  --taille-visuel-sous: 3rem;
+  --_tuile: var(--bib-legende-icones-tuile, color-mix(in srgb, var(--couleur-bordure) 30%, var(--couleur-surface)));
+  --_taille-visuel: var(--bib-legende-icones-visuel, 5rem);
+  --_taille-visuel-min: 4rem;
+  --_taille-visuel-sous: 3rem;
 
   margin-block: var(--espace-3) var(--espace-4);
 }
@@ -71,11 +71,11 @@
 /* Carte à sous-menus : toute la largeur, visuel | texte, puis les sous-menus */
 .bib-legende-icones__liste > li:has(> .bib-legende-icones__sous) {
   grid-column: 1 / -1;
-  grid-template-columns: var(--taille-visuel) minmax(0, 1fr);
+  grid-template-columns: var(--_taille-visuel) minmax(0, 1fr);
 }
 
 .bib-legende-icones--panneau {
-  --taille-visuel: var(--bib-legende-icones-visuel, 4.25rem);
+  --_taille-visuel: var(--bib-legende-icones-visuel, 4.25rem);
 }
 
 /* Panneau : les filets sont le fond du cadre, visible entre les rangées (gap de 1 px) */
@@ -89,7 +89,7 @@
 }
 
 .bib-legende-icones--panneau .bib-legende-icones__liste > li {
-  grid-template-columns: var(--taille-visuel) minmax(0, 1fr);
+  grid-template-columns: var(--_taille-visuel) minmax(0, 1fr);
   border: 0;
   border-radius: 0;
 }
@@ -100,11 +100,11 @@
   place-items: center;
   align-self: start;
   box-sizing: border-box;
-  width: var(--taille-visuel);
-  min-height: var(--taille-visuel-min, var(--taille-visuel));
-  padding: 0.35rem;
+  width: var(--_taille-visuel);
+  min-height: var(--_taille-visuel-min, var(--_taille-visuel));
+  padding: var(--espace-0-5);
   border-radius: var(--rayon-tres-petit);
-  background: var(--tuile);
+  background: var(--_tuile);
   color: var(--couleur-texte);
 }
 
@@ -117,7 +117,7 @@
   width: 100%;
   height: auto;
   margin: 0;
-  border-radius: 4px;
+  border-radius: var(--rayon-minuscule);
 }
 
 .bib-legende-icones__visuel svg {
@@ -128,7 +128,7 @@
 .bib-legende-icones__texte {
   align-self: center;
   color: var(--couleur-texte-secondaire);
-  font-size: 0.95rem;
+  font-size: var(--texte-courant);
   line-height: 1.45;
   overflow-wrap: break-word;
 }
@@ -136,9 +136,9 @@
 /* Le nom, en gras au début, sur sa propre ligne */
 .bib-legende-icones__texte > strong:first-child {
   display: block;
-  margin-bottom: 0.15rem;
+  margin-bottom: var(--espace-0-5);
   color: var(--couleur-texte);
-  font-size: 1rem;
+  font-size: var(--texte-courant);
   line-height: 1.3;
 }
 
@@ -147,24 +147,24 @@
   display: grid;
   grid-column: 1 / -1;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
-  gap: 0.6rem;
+  gap: var(--espace-1);
 }
 
 .bib-legende-icones__sous > li {
   display: grid;
-  grid-template-columns: var(--taille-visuel-sous) minmax(0, 1fr);
-  gap: 0.75rem;
+  grid-template-columns: var(--_taille-visuel-sous) minmax(0, 1fr);
+  gap: var(--espace-1-5);
   align-content: start;
-  padding: 0.6rem;
+  padding: var(--espace-1);
   border-radius: var(--rayon-tres-petit);
-  background: var(--tuile);
+  background: var(--_tuile);
 }
 
 .bib-legende-icones__sous .bib-legende-icones__visuel {
-  --taille-visuel-min: var(--taille-visuel-sous);
+  --_taille-visuel-min: var(--_taille-visuel-sous);
 
-  width: var(--taille-visuel-sous);
-  padding: 0.2rem;
+  width: var(--_taille-visuel-sous);
+  padding: var(--espace-0-5);
   background: var(--couleur-surface);
 }
 
@@ -174,7 +174,7 @@
 }
 
 .bib-legende-icones__sous .bib-legende-icones__sous {
-  padding-left: 0.75rem;
+  padding-left: var(--espace-1-5);
   border-left: 3px solid var(--couleur-bordure);
 }
 
@@ -183,21 +183,21 @@
 }
 
 .bib-legende-icones__sous .bib-legende-icones__sous .bib-legende-icones__visuel {
-  background: var(--tuile);
+  background: var(--_tuile);
 }
 
 @media (width >= 600px) {
   .bib-legende-icones {
-    --taille-visuel: var(--bib-legende-icones-visuel, 6.5rem);
+    --_taille-visuel: var(--bib-legende-icones-visuel, 6.5rem);
   }
 
   .bib-legende-icones--panneau {
-    --taille-visuel: var(--bib-legende-icones-visuel, 5.5rem);
+    --_taille-visuel: var(--bib-legende-icones-visuel, 5.5rem);
   }
 
   .bib-legende-icones__liste > li {
-    gap: var(--espace-element) 1.25rem;
-    padding: 1.25rem;
+    gap: var(--espace-element) var(--espace-2-5);
+    padding: var(--espace-2-5);
   }
 }
 

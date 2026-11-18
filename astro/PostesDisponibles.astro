@@ -6,7 +6,7 @@
  *
  *   <PostesDisponibles zone="AdobePro" titre="Adobe Acrobat Pro" />
  *
- * `titre` : nom du groupe, en titre (h3 par défaut, `niveau`), avec le nombre de postes libres à droite.
+ * `titre` : nom du groupe, en titre (h3 par défaut, `niveauTitre`), avec le nombre de postes libres à droite.
  * `procedure` : ancre ou adresse de la procédure de connexion, où renvoie le texte sans JavaScript.
  * `api` : une autre adresse de l'API des ordinateurs (essais).
  */
@@ -17,19 +17,17 @@ import { classes } from './styles.ts'
 interface Props {
   zone: string
   titre?: string
-  niveau?: 2 | 3 | 4 | 5 | 6
+  niveauTitre?: 2 | 3 | 4 | 5 | 6
   procedure?: string
   api?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
 }
 
-const { zone, titre, niveau = 3, procedure = '#procedure-de-connexion', api, class: classe, className } = Astro.props
-const Titre = `h${niveau}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+const { zone, titre, niveauTitre = 3, procedure = '#procedure-de-connexion', api, class: classe } = Astro.props
+const Titre = `h${niveauTitre}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 ---
 
-<div class:list={['bib-fiches-etat', classes(classe, className)]} data-postes={zone} data-api={api} aria-busy="true">
+<div class:list={['bib-fiches-etat', classes(classe)]} data-postes={zone} data-api={api} aria-busy="true">
   {
     titre && (
       <div class="bib-fiches-etat__entete">

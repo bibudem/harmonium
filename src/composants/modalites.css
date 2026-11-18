@@ -13,7 +13,7 @@
 .bib-modalites {
   display: flex;
   flex-direction: column;
-  gap: var(--espace-1, 0.5rem);
+  gap: var(--espace-1, var(--espace-1));
   margin: 0 0 1em;
   padding: 0;
   list-style: none;
@@ -23,7 +23,7 @@
   margin: 0;
   display: flex;
   align-items: center;
-  gap: var(--espace-1, 0.5rem);
+  gap: var(--espace-1, var(--espace-1));
 }
 
 .bib-modalite__icone {

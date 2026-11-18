@@ -18,16 +18,14 @@ interface Props {
   forme?: 'barres' | 'tuiles'
   groupes: Groupe[]
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const { forme = 'barres', groupes, class: classe, className, style } = Astro.props
+const { forme = 'barres', groupes, class: classe, style } = Astro.props
 
 if (groupes.some((g) => g.elements.some((e) => !Number.isFinite(e.valeur) || (forme === 'barres' && e.valeur < 0)))) throw new Error('Chiffres : les valeurs doivent être finies et les parts de barres positives ou nulles.')
 
-const COULEURS = ['var(--bleu-principal)', 'var(--rouge-orange)', 'var(--violet-fonce)']
+const COULEURS = ['var(--bleu-principal)', 'var(--rouge-orange)', 'var(--jaune)']
 const nombre = new Intl.NumberFormat('fr-CA')
 const pourcent = new Intl.NumberFormat('fr-CA', { style: 'percent', maximumFractionDigits: 0 })
 const majuscule = (texte: string) => texte.charAt(0).toLocaleUpperCase('fr-CA') + texte.slice(1)
@@ -41,7 +39,7 @@ const legende = forme === 'barres' && groupes.length > 1 && groupes.every((g) =>
 {/* Nombre : la valeur pour tous, sa copie animée par-dessus (chiffres.ts) */}
 {
   forme === 'barres' ? (
-    <div class:list={['bib-chiffres', 'bib-chiffres--barres', classes(classe, className)]} style={fusionnerStyles(style)} data-chiffres>
+    <div class:list={['bib-chiffres', 'bib-chiffres--barres', classes(classe)]} style={fusionnerStyles(style)} data-chiffres>
       {legende && (
         <ul class="bib-chiffres__legende" aria-hidden="true">
           {legende.map((libelle, i) => (
@@ -90,7 +88,7 @@ const legende = forme === 'barres' && groupes.length > 1 && groupes.every((g) =>
       })}
     </div>
   ) : (
-    <ul class:list={['bib-chiffres', 'bib-chiffres--tuiles', classes(classe, className)]} style={fusionnerStyles(style)} data-chiffres>
+    <ul class:list={['bib-chiffres', 'bib-chiffres--tuiles', classes(classe)]} style={fusionnerStyles(style)} data-chiffres>
       {groupes
         .flatMap((g) => g.elements)
         .map((e) => (

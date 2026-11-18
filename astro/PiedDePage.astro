@@ -49,28 +49,15 @@ interface Props {
   /** Texte du bouton des témoins ; null le retire */
   parametresTemoins?: string | null
   class?: string
-  /** Contenu repris de React */
-  className?: string
 }
 
-const {
-  colonnes,
-  urgence,
-  reseaux = [],
-  liensQueue = [],
-  accueil = '/',
-  logo,
-  titre = "Les bibliothèques de l'Université de Montréal",
-  licence,
-  parametresTemoins = 'Paramètres des témoins',
-  class: classe, className,
-} = Astro.props
+const { colonnes, urgence, reseaux = [], liensQueue = [], accueil = '/', logo, titre = "Les bibliothèques de l'Université de Montréal", licence, parametresTemoins = 'Paramètres des témoins', class: classe } = Astro.props
 const prefixe = idUnique('pied')
 const IconeUrgence = urgence?.Icone
 ---
 
 {/* theme-clair : déjà foncé, le pied garde ses couleurs sur les différentes bandes */}
-<footer class:list={['bib-pied-de-page', 'theme-clair', classes(classe, className)]} data-site-footer>
+<footer class:list={['bib-pied-de-page', 'theme-clair', classes(classe)]} data-site-footer>
   <div class="bib-pied-de-page__local">
     <div class="bib-pied-de-page__interieur">
       <div class="bib-pied-de-page__signature">

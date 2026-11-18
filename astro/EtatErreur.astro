@@ -17,14 +17,12 @@ interface Props {
   /** Texte du bouton */
   libelle?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
 }
 
-const { message, etat = 'erreur', libelle = 'Réessayer', class: classe, className } = Astro.props
+const { message, etat = 'erreur', libelle = 'Réessayer', class: classe } = Astro.props
 ---
 
-<div class:list={['bib-etat-erreur', classes(classe, className)]} data-etat={etat || undefined} hidden>
+<div class:list={['bib-etat-erreur', classes(classe)]} data-etat={etat || undefined} hidden>
   <p>{message}</p>
   <button type="button" class="bib-etat-erreur__bouton" data-reessayer>
     <svg viewBox="0 0 256 256" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><path d="M240,56v48a8,8,0,0,1-8,8H184a8,8,0,0,1,0-16H211.4L184.81,71.64l-.25-.24a80,80,0,1,0-1.67,114.78,8,8,0,0,1,11,11.63A95.44,95.44,0,0,1,128,224h-1.32A96,96,0,1,1,195.75,60L224,85.8V56a8,8,0,1,1,16,0Z" /></svg>

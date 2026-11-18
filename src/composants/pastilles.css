@@ -18,14 +18,19 @@
  * - Un lien se souligne au survol ; une pastille en texte n'est pas un lien (ni curseur, ni soulignement).
  * - Le nom de la liste (aria-label) dit ce qu'elle énumère. Des liens au même libellé (« Guides ») reçoivent en
  *   texte masqué ce qui les distingue (WCAG 2.4.4).
- * - Variables : --bib-pastille-fond, --bib-pastille-bordure, --bib-pastille-texte.
+ * - Statuts : --succes (disponible, confirmé), --avertissement (presque complet, liste d'attente), --erreur
+ *   (complet, annulé), --info. Fonds des alertes, texte foncé (11:1 ou plus), point de couleur devant. Le statut
+ *   se dit toujours en mots : la couleur ne fait que le souligner (WCAG 1.4.1).
+ * - Variables : --bib-pastille-fond, --bib-pastille-bordure, --bib-pastille-texte, --bib-pastille-point.
  */
+@import './commun/masque.css';
+
 .bib-pastilles {
   display: flex;
   flex-wrap: wrap;
   gap: var(--espace-1);
   max-inline-size: none;
-  margin: 0.85rem 0 0;
+  margin: var(--espace-1-5) 0 0;
   padding: 0;
   list-style: none;
 }
@@ -38,15 +43,15 @@
 .bib-pastille {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: var(--espace-0-5);
   box-sizing: border-box;
-  min-height: 24px;
-  padding: 0.3rem 0.72rem;
+  min-height: var(--taille-cible-min);
+  padding: var(--espace-0-5) var(--espace-1-5);
   border: 1px solid var(--bib-pastille-bordure, transparent);
   border-radius: var(--rayon-plein);
   background: var(--bib-pastille-fond, var(--couleur-teinte));
   color: var(--bib-pastille-texte, var(--couleur-texte));
-  font-size: 0.85rem;
+  font-size: var(--texte-petit);
   font-weight: var(--graisse-forte);
   line-height: 1.2;
   text-decoration: none;
@@ -78,29 +83,46 @@ a.bib-pastille:hover {
   --bib-pastille-bordure: var(--couleur-teinte-forte);
 }
 
+.bib-pastille:is(.bib-pastille--succes, .bib-pastille--avertissement, .bib-pastille--erreur, .bib-pastille--info)::before {
+  content: '';
+  flex: none;
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-radius: 50%;
+  background-color: var(--bib-pastille-point);
+}
+
+.bib-pastille--succes {
+  --bib-pastille-fond: var(--alerte-succes-fond);
+  --bib-pastille-point: var(--alerte-succes-icone);
+}
+
+.bib-pastille--avertissement {
+  --bib-pastille-fond: var(--alerte-avertissement-fond);
+  --bib-pastille-point: var(--alerte-avertissement-icone);
+}
+
+.bib-pastille--erreur {
+  --bib-pastille-fond: var(--alerte-erreur-fond);
+  --bib-pastille-point: var(--alerte-erreur-icone);
+}
+
+.bib-pastille--info {
+  --bib-pastille-fond: var(--alerte-info-fond);
+  --bib-pastille-point: var(--alerte-info-icone);
+}
+
 .bib-pastille--neutre {
   --bib-pastille-fond: color-mix(in srgb, var(--couleur-bordure) 30%, var(--couleur-surface));
   --bib-pastille-bordure: var(--couleur-bordure);
 
-  padding: 0.15rem 0.55rem;
-  font-size: 0.8rem;
+  padding: var(--espace-0-5) var(--espace-1);
+  font-size: var(--texte-minuscule);
   line-height: 1.5;
 }
 
 a.bib-pastille--neutre:hover {
   border-color: var(--couleur-contour);
-}
-
-.bib-masque {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0 0 0 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
 }
 
 @media (forced-colors: active) {

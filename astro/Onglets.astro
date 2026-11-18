@@ -4,14 +4,13 @@
  * feuille ; bib-onglets.min.js (facultatif) le rend interactif. Chaque enfant de premier niveau du slot est un
  * panneau, dans l'ordre de `tabs`.
  *
- *   <Onglets tabs={['Prêt', 'Retour']} niveauTitre={3}>
+ *   <Onglets onglets={['Prêt', 'Retour']} niveauTitre={3}>
  *     <div>…</div>
  *     <div>…</div>
  *   </Onglets>
  *
- * - `defaultTab` : onglet ouvert au départ, compté à partir de 1. `horizontal` : la rangée reste au-dessus du
- *   contenu à toutes les largeurs (sous 900 px, les panneaux défilent à l'horizontale). `compact` (avec
- *   `horizontal`) : la rangée placée dans le texte d'une page, alignée à gauche et moins haute.
+ * - `defaultTab` : onglet ouvert au départ, compté à partir de 1. La rangée reste au-dessus du contenu à toutes
+ *   les largeurs (sous 900 px, les panneaux défilent à l'horizontale). `compact` : la rangée placée dans le texte d'une page, alignée à gauche et moins haute.
  * - `niveauTitre` : niveau du titre de chaque panneau, dans le rendu sans JavaScript (h3 : les onglets suivent
  *   d'ordinaire le h2 de leur section). Un jeu imbriqué dans un panneau descend ses titres d'un cran.
  * - Jeux synchronisés : `groupe` lie tous les jeux de la page qui portent le même nom ; `valeurs` donne la
@@ -23,16 +22,16 @@ import { classes, fusionnerStyles, type Style } from './styles.ts'
 import { panneauxDuSlot } from './decoupage.ts'
 import { idUnique } from './ids.ts'
 
+
 interface Props {
   /** Libellés des onglets, dans l'ordre des panneaux */
-  tabs?: string[]
+  onglets?: string[]
   /** Onglet ouvert au départ, compté à partir de 1 */
-  defaultTab?: number
+  ongletOuvert?: number
   ariaLabel?: string
   niveauTitre?: 2 | 3 | 4 | 5 | 6
   /** Onglets en rangée au-dessus du contenu à toutes les largeurs */
-  horizontal?: boolean
-  /** Avec `horizontal` : rangée alignée à gauche et moins haute */
+  /** Rangée alignée à gauche et moins haute, dans le texte d'une page */
   compact?: boolean
   /** Valeur de chaque onglet, dans l'ordre (sinon le libellé) */
   valeurs?: string[]
@@ -40,17 +39,13 @@ interface Props {
   groupe?: string
   /** Le choix du groupe s'écrit aussi dans l'adresse (?groupe=valeur) */
   url?: boolean
-  /** Accepté pour la compatibilité du contenu ; sans effet */
-  bg?: string
   id?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
   [attribut: string]: unknown
 }
 
-const { tabs = [], defaultTab = 1, ariaLabel, niveauTitre = 3, horizontal = false, compact = false, valeurs = [], groupe, url = false, bg: _bg, sx: _sx, class: classe, className, style, ...reste } = Astro.props
+const { onglets: tabs = [], ongletOuvert: defaultTab = 1, ariaLabel, niveauTitre = 3, compact = false, valeurs = [], groupe, url = false, class: classe, style, ...reste } = Astro.props
 const prefixe = idUnique('onglets')
 const { panneaux, annexes } = panneauxDuSlot(Astro.slots.has('default') ? await Astro.slots.render('default') : '')
 // Un libellé sans panneau ne donnerait qu'un onglet vide : on s'en tient aux paires
@@ -60,17 +55,16 @@ const Titre = `h${niveauTitre}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 ---
 
 <div
-  class:list={['bib-onglets', { 'bib-onglets--horizontal': horizontal, 'bib-onglets--compact': horizontal && compact }, classes(classe, className)]}
+  class:list={['bib-onglets', { 'bib-onglets--compact': compact }, classes(classe)]}
   style={fusionnerStyles(style)}
   data-onglets
-  data-orientation-large={horizontal ? 'horizontal' : 'vertical'}
   data-groupe={groupe || undefined}
   data-url={groupe && url ? '' : undefined}
   {...reste}
 >
   <div class="bib-onglets__liste" data-onglets-liste data-aria-label={ariaLabel || undefined}>
-    {/* Pastille de l'onglet actif, glissée par le script dans le carrousel mobile des onglets horizontaux */}
-    {horizontal && <span class="bib-onglets__indicateur" aria-hidden="true" data-indicateur />}
+    {/* Pastille de l'onglet actif, glissée par le script dans le carrousel mobile */}
+    <span class="bib-onglets__indicateur" aria-hidden="true" data-indicateur />
     {
       tabs.slice(0, nombre).map((libelle, i) => (
         <button

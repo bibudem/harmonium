@@ -5,9 +5,9 @@
  * (facultatif) donne le focus à la description au clic ou au toucher ; sans lui, le survol et le clavier
  * suffisent. La carte se glisse dans un carrousel (elle reste dans la largeur de la piste).
  *
- * Fond uni (--bleu-principal, --vert-fonce ou --rose-300 ; ajouter surface-claire au rose) :
+ * Fond uni (--bleu-principal, --vert-fonce ou --rose ; ajouter surface-claire au rose) :
  *
- *   <div class="bib-carte-revelation bib-carte-revelation--bleu-principal" data-carte-revelation>
+ *   <div class="bib-carte-revelation bib-carte-revelation--bleu-principal surface-foncee" data-carte-revelation>
  *     <div class="bib-carte-revelation__icone"><svg width="45" height="45" aria-hidden="true">…</svg></div>
  *     <h3 class="bib-carte-revelation__titre" id="rev-1">Services</h3>
  *     <div class="bib-carte-revelation__contenu" tabindex="0" role="group" aria-labelledby="rev-1" data-description>
@@ -17,7 +17,7 @@
  *
  * Photo (--photo) :
  *
- *   <div class="bib-carte-revelation bib-carte-revelation--photo" data-carte-revelation>
+ *   <div class="bib-carte-revelation bib-carte-revelation--photo surface-foncee" data-carte-revelation>
  *     <img class="bib-carte-revelation__photo" src="photo.jpg" alt="" loading="lazy">
  *     <div class="bib-carte-revelation__degrade" aria-hidden="true"></div>
  *     <div class="bib-carte-revelation__voile" aria-hidden="true"></div>
@@ -63,16 +63,12 @@
   }
 }
 
-/* Liens, focus et accent des fonds foncés : comme le ton foncé de Section */
+/* Encre et icône des fonds foncés (liens, focus et accent : .surface-foncee) */
 .bib-carte-revelation--bleu-principal,
 .bib-carte-revelation--vert-fonce,
 .bib-carte-revelation--photo {
   --_encre: var(--couleur-sur-fonce);
   --_icone: var(--couleur-sur-fonce);
-  --couleur-lien: var(--couleur-sur-fonce);
-  --couleur-lien-survol: var(--couleur-sur-fonce);
-  --couleur-focus: var(--couleur-sur-fonce);
-  --rouge-orange-texte: var(--jaune);
 }
 
 .bib-carte-revelation--bleu-principal {
@@ -83,8 +79,8 @@
   --_fond: var(--vert-fonce);
 }
 
-.bib-carte-revelation--rose-300 {
-  --_fond: var(--rose-300);
+.bib-carte-revelation--rose {
+  --_fond: var(--rose);
   --_encre: var(--couleur-texte);
   --_icone: var(--rouge-orange);
 }
@@ -110,12 +106,12 @@
   font-size: var(--texte-grand);
   font-weight: var(--graisse-moyenne);
   line-height: 1.2;
-  transition: transform var(--duree-moyenne-4) var(--courbe-emphase-deceleree);
+  transition: transform var(--duree-longue) var(--courbe-entree);
 }
 
 @media (width >= 900px) {
   .bib-carte-revelation .bib-carte-revelation__titre {
-    font-size: 1.875rem;
+    font-size: var(--titre-3);
   }
 }
 
@@ -128,12 +124,12 @@
   max-height: 52%;
   overflow-y: auto;
   font-size: var(--texte-courant);
-  font-weight: 350;
+  font-weight: var(--graisse-normale);
   opacity: 0;
   transform: translateY(10px);
   transition:
-    opacity var(--duree-moyenne-4) var(--courbe-emphase-deceleree),
-    transform var(--duree-moyenne-4) var(--courbe-emphase-deceleree);
+    opacity var(--duree-longue) var(--courbe-entree),
+    transform var(--duree-longue) var(--courbe-entree);
   scrollbar-width: thin;
   scrollbar-color: color-mix(in srgb, currentColor 40%, transparent) transparent;
 }
@@ -217,27 +213,27 @@
 .bib-carte-revelation__voile {
   background-color: color-mix(in srgb, var(--bleu-fonce) 70%, transparent);
   opacity: 0;
-  transition: opacity var(--duree-moyenne-2) var(--courbe-standard);
+  transition: opacity var(--duree-moyenne) var(--courbe-standard);
 }
 
 .bib-carte-revelation--photo .bib-carte-revelation__titre {
   right: var(--_marge);
-  /* Apparence du h3 du thème (l'original héritait de la règle globale des h3) */
+  /* Apparence d'un titre 3 du thème */
   font-size: var(--texte-tres-grand);
   font-weight: var(--graisse-grasse);
   color: var(--couleur-sur-fonce);
   transform: translateY(10px);
   transform-origin: left top;
-  transition: transform var(--duree-moyenne-3) var(--courbe-emphase);
+  transition: transform var(--duree-moyenne) var(--courbe-standard);
 }
 
 .bib-carte-revelation--photo .bib-carte-revelation__contenu {
   max-height: 75%;
   padding-right: var(--espace-1);
-  color: var(--bleu-100);
+  color: var(--bleu-10);
   font-weight: inherit;
   transform: none;
-  transition: opacity var(--duree-longue-2) var(--courbe-standard);
+  transition: opacity var(--duree-longue) var(--courbe-standard);
   scrollbar-color: color-mix(in srgb, var(--couleur-sur-fonce) 40%, transparent) transparent;
 }
 
@@ -286,7 +282,7 @@
 
 @media (width >= 900px) {
   .bib-carte-revelation--photo .bib-carte-revelation__titre {
-    font-size: 2.25rem;
+    font-size: var(--titre-2);
     font-weight: var(--graisse-forte);
   }
 }

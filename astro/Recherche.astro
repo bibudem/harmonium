@@ -32,29 +32,13 @@ interface Props {
   boutonTexte?: boolean
   id?: string
   class?: string
-  className?: string
   [attribut: `data-${string}`]: string | undefined
 }
-const {
-  action,
-  libelle = 'Rechercher',
-  nom,
-  parametre = 'q',
-  valeur,
-  placeholder,
-  aide,
-  caches = [],
-  libelleBouton = 'Rechercher',
-  boutonTexte = false,
-  id = idUnique('recherche'),
-  class: classe,
-  className,
-  ...reste
-} = Astro.props
+const { action, libelle = 'Rechercher', nom, parametre = 'q', valeur, placeholder, aide, caches = [], libelleBouton = 'Rechercher', boutonTexte = false, id = idUnique('recherche'), class: classe, ...reste } = Astro.props
 if (!action?.trim() || !libelle.trim() || !parametre.trim()) throw new Error('Recherche : action, libellé et paramètre sont requis.')
 const loupe = '<path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/>'
 ---
-<form class:list={['bib-recherche', { 'bib-recherche--bouton-texte': boutonTexte }, classes(classe, className)]} action={action} method="get" role="search" aria-label={nom ?? libelle} {...reste}>
+<form class:list={['bib-recherche', { 'bib-recherche--bouton-texte': boutonTexte }, classes(classe)]} action={action} method="get" role="search" aria-label={nom ?? libelle} {...reste}>
   {caches.map(([cle, v]) => <input type="hidden" name={cle} value={v} />)}
   <label class="bib-recherche__etiquette" for={id}>{libelle}</label>
   <div class="bib-recherche__champ">

@@ -1,0 +1,48 @@
+---
+/**
+ * Récapitulatif d'erreurs d'un formulaire : chaque erreur est un lien vers son champ (son id).
+ *
+ *   <RecapitulatifErreurs erreurs={[{ champ: 'courriel', message: 'Saisir une adresse complète, comme nom@umontreal.ca' }]} />
+ *
+ * Rien n'est rendu sans erreur. Charger bib-recapitulatif-erreurs.min.js pour le focus au chargement.
+ */
+import '../src/composants/recapitulatif-erreurs.css'
+import { classes } from './styles.ts'
+import { idUnique } from './ids.ts'
+
+interface Erreur {
+  /** id du champ (pour un groupe de cases ou de boutons radio : id de la première option) */
+  champ: string
+  message: string
+}
+
+interface Props {
+  erreurs: Erreur[]
+  titre?: string
+  niveauTitre?: 2 | 3
+  /** Pas de focus au chargement (récapitulatif affiché par le script de la page) */
+  sansFocus?: boolean
+  class?: string
+}
+
+const { erreurs, titre = 'Il y a un problème', niveauTitre = 2, sansFocus = false, class: classe } = Astro.props
+const Titre = `h${niveauTitre}` as 'h2'
+const id = idUnique('erreurs')
+---
+
+{
+  erreurs.length > 0 && (
+    <div class:list={['bib-recapitulatif-erreurs', classes(classe)]} tabindex="-1" aria-labelledby={`${id}-titre`} data-recapitulatif-erreurs data-sans-focus={sansFocus ? '' : undefined}>
+      <Titre class="bib-recapitulatif-erreurs__titre" id={`${id}-titre`}>
+        {titre}
+      </Titre>
+      <ul class="bib-recapitulatif-erreurs__liste">
+        {erreurs.map((e) => (
+          <li>
+            <a href={`#${e.champ}`}>{e.message}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}

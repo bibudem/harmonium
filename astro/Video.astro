@@ -26,12 +26,10 @@ interface Props {
   /** Page de la transcription, liée sous la vidéo (WCAG 1.2) */
   transcription?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const { titre, youtube, loom, fichier, integration, image, transcription, class: classe, className, style } = Astro.props
+const { titre, youtube, loom, fichier, integration, image, transcription, class: classe, style } = Astro.props
 if (!titre) throw new Error('Video : la propriété `titre` est obligatoire (elle nomme le lien et le lecteur).')
 if ([youtube, loom, fichier, integration].filter(Boolean).length !== 1) throw new Error(`Video « ${titre} » : une seule source parmi youtube, loom, fichier et integration.`)
 
@@ -60,7 +58,7 @@ const LECTURE = 'M240,128a15.74,15.74,0,0,1-7.6,13.51L88.32,229.65a16,16,0,0,1-1
 
 {
   source ? (
-    <div class:list={['bib-video', { 'bib-video--photo': image, 'bib-video--avec-transcription': transcription }, classes(classe, className)]} style={fusionnerStyles(style)} data-video data-lecteur={source.lecteur} data-titre-video={titre}>
+    <div class:list={['bib-video', { 'bib-video--photo': image, 'bib-video--avec-transcription': transcription }, classes(classe)]} style={fusionnerStyles(style)} data-video data-lecteur={source.lecteur} data-titre-video={titre}>
       {image && <img class="bib-video__image" src={image} alt="" loading="lazy" decoding="async" />}
       <a class="bib-video__lecture" href={source.page}>
         <span class="bib-video__pastille" aria-hidden="true">
@@ -74,7 +72,7 @@ const LECTURE = 'M240,128a15.74,15.74,0,0,1-7.6,13.51L88.32,229.65a16,16,0,0,1-1
       </a>
     </div>
   ) : (
-    <figure class:list={['bib-video', 'bib-video--fichier', { 'bib-video--avec-transcription': transcription }, classes(classe, className)]} style={fusionnerStyles(style)}>
+    <figure class:list={['bib-video', 'bib-video--fichier', { 'bib-video--avec-transcription': transcription }, classes(classe)]} style={fusionnerStyles(style)}>
       <video class="bib-video__cadre" controls preload="metadata" aria-label={titre}>
         <source src={fichier} />
         <a href={fichier}>Télécharger la vidéo « {titre} »</a>

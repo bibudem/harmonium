@@ -8,14 +8,12 @@ import '../src/composants/carrousel.css'
 import { classes } from './styles.ts'
 interface Props {
   class?: string
-  /** Contenu repris de React */
-  className?: string
 }
 
 // `reste` porte l'attribut de portée du parent : son style s'applique à `class`
-const { class: classe, className, ...reste } = Astro.props
+const { class: classe, ...reste } = Astro.props
 ---
 
-<div class:list={['bib-carrousel__progression', classes(classe, className)]} aria-hidden="true" hidden data-progression {...reste}>
+<div class:list={['bib-carrousel__progression', classes(classe)]} aria-hidden="true" hidden data-progression {...reste}>
   <span class="bib-carrousel__curseur" data-curseur></span>
 </div>

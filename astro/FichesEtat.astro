@@ -24,15 +24,13 @@ interface Props {
   fiches: Fiche[]
   min?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const { fiches, min, class: classe, className, style } = Astro.props
+const { fiches, min, class: classe, style } = Astro.props
 ---
 
-<div class:list={['bib-fiches-etat', classes(classe, className)]} style={fusionnerStyles(min ? { '--bib-fiches-etat-min': min } : undefined, style)}>
+<div class:list={['bib-fiches-etat', classes(classe)]} style={fusionnerStyles(min ? { '--bib-fiches-etat-min': min } : undefined, style)}>
   <ul class="bib-fiches-etat__liste">
     {
       fiches.map((f) => (

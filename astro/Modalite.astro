@@ -5,23 +5,22 @@
  * slot « icone » (une icône prête : SVG, planche d'icônes du site). Le slot l'emporte.
  */
 import { classes } from './styles.ts'
+
 interface Props {
   /** Composant d'icône (Phosphor ou icône maison) */
-  Icon?: any
+  Icone?: any
   /** Taille de l'icône en px */
   taille?: number
   /** Couleur CSS de l'icône, de préférence un jeton ; celle du texte par défaut */
   couleur?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: string
 }
 
-const { Icon, taille = 32, couleur = 'currentColor', class: classe, className, style } = Astro.props
+const { Icone: Icon, taille = 32, couleur = 'currentColor', class: classe, style } = Astro.props
 ---
 
-<li class:list={['bib-modalite', classes(classe, className)]} style={style}>
+<li class:list={['bib-modalite', classes(classe)]} style={style}>
   <span class="bib-modalite__icone" aria-hidden="true">
     <slot name="icone">{Icon && <Icon size={taille} color={couleur} aria-hidden="true" focusable="false" />}</slot>
   </span>

@@ -8,7 +8,8 @@ modifient pas. La construction les copie dans `dist/` sous les mêmes noms. La f
 | --- | --- |
 | `logo-bibliotheques-horizontal.svg` | Les bibliothèques, signature horizontale |
 | `logo-bibliotheques-horizontal-blanc.svg` | Signature horizontale, texte blanc (fond foncé) |
-| `logo-bibliotheques-sceau.svg` | Sceau des bibliothèques |
+| `logo-bibliotheques-sceau.svg` | Sceau des bibliothèques, fond foncé (anneau blanc) |
+| `logo-bibliotheques-sceau-noir.svg` | Sceau des bibliothèques, fond clair (anneau noir) |
 | `logo-universite-montreal.svg` | Logo de l’Université de Montréal (en-tête) |
 | `logo-bibliotheques-compact.svg` | Signature compacte |
 | `logo-bibliotheques-compact-blanc.svg` | Signature compacte, texte blanc (fond foncé) |

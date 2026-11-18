@@ -10,11 +10,11 @@
  * nombres est le propos du bloc, et elle ne masque aucun texte. Compatible avec une navigation
  * sans rechargement (événement astro:page-load : chaque page atteinte est une nouvelle visite).
  *
- * Durée : deux fois --duree-longue-2 ; courbe : --courbe-emphase-deceleree, appliquée aussi aux
+ * Durée : deux fois --duree-longue ; courbe : --courbe-entree, appliquée aussi aux
  * nombres par une animation Web vide dont on lit la progression.
  */
 const nombre = new Intl.NumberFormat('fr-CA')
-/** Décalage maximal entre unités d'un bloc (en pas de --duree-courte-1) */
+/** Décalage maximal entre unités d'un bloc (en pas de --duree-decalage) */
 const RANG_MAX = 5
 const A_ANIMER = 'bib-chiffres--a-animer'
 const ANIME = 'bib-chiffres--anime'
@@ -78,9 +78,9 @@ function animerChiffres() {
   const blocs = [...document.querySelectorAll<HTMLElement>(`[data-chiffres]:not(.${A_ANIMER})`)]
   if (!blocs.length) return
 
-  const duree = 2 * enMs(jeton('--duree-longue-2'))
-  const pas = enMs(jeton('--duree-courte-1'))
-  const courbe = jeton('--courbe-emphase-deceleree')
+  const duree = 2 * enMs(jeton('--duree-longue'))
+  const pas = enMs(jeton('--duree-decalage'))
+  const courbe = jeton('--courbe-entree')
   const arrets = new Set<() => void>()
 
   for (const bloc of blocs) {

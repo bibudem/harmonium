@@ -36,12 +36,10 @@ interface Props {
   squelette?: boolean
   lang?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const { href, externe = false, target, rel, vignette = false, image, date, calendrier = false, compact = false, squelette = false, lang, class: classe, className, style, ...reste } = Astro.props
+const { href, externe = false, target, rel, vignette = false, image, date, calendrier = false, compact = false, squelette = false, lang, class: classe, style, ...reste } = Astro.props
 const Titre = href !== undefined && !squelette ? 'a' : 'span'
 // Dates du frontmatter à minuit UTC : lues en UTC
 const jourDate = date ? new Date(`${date}T00:00:00Z`) : undefined
@@ -55,7 +53,7 @@ const attributsLien = Titre === 'a' ? { href, target: lien?.cible, rel: lien?.re
 ---
 
 <li
-  class:list={['bib-actualite', { 'bib-carte-lien': Titre === 'a', 'bib-actualite--compact': compact, 'bib-actualite--squelette': squelette }, classes(classe, className)]}
+  class:list={['bib-actualite', { 'bib-carte-lien': Titre === 'a', 'bib-actualite--compact': compact, 'bib-actualite--squelette': squelette }, classes(classe)]}
   style={fusionnerStyles(style)}
   aria-hidden={squelette ? 'true' : undefined}
   {...reste}

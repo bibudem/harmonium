@@ -1,69 +1,37 @@
 /*
- * Couleurs du thème de MUI vers les jetons d'Harmonium (usage interne, pour les sites Astro).
+ * Couleurs passées aux composants Astro, vers les jetons d'Harmonium (usage interne).
  *
- * Deux lectures coexistent : `couleurTheme` pour le texte (Typographie : `color="text.secondary"`,
- * l'orange passe par sa variante lisible), `couleurPalette` pour les fonds et les icônes des
- * cartes (`bgColor="vertPale"`, l'orange reste l'orange graphique).
+ * `couleurPalette` lit un nom de la palette, en camelCase (`bleuPrincipal`, `rougeOrange40`) :
+ * fonds et icônes des cartes. `couleurTheme` lit une couleur de texte : un rôle (`texte`,
+ * `texte-secondaire`, `accent`, `sur-fonce`) ou un nom de la palette ; le rouge orangé passe alors
+ * par sa variante lisible. Une autre valeur (`'#fff'`) passe telle quelle.
  */
 
-// Jetons de tokens.css, sous leur nom de palette dans le contenu
+// Couleurs de la palette (src/jetons/jetons.css)
 const JETONS = new Set([
-  'bleu-principal',
-  'bleu-fonce',
-  'bleu-100',
-  'bleu-200',
-  'jaune',
-  'jaune-pale',
-  'rose-100',
-  'rose-300',
-  'rose-500',
-  'rouge-orange',
-  'orange',
-  'vert-fonce',
-  'vert-pale',
-  'violet-fonce',
+  'bleu-principal', 'bleu-principal-fonce', 'bleu-fonce', 'bleu-10', 'bleu-20',
+  'rose', 'rose-50', 'rouge-orange', 'rouge-orange-40', 'orange', 'orange-30',
+  'jaune', 'jaune-40', 'vert', 'vert-20', 'vert-fonce', 'blanc',
 ])
 
-/**
- * Clé de palette du contenu (`vertPale`, `bleu600`, `primary`) vers son jeton ;
- * une autre valeur (`'#fff'`, écrite par le contenu) passe telle quelle.
- */
+const versJeton = (nom: string) => nom.replace(/([A-Z])/g, '-$1').replace(/(\d+)/, '-$1').toLowerCase()
+
 export function couleurPalette(nom: string | undefined): string | undefined {
   if (!nom) return undefined
-  const cle = nom.replace(/\.main$/, '')
-  if (cle === 'primary') return 'var(--bleu-principal)'
-  if (cle === 'white' || cle === 'common.white') return 'var(--couleur-sur-fonce)'
-  const jeton = cle
-    .replace(/([A-Z])/g, '-$1')
-    .replace(/(\d+)/, '-$1')
-    .toLowerCase()
-  // « bleu600 » (contenu) : fusionné avec le bleu principal foncé, presque identique
-  if (jeton === 'bleu-600') return 'var(--bleu-principal-fonce)'
+  const jeton = versJeton(nom)
   return JETONS.has(jeton) ? `var(--${jeton})` : nom
 }
 
-/**
- * Couleurs du thème MUI telles que le contenu les écrit (`color="text.secondary"`,
- * `color="primary"`, noms de palette) vers les jetons. Le texte orange passe
- * par la variante assombrie, seule lisible sur les fonds clairs.
- */
-const COULEURS: Record<string, string> = {
-  primary: 'var(--bleu-principal)',
-  'primary.main': 'var(--bleu-principal)',
-  'text.primary': 'var(--couleur-texte)',
-  'text.secondary': 'var(--couleur-texte-secondaire)',
-  inherit: 'inherit',
-  bleuPrincipal: 'var(--bleu-principal)',
-  bleuFonce: 'var(--bleu-fonce)',
-  bleu600: 'var(--bleu-principal-fonce)',
-  rougeOrange: 'var(--rouge-orange-texte)',
-  vertFonce: 'var(--vert-fonce)',
-  white: 'var(--couleur-sur-fonce)',
-  blanc: 'var(--couleur-sur-fonce)',
+const ROLES: Record<string, string> = {
+  texte: 'var(--couleur-texte)',
+  'texte-secondaire': 'var(--couleur-texte-secondaire)',
+  accent: 'var(--couleur-accent)',
+  'sur-fonce': 'var(--couleur-sur-fonce)',
+  herite: 'inherit',
+  rougeOrange: 'var(--couleur-texte-accent)',
 }
 
 export function couleurTheme(nom: string | undefined): string | undefined {
   if (!nom) return undefined
-  const cle = nom.replace(/\.main$/, '')
-  return COULEURS[nom] ?? COULEURS[cle] ?? nom
+  return ROLES[nom] ?? couleurPalette(nom)
 }

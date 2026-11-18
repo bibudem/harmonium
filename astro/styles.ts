@@ -9,7 +9,7 @@
 type ValeurStyle = string | number | undefined | null | false
 export type Style = string | Record<string, ValeurStyle> | undefined | null
 
-// Propriétés numériques qui restent sans unité, comme en React
+// Propriétés numériques qui restent sans unité
 const SANS_UNITE = new Set(['flex', 'flex-grow', 'flex-shrink', 'opacity', 'order', 'z-index', 'font-weight', 'line-height', 'zoom'])
 
 function enKebab(cle: string) {
@@ -35,7 +35,7 @@ export function fusionnerStyles(...styles: Style[]): string | undefined {
   return css || undefined
 }
 
-/** Accepte `class` (Astro) et `className` (contenu repris de React) */
+/** Réunit les classes passées au composant (vides ignorées) */
 export function classes(...valeurs: unknown[]): string | undefined {
   const liste = valeurs.filter((v): v is string => typeof v === 'string' && v.trim() !== '')
   return liste.length ? liste.join(' ') : undefined
@@ -45,11 +45,11 @@ export const POINTS = ['xs', 'sm', 'md', 'lg', 'xl'] as const
 export type Point = (typeof POINTS)[number]
 export type Responsive<T> = T | Partial<Record<Point, T>>
 
-/** Espacement à la MUI : un nombre vaut 8 px par unité ; une chaîne CSS passe telle quelle */
+/** Espacement : un nombre vaut un pas de l'échelle (0,5 rem) ; une chaîne CSS passe telle quelle */
 export function espacement(valeur: ValeurStyle): string | undefined {
   if (valeur === undefined || valeur === null || valeur === false || valeur === '') return undefined
-  if (typeof valeur === 'number') return `${valeur * 8}px`
-  return /^-?\d*\.?\d+$/.test(valeur) ? `${Number(valeur) * 8}px` : valeur
+  if (typeof valeur === 'number') return `calc(${valeur} * var(--espace-1))`
+  return /^-?\d*\.?\d+$/.test(valeur) ? `calc(${Number(valeur)} * var(--espace-1))` : valeur
 }
 
 /** Ramène une valeur responsive à un objet { point: valeur } */

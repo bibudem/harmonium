@@ -26,7 +26,7 @@
  * fond pâle. Le titre d'une page dans une autre langue porte son lang.
  */
 .bib-navigation-secondaire {
-  font-size: var(--texte-reduit);
+  font-size: var(--texte-petit);
 }
 
 .bib-navigation-secondaire__titre {
@@ -56,7 +56,7 @@
 
 .bib-navigation-secondaire li a {
   display: block;
-  padding: var(--espace-1) 0.75rem;
+  padding: var(--espace-1) var(--espace-1-5);
   border-inline-start: 2px solid var(--couleur-bordure);
   color: var(--couleur-texte);
   text-decoration: none;
@@ -101,7 +101,7 @@ li a .bib-navigation-secondaire__externe {
   align-items: center;
   justify-content: space-between;
   gap: var(--espace-2);
-  min-height: 48px;
+  min-height: var(--hauteur-controle);
   padding: var(--espace-1) var(--espace-2);
   font-weight: var(--graisse-forte);
   cursor: pointer;
@@ -120,7 +120,7 @@ li a .bib-navigation-secondaire__externe {
   border-block-end: 2px solid currentColor;
   border-inline-end: 2px solid currentColor;
   transform: rotate(45deg);
-  transition: transform var(--duree-courte-4) var(--courbe-standard);
+  transition: transform var(--duree-courte) var(--courbe-standard);
 }
 
 [open] > summary .bib-navigation-secondaire__chevron {

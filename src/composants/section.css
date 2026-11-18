@@ -5,13 +5,13 @@
  *     <div class="bib-section__interieur">…</div>
  *   </section>
  *
- * Espacement vertical --espace-bande (48 px, 64 px dès 900 px, 96 px dès 1200 px) ; marges
- * latérales internes de 16 / 20 / 40 / 64 px ; contenu limité à --largeur-max. La marge haute du
+ * Espacement vertical --espace-bande (3, 4 puis 5 rem) ; marges latérales internes
+ * --gouttiere (1, 1,25, 2,5 puis 4 rem) ; contenu limité à --largeur-max. La marge haute du
  * premier enfant et la marge basse du dernier sont annulées : la bande seule fait l'espace.
  *
  * Couleur de fond : un modificateur (--bleu-principal, --bleu-fonce, --bleu-principal-fonce,
- * --vert-fonce, --rouge-orange, --orange, --violet-fonce, --vert-pale, --jaune, --rose-500,
- * --bleu-100, --bleu-200, --jaune-pale, --rose-100, --rose-300) ou, pour une autre couleur,
+ * --vert-fonce, --rouge-orange, --orange, --vert, --jaune, --rouge-orange-40,
+ * --bleu-10, --bleu-20, --jaune-40, --rose-50, --rose) ou, pour une autre couleur,
  * la variable --bib-section-fond avec l'un des tons ci-dessous. Le ton règle la couleur du
  * texte, des liens et du focus d'après le contraste calculé (WCAG, 4,5:1) :
  *   --fonce  texte blanc, liens blancs (blanc ≥ 7,1:1 sur le fond)
@@ -42,7 +42,8 @@
   position: relative;
   max-width: var(--largeur-max);
   margin-inline: auto;
-  padding-inline: 16px;
+  /* 16, 20, 40 puis 64 px environ, selon la largeur */
+  padding-inline: var(--gouttiere);
 }
 
 /* Un <script> ou un <style> rendu dans la bande ne compte pas */
@@ -54,29 +55,13 @@
   margin-block-end: 0;
 }
 
-@media (width >= 600px) {
-  .bib-section__interieur {
-    padding-inline: 20px;
-  }
-}
-
 @media (width >= 900px) {
   .bib-section--marge-haut {
     margin-top: var(--espace-6);
   }
-
-  .bib-section__interieur {
-    padding-inline: 40px;
-  }
 }
 
-@media (width >= 1200px) {
-  .bib-section__interieur {
-    padding-inline: 64px;
-  }
-}
-
-/* Largeur fixe : « Container fixed » de MUI, largeur du palier atteint, sans marges latérales internes */
+/* Largeur fixe : la largeur du palier atteint, sans marges latérales internes */
 .bib-section--largeur-fixe {
   margin-inline: auto;
 }
@@ -135,64 +120,54 @@
   --bib-section-fond: var(--orange);
 }
 
-.bib-section--violet-fonce {
-  --bib-section-fond: var(--violet-fonce);
-}
-
-.bib-section--vert-pale {
-  --bib-section-fond: var(--vert-pale);
+.bib-section--vert {
+  --bib-section-fond: var(--vert);
 }
 
 .bib-section--jaune {
   --bib-section-fond: var(--jaune);
 }
 
-.bib-section--rose-500 {
-  --bib-section-fond: var(--rose-500);
+.bib-section--rouge-orange-40 {
+  --bib-section-fond: var(--rouge-orange-40);
 }
 
-.bib-section--bleu-100 {
+.bib-section--bleu-10 {
   --bib-section-fond: var(--couleur-teinte);
 }
 
-.bib-section--bleu-200 {
+.bib-section--bleu-20 {
   --bib-section-fond: var(--couleur-teinte-forte);
 }
 
-.bib-section--jaune-pale {
+.bib-section--jaune-40 {
   --bib-section-fond: var(--couleur-teinte-jaune);
 }
 
-.bib-section--rose-100 {
+.bib-section--rose-50 {
   --bib-section-fond: var(--couleur-teinte-rose);
 }
 
-.bib-section--rose-300 {
+.bib-section--rose {
   --bib-section-fond: var(--couleur-teinte-rose-forte);
 }
 
 /* ---- Tons ---- */
-/* --couleur-focus-bande : couleur du focus sur la bande, que les surfaces claires
+/* --bib-section-focus : couleur du focus sur la bande, que les surfaces claires
    (.surface-claire remet --couleur-focus au bleu) prennent pour le contour qu'elles tracent à
    l'extérieur d'elles-mêmes : le bleu n'y faisait que 1,7:1 sur le vert foncé (WCAG 2.4.13) */
-.bib-section--fonce {
-  --couleur-lien: var(--couleur-sur-fonce);
-  --couleur-lien-survol: var(--couleur-sur-fonce);
-  --couleur-focus: var(--couleur-sur-fonce);
-  --couleur-focus-bande: var(--couleur-sur-fonce);
-  /* Le jaune garde l'accent : 4,66:1 sur bleu principal, 7,4:1 sur vert foncé */
-  --rouge-orange-texte: var(--jaune);
-  /* Texte secondaire : blanc atténué, au-dessus de 4,5:1 (le gris du thème clair faisait environ 1,5:1) */
-  --couleur-texte-secondaire: color-mix(in srgb, var(--couleur-sur-fonce) 82%, transparent);
-  color: var(--couleur-sur-fonce);
+/* Le reste du ton foncé (texte, liens, focus, accent) vient de .surface-foncee */
+.bib-section--fonce,
+.bib-section--image {
+  --bib-section-focus: var(--couleur-sur-fonce);
 }
 
 .bib-section--moyen {
   --couleur-lien: var(--couleur-texte);
   --couleur-lien-survol: var(--couleur-texte);
   --couleur-focus: var(--bleu-fonce);
-  --couleur-focus-bande: var(--bleu-fonce);
-  --rouge-orange-texte: var(--couleur-texte);
+  --bib-section-focus: var(--bleu-fonce);
+  --couleur-texte-accent: var(--couleur-texte);
   color: var(--couleur-texte);
 }
 
@@ -206,13 +181,6 @@
 
   isolation: isolate;
   overflow: hidden;
-  color: var(--couleur-sur-fonce);
-  --couleur-lien: var(--couleur-sur-fonce);
-  --couleur-lien-survol: var(--couleur-sur-fonce);
-  --couleur-focus: var(--couleur-sur-fonce);
-  --couleur-focus-bande: var(--couleur-sur-fonce);
-  --rouge-orange-texte: var(--jaune);
-  --couleur-texte-secondaire: color-mix(in srgb, var(--couleur-sur-fonce) 82%, transparent);
 }
 
 .bib-section--image::before {

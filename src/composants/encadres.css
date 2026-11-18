@@ -2,7 +2,7 @@
  * Encadrés de couleur : un par rangée, deux dès 900 px, même hauteur, sur le fond choisi, avec une
  * icône facultative à côté du titre.
  *
- *   <div class="bib-encadres" style="--bib-encadre-fond: var(--rose-300)">
+ *   <div class="bib-encadres" style="--bib-encadre-fond: var(--rose)">
  *     <div class="bib-encadre surface-claire">
  *       <span class="bib-encadre__icone" aria-hidden="true"><svg width="50" height="50" fill="var(--rouge-orange)">…</svg></span>
  *       <h3>Titre</h3>

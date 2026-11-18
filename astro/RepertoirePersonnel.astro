@@ -52,12 +52,10 @@ interface Props {
   photoParDefaut?: ImageMetadata | string
   niveauTitre?: 2 | 3 | 4 | 5 | 6
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const { personnes, bibliotheques = [], photoParDefaut, niveauTitre = 3, class: classe, className, style } = Astro.props
+const { personnes, bibliotheques = [], photoParDefaut, niveauTitre = 3, class: classe, style } = Astro.props
 const Titre = `h${niveauTitre}` as 'h3'
 
 // Valeurs des listes : une option par valeur distincte (comparée sans accents ni casse), libellé de la première
@@ -141,7 +139,7 @@ const n = idUnique('repertoire')
 const ids = { q: `${n}-q`, bib: `${n}-bib`, disc: `${n}-disc` }
 ---
 
-<div class:list={['bib-repertoire', classes(classe, className)]} style={fusionnerStyles(style)} data-repertoire data-ancres={JSON.stringify(ancres)}>
+<div class:list={['bib-repertoire', classes(classe)]} style={fusionnerStyles(style)} data-repertoire data-ancres={JSON.stringify(ancres)}>
   <form class="bib-repertoire__filtres" role="search" aria-label="Répertoire du personnel" data-filtres>
     <div class="bib-champ-liste bib-champ-liste--recherche">
       <label class="bib-champ-liste__etiquette" for={ids.q}>Rechercher</label>

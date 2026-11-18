@@ -1,0 +1,74 @@
+---
+/**
+ * Pagination : liens vers les pages de résultats, autour de la page courante.
+ *
+ *   <Pagination page={3} total={12} url="/actualites/page/{n}/" premiere="/actualites/" />
+ *
+ * `url` : modèle d'adresse où {n} devient le numéro de page ; `premiere` : adresse de la page 1, si elle
+ * diffère du modèle. Rien n'est rendu s'il n'y a qu'une page.
+ */
+import '../src/composants/pagination.css'
+import { classes } from './styles.ts'
+
+interface Props {
+  page: number
+  total: number
+  url: string
+  premiere?: string
+  /** Nom de la navigation (deux paginations sur une page : les distinguer) */
+  nom?: string
+  /** Nombre de pages affichées de part et d'autre de la page courante */
+  voisines?: number
+  class?: string
+}
+
+const { page, total, url, premiere, nom = 'Pagination', voisines = 1, class: classe } = Astro.props
+if (!url.includes('{n}')) throw new Error('Pagination : le modèle d’adresse doit contenir {n}.')
+const adresse = (n: number) => (n === 1 && premiere ? premiere : url.replaceAll('{n}', String(n)))
+
+// 1 … 4 5 6 … 12 : la première, la dernière, et les voisines de la page courante
+const numeros: (number | null)[] = []
+for (let n = 1; n <= total; n++) {
+  const garder = n === 1 || n === total || Math.abs(n - page) <= voisines
+  if (garder) numeros.push(n)
+  else if (numeros.at(-1) !== null) numeros.push(null)
+}
+// Un seul numéro caché ne mérite pas une ellipse
+const pages = numeros.map((n, i) => (n === null && numeros[i - 1] !== null && (numeros[i + 1] as number) - (numeros[i - 1] as number) === 2 ? (numeros[i - 1] as number) + 1 : n))
+
+const gauche = 'M168.49,199.51a12,12,0,0,1-17,17l-80-80a12,12,0,0,1,0-17l80-80a12,12,0,0,1,17,17L97,128Z'
+const droite = 'M184.49,136.49l-80,80a12,12,0,0,1-17-17L159,128,87.51,56.49a12,12,0,1,1,17-17l80,80A12,12,0,0,1,184.49,136.49Z'
+---
+
+{
+  total > 1 && (
+    <nav class:list={['bib-pagination', classes(classe)]} aria-label={nom}>
+      {page > 1 && (
+        <a class="bib-pagination__voisine bib-pagination__voisine--precedente" href={adresse(page - 1)} rel="prev">
+          <svg viewBox="0 0 256 256" width="16" height="16" fill="currentColor" aria-hidden="true" focusable="false"><path d={gauche} /></svg>
+          <span class="bib-masque">Page </span>Précédente
+        </a>
+      )}
+      <ul class="bib-pagination__pages">
+        {pages.map((n) =>
+          n === null ? (
+            <li class="bib-pagination__ellipse" aria-hidden="true">…</li>
+          ) : (
+            <li>
+              <a class="bib-pagination__page" href={adresse(n)} aria-label={`Page ${n}`} aria-current={n === page ? 'page' : undefined}>
+                {n}
+              </a>
+            </li>
+          ),
+        )}
+      </ul>
+      <p class="bib-pagination__resume">Page {page} sur {total}</p>
+      {page < total && (
+        <a class="bib-pagination__voisine bib-pagination__voisine--suivante" href={adresse(page + 1)} rel="next">
+          <span class="bib-masque">Page </span>Suivante
+          <svg viewBox="0 0 256 256" width="16" height="16" fill="currentColor" aria-hidden="true" focusable="false"><path d={droite} /></svg>
+        </a>
+      )}
+    </nav>
+  )
+}

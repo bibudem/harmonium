@@ -33,6 +33,8 @@
  * --bib-horaire-semaine-action-survol (fond d'un jour ou d'un bouton au survol),
  * --bib-horaire-semaine-panneau-fond (gris neutre), --bib-horaire-semaine-aujourdhui (point sous la date du jour).
  */
+@import './commun/masque.css';
+
 .bib-horaire-semaine {
   --_choisi-fond: var(--bib-horaire-semaine-choisi-fond, var(--couleur-fond-fort));
   --_choisi-texte: var(--bib-horaire-semaine-choisi-texte, var(--couleur-sur-fonce));
@@ -53,14 +55,14 @@
   flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 0.75rem;
-  padding-bottom: 0.85rem;
+  gap: var(--espace-1-5);
+  padding-bottom: var(--espace-1-5);
   border-bottom: 1px solid var(--couleur-bordure);
 }
 
 .bib-horaire-semaine__titre {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: var(--texte-grand);
   font-weight: var(--graisse-forte);
   line-height: 1.2;
 }
@@ -68,9 +70,9 @@
 .bib-horaire-semaine__periode,
 .bib-horaire-semaine__repli {
   max-inline-size: none;
-  margin: 0.3rem 0 0;
+  margin: var(--espace-0-5) 0 0;
   color: var(--couleur-texte-secondaire);
-  font-size: 0.93rem;
+  font-size: var(--texte-petit);
 }
 
 .bib-horaire-semaine__periode:empty,
@@ -81,11 +83,11 @@
 }
 
 .bib-horaire-semaine__repli {
-  margin-top: 0.9rem;
+  margin-top: var(--espace-2);
 }
 
 .bib-horaire-semaine > .bib-etat-erreur {
-  margin-top: 0.9rem;
+  margin-top: var(--espace-2);
 }
 
 .bib-horaire-semaine__navigation {
@@ -105,7 +107,7 @@
   background: var(--couleur-surface);
   color: var(--couleur-texte);
   cursor: pointer;
-  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+  transition: background-color var(--duree-courte) var(--courbe-standard);
 }
 
 .bib-horaire-semaine__semaine:hover:not(:disabled) {
@@ -120,13 +122,13 @@
 }
 
 .bib-horaire-semaine__vue {
-  margin-top: 0.9rem;
+  margin-top: var(--espace-2);
 }
 
 .bib-horaire-semaine__jours {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 0.3rem;
+  gap: var(--espace-0-5);
 }
 
 .bib-horaire-semaine__jour {
@@ -136,7 +138,7 @@
   justify-content: center;
   min-width: 0;
   min-height: 3.6rem;
-  padding: 0.4rem 0.1rem;
+  padding: var(--espace-1) 0.1rem;
   border: 1px solid var(--couleur-bordure);
   border-radius: var(--rayon-tres-petit);
   background: var(--couleur-surface);
@@ -159,15 +161,15 @@
 }
 
 .bib-horaire-semaine__nom {
-  font-size: 0.77rem;
+  font-size: var(--texte-minuscule);
   font-weight: var(--graisse-forte);
   line-height: 1.1;
   text-transform: capitalize;
 }
 
 .bib-horaire-semaine__numero {
-  margin-top: 0.16rem;
-  font-size: 1.1rem;
+  margin-top: var(--espace-0-5);
+  font-size: var(--texte-moyen);
   font-weight: var(--graisse-grasse);
   line-height: 1;
 }
@@ -178,7 +180,7 @@
   display: block;
   width: 6px;
   height: 6px;
-  margin: 0.2rem auto 0;
+  margin: var(--espace-0-5) auto 0;
   border-radius: var(--rayon-plein);
   background: var(--bib-horaire-semaine-aujourdhui, var(--rouge-orange));
 }
@@ -187,11 +189,11 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 0.25rem;
+  gap: var(--espace-0-5);
   min-height: 5.2rem;
   box-sizing: border-box;
-  margin-top: 0.75rem;
-  padding: 0.85rem var(--espace-element);
+  margin-top: var(--espace-1-5);
+  padding: var(--espace-1-5) var(--espace-element);
   border: 1px solid var(--couleur-bordure);
   border-radius: var(--rayon-petit);
   background: var(--bib-horaire-semaine-panneau-fond, color-mix(in srgb, var(--couleur-bordure) 30%, var(--couleur-surface)));
@@ -200,17 +202,17 @@
 .bib-horaire-semaine__date {
   margin: 0;
   color: var(--couleur-texte-secondaire);
-  font-size: 0.88rem;
+  font-size: var(--texte-petit);
 }
 
 .bib-horaire-semaine__valeur {
   margin: 0;
-  font-size: 1.15rem;
+  font-size: var(--texte-moyen);
   font-weight: var(--graisse-grasse);
 }
 
 .bib-horaire-semaine__valeur[data-ferme] {
-  color: var(--rouge-orange-texte);
+  color: var(--couleur-texte-accent);
 }
 
 @media (width >= 600px) {
@@ -219,7 +221,7 @@
   }
 
   .bib-horaire-semaine__jours {
-    gap: 0.45rem;
+    gap: var(--espace-1);
   }
 }
 
@@ -229,14 +231,3 @@
   }
 }
 
-.bib-masque {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0 0 0 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
-}

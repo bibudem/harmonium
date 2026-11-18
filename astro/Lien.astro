@@ -2,10 +2,10 @@
 /*
  * <Lien> : produit le HTML documenté dans src/composants/lien.css et importe cette feuille.
  *
- *   <Lien to="/services/">Voir les services</Lien>
- *   <Lien to="/services/" Icon>Voir les services</Lien>
+ *   <Lien href="/services/">Voir les services</Lien>
+ *   <Lien href="/services/" Icone>Voir les services</Lien>
  *
- * Toujours un <a> ordinaire. `to` (ou `href`) donne l'adresse ; sans adresse, pas de lien utile
+ * Toujours un <a> ordinaire. `href` donne l'adresse ; sans adresse, pas de lien utile
  * (la propriété est exigée par le navigateur : « # »). Un PDF s'ouvre dans un nouvel onglet ;
  * PDF et nouvel onglet sont annoncés en texte masqué, et `target="_blank"` reçoit rel="noopener".
  *
@@ -19,27 +19,25 @@ import '../src/composants/lien.css'
 import { analyserLien, annonceLien, relDuLien, versAilleurs } from './liens.ts'
 import { classes, fusionnerStyles, type Style } from './styles.ts'
 
+
 interface Props {
-  to?: string
-  /** Accepté en repli de `to` */
   href?: string
   /** true = flèche ; sinon un composant d'icône */
-  Icon?: boolean | any
-  iconProps?: Record<string, unknown>
+  Icone?: boolean | any
+  proprietesIcone?: Record<string, unknown>
   /** Flèche ↗ et annonce vers un autre site */
   flecheExterne?: boolean
   target?: string
   rel?: string
+  /** Attribut HTML title du lien */
   title?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
   [attribut: string]: unknown
 }
 
-const { to, href, Icon, iconProps, flecheExterne = false, target, rel, class: classe, className, style, ...reste } = Astro.props
-const adresse = to ?? href
+const { href, Icone: Icon, proprietesIcone: iconProps, flecheExterne = false, target, rel, class: classe, style, ...reste } = Astro.props
+const adresse = href
 if (!adresse?.trim()) throw new Error('Lien : une adresse non vide est requise.')
 const analyse = analyserLien(adresse, Astro.site?.origin ?? Astro.url.origin)
 const cible = analyse.pdf ? '_blank' : target
@@ -55,7 +53,7 @@ const fleche = Icon === true || externe
   href={adresse}
   target={cible}
   rel={relFinal}
-  class:list={['bib-lien', { 'bib-lien--icone': Icone || Icon === true }, classes(classe, className)]}
+  class:list={['bib-lien', { 'bib-lien--icone': Icone || Icon === true }, classes(classe)]}
   style={fusionnerStyles(style)}
   {...reste}
   ><slot />{annonce && <span class="bib-masque">{annonce}</span>}{

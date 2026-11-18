@@ -9,8 +9,8 @@
  * défaut ; un positionnement propre au composant (fixed, absolute…) reste prioritaire. Une bande transparente (::before) relie la bulle à l'élément : le pointeur passe
  * de l'un à l'autre sans la faire disparaître (WCAG 1.4.13). Échap la ferme (data-infobulle-fermee,
  * posé par bib-infobulle.min.js, facultatif) ; elle revient au prochain survol ou focus. Un composant
- * qui doit la taire dans un état (rangée ouverte, bouton masqué) y pose --infobulle-visibilite: hidden
- * et --infobulle-opacite: 0.
+ * qui doit la taire dans un état (rangée ouverte, bouton masqué) y pose --bib-infobulle-visibilite: hidden
+ * et --bib-infobulle-opacite: 0.
  */
 /* Ancrer les pseudo-éléments au déclencheur, sans écraser les boutons fixes. */
 :where(.bib-infobulle) {
@@ -25,7 +25,7 @@
 .bib-infobulle::after {
   content: attr(data-infobulle) / '';
   position: absolute;
-  padding: 0.25rem 0.625rem;
+  padding: var(--espace-0-5) var(--espace-1);
   border-radius: var(--rayon-tres-petit);
   background: var(--bleu-fonce);
   /* Liseré clair : la bulle reste détachée sur les bandes bleu foncé */
@@ -38,16 +38,16 @@
   visibility: hidden;
   opacity: 0;
   transition:
-    opacity var(--duree-courte-4) var(--courbe-standard),
-    visibility 0s linear var(--duree-courte-4);
+    opacity var(--duree-courte) var(--courbe-standard),
+    visibility 0s linear var(--duree-courte);
 }
 
 .bib-infobulle:is(:hover, :focus-visible):not([data-infobulle-fermee])::after {
-  visibility: var(--infobulle-visibilite, visible);
-  opacity: var(--infobulle-opacite, 1);
+  visibility: var(--bib-infobulle-visibilite, visible);
+  opacity: var(--bib-infobulle-opacite, 1);
   transition:
-    opacity var(--duree-courte-4) var(--courbe-standard) 80ms,
-    visibility 0s linear 80ms;
+    opacity var(--duree-courte) var(--courbe-standard) var(--duree-tres-courte),
+    visibility 0s linear var(--duree-tres-courte);
 }
 
 .bib-infobulle:focus-visible:not([data-infobulle-fermee])::after {

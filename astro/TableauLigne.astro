@@ -1,17 +1,16 @@
 ---
-/* <TableauLigne> : un <tr> ; `hover` le surligne au survol (voir src/composants/tableau.css). */
+/* <TableauLigne> : un <tr> ; `survol` le surligne au survol (voir src/composants/tableau.css). */
 import '../src/composants/tableau.css'
 import { classes, fusionnerStyles } from './styles.ts'
 
 interface Props {
-  hover?: boolean
+  survol?: boolean
   class?: string
-  className?: string
   style?: string | Record<string, string | number>
   [attribut: string]: unknown
 }
 
-const { hover = false, class: classe, className, style, selected: _selection, ...reste } = Astro.props
+const { survol = false, class: classe, style, ...reste } = Astro.props
 ---
 
-<tr class:list={['bib-tableau__rangee', { 'bib-tableau__rangee--survol': hover }, classes(classe, className)]} style={fusionnerStyles(style)} {...reste}><slot /></tr>
+<tr class:list={['bib-tableau__rangee', { 'bib-tableau__rangee--survol': survol }, classes(classe)]} style={fusionnerStyles(style)} {...reste}><slot /></tr>

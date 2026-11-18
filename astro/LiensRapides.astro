@@ -35,19 +35,17 @@ interface Props {
   /** Nom des deux repères de navigation */
   nom?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const { liens, nom = 'Liens rapides', class: classe, className, style, ...reste } = Astro.props
+const { liens, nom = 'Liens rapides', class: classe, style, ...reste } = Astro.props
 
 if (!Array.isArray(liens) || liens.length === 0) throw new Error('LiensRapides : la propriété `liens` est obligatoire.')
 for (const l of liens) if (!l.href && !l.evenement) throw new Error(`LiensRapides : « ${l.libelle} » n'a ni href ni evenement.`)
 const idListe = idUnique('liens-rapides-liste')
 ---
 
-<div class:list={['bib-liens-rapides', 'theme-clair', classes(classe, className)]} style={fusionnerStyles(style)} {...reste}>
+<div class:list={['bib-liens-rapides', 'theme-clair', classes(classe)]} style={fusionnerStyles(style)} {...reste}>
   <div class="bib-liens-rapides__bureau" data-liens-rapides>
     <nav class="bib-liens-rapides__panneau" aria-label={nom} data-replie>
       <button

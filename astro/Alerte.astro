@@ -10,47 +10,33 @@
  *
  * Produit exactement le HTML documenté dans src/alertes/alertes.css (une seule source pour
  * les sites Astro et les autres), et importe cette feuille.
- *
- * Accepte aussi les anciens noms de propriétés : `severity`
- * (success, info, warning, error) et `icon` sont acceptés tels quels, ainsi que
- * type="attention" (nom de la directive :::alerte du contenu Markdown).
+
  */
 import '../src/alertes/alertes.css'
 import { classes } from './styles.ts'
 
 type Type = 'info' | 'succes' | 'avertissement' | 'erreur'
-/** Noms acceptés en plus pour la migration (directive :::alerte{type="attention"}) */
-type Alias = 'attention'
-type Severite = 'info' | 'success' | 'warning' | 'error'
 
 interface Props {
   /** Type de l'alerte (défaut : info) */
-  type?: Type | Alias
-  /** Nom d'Alerte.astro, accepté pour la migration */
-  severity?: Severite
+  type?: Type
   /** Titre facultatif (un paragraphe, hors de la hiérarchie des titres). Aussi : slot « titre ». */
   titre?: string
   /** false retire l'icône */
   icone?: boolean
-  /** Nom d'Alerte.astro, accepté pour la migration */
-  icon?: boolean
   class?: string
-  /** Contenu repris de React */
-  className?: string
   [attribut: string]: unknown
 }
 
-const DE_SEVERITE: Record<Severite, Type> = { info: 'info', success: 'succes', warning: 'avertissement', error: 'erreur' }
 const LIBELLES: Record<Type, string> = { info: 'Information', succes: 'Succès', avertissement: 'Avertissement', erreur: 'Erreur' }
 
-const { type, severity, titre, icone, icon, class: classe, className, ...reste } = Astro.props
-const choisi = type === 'attention' ? 'avertissement' : (type ?? (severity ? DE_SEVERITE[severity] : undefined))
-const leType: Type = choisi && choisi in LIBELLES ? choisi : 'info'
-const avecIcone = (icone ?? icon) !== false
+const { type, titre, icone, class: classe, ...reste } = Astro.props
+const leType: Type = type && type in LIBELLES ? type : 'info'
+const avecIcone = icone !== false
 const avecTitre = !!titre || Astro.slots.has('titre')
 ---
 
-<div class:list={['bib-alerte', `bib-alerte--${leType}`, classes(classe, className)]} {...reste}>
+<div class:list={['bib-alerte', `bib-alerte--${leType}`, classes(classe)]} {...reste}>
   {avecIcone && <span class="bib-alerte__icone" aria-hidden="true"></span>}
   <div class="bib-alerte__message">
     <span class="bib-masque">{LIBELLES[leType]} : </span>

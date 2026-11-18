@@ -1,25 +1,23 @@
 ---
 /*
- * <Encadres> : des encadrés de couleur (<Encadre>) sur le fond choisi. Produit le HTML documenté
+ * <Encadres> : des encadrés de couleur (<Encadre>) de la couleur choisie. Produit le HTML documenté
  * dans src/composants/encadres.css et importe cette feuille.
  *
- *   <Encadres fond="rose300"><Encadre Icone={HeartIcon}><h3>Titre</h3><p>Texte</p></Encadre></Encadres>
+ *   <Encadres couleur="rose"><Encadre Icone={HeartIcon}><h3>Titre</h3><p>Texte</p></Encadre></Encadres>
  */
 import '../src/composants/encadres.css'
 import { couleurPalette } from './couleurs.ts'
 import { classes } from './styles.ts'
 
 interface Props {
-  /** Clé de palette (rose300, bleu100…) ou couleur CSS */
-  fond?: string
+  /** Clé de palette (rose, bleu10…) ou couleur CSS */
+  couleur?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
 }
 
-const { fond, class: classe, className } = Astro.props
+const { couleur, class: classe } = Astro.props
 ---
 
-<div class:list={['bib-encadres', classes(classe, className)]} style={{ '--bib-encadre-fond': couleurPalette(fond) }}>
+<div class:list={['bib-encadres', classes(classe)]} style={{ '--bib-encadre-fond': couleurPalette(couleur) }}>
   <slot />
 </div>

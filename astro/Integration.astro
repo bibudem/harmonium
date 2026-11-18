@@ -33,12 +33,10 @@ interface Props {
   /** Message affiché sans JavaScript */
   sansScript?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const { cibleId, src, clavardage, hauteur, hauteurLarge, chargement, erreur, sansScript, class: classe, className, style, ...reste } = Astro.props
+const { cibleId, src, clavardage, hauteur, hauteurLarge, chargement, erreur, sansScript, class: classe, style, ...reste } = Astro.props
 
 if (!clavardage && !cibleId) throw new Error('Integration : `cibleId` (ou `clavardage`) est obligatoire.')
 const id = clavardage ? `libchat_${clavardage}` : cibleId
@@ -49,7 +47,7 @@ const textes = clavardage
 ---
 
 <div
-  class:list={['bib-integration', clavardage && 'bib-integration--clavardage', classes(classe, className)]}
+  class:list={['bib-integration', clavardage && 'bib-integration--clavardage', classes(classe)]}
   style={fusionnerStyles({ '--bib-integration-hauteur': hauteur, '--bib-integration-hauteur-large': hauteurLarge }, style)}
   data-integration
   data-src={adresse}

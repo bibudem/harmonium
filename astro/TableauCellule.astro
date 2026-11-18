@@ -6,31 +6,31 @@
 import '../src/composants/tableau.css'
 import { classes, fusionnerStyles } from './styles.ts'
 
+
 interface Props {
-  align?: 'left' | 'center' | 'right' | 'justify' | 'inherit'
-  component?: 'td' | 'th'
+  alignement?: 'gauche' | 'centre' | 'droite' | 'justifie'
+  balise?: 'td' | 'th'
   scope?: 'col' | 'row' | 'colgroup' | 'rowgroup'
   colSpan?: number
   rowSpan?: number
   class?: string
-  className?: string
   style?: string | Record<string, string | number>
   [attribut: string]: unknown
 }
 
-const { align, component = 'td', scope, colSpan, rowSpan, class: classe, className, style, variant: _variante, padding: _rembourrage, ...reste } = Astro.props
+const { alignement: align, balise: component = 'td', scope, colSpan, rowSpan, class: classe, style, ...reste } = Astro.props
 const estEntete = component === 'th'
-const ALIGNEMENTS: Record<string, string> = { center: 'bib-tableau__cellule--centre', right: 'bib-tableau__cellule--droite', justify: 'bib-tableau__cellule--justifie' }
+const ALIGNEMENTS: Record<string, string> = { centre: 'bib-tableau__cellule--centre', droite: 'bib-tableau__cellule--droite', justifie: 'bib-tableau__cellule--justifie' }
 const alignement = align ? ALIGNEMENTS[align] : undefined
 ---
 
 {
   estEntete ? (
-    <th scope={scope ?? 'row'} colspan={colSpan} rowspan={rowSpan} class:list={['bib-tableau__cellule', alignement, classes(classe, className)]} style={fusionnerStyles(style)} {...reste}>
+    <th scope={scope ?? 'row'} colspan={colSpan} rowspan={rowSpan} class:list={['bib-tableau__cellule', alignement, classes(classe)]} style={fusionnerStyles(style)} {...reste}>
       <slot />
     </th>
   ) : (
-    <td data-cellule scope={scope} colspan={colSpan} rowspan={rowSpan} class:list={['bib-tableau__cellule', alignement, classes(classe, className)]} style={fusionnerStyles(style)} {...reste}>
+    <td data-cellule scope={scope} colspan={colSpan} rowspan={rowSpan} class:list={['bib-tableau__cellule', alignement, classes(classe)]} style={fusionnerStyles(style)} {...reste}>
       <slot />
     </td>
   )

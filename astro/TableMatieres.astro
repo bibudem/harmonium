@@ -15,9 +15,8 @@ interface Props {
   nom?: string
   id?: string
   class?: string
-  className?: string
 }
-const { titres = [], niveauMax = 2, minimum = 2, nom = 'Sur cette page', id = idUnique('table-matieres'), class: classe, className } = Astro.props
-const html = rendreTableMatieres({ titres, niveauMax, minimum, nom, id, classe: classes(classe, className) })
+const { titres = [], niveauMax = 2, minimum = 2, nom = 'Sur cette page', id = idUnique('table-matieres'), class: classe } = Astro.props
+const html = rendreTableMatieres({ titres, niveauMax, minimum, nom, id, classe: classes(classe) })
 ---
 <Fragment set:html={html} />

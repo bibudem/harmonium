@@ -68,7 +68,7 @@
     max-height: calc(100vh - var(--hauteur-entete) - var(--espace-4));
     max-height: calc(100dvh - var(--hauteur-entete) - var(--espace-4));
     overflow-y: auto;
-    padding: 5px;
+    padding: var(--espace-0-5);
     scrollbar-width: thin;
   }
   .bib-table-matieres > .bib-navigation-secondaire { display: block; }

@@ -3,14 +3,14 @@
  * <Section> : bande pleine largeur. Produit le HTML documenté dans src/composants/section.css
  * et importe cette feuille.
  *
- *   <Section bg="vertFonce">…</Section>
+ *   <Section couleur="vertFonce">…</Section>
  *   <Section image={photo} imageAlt="">…</Section>
  *
- * - `bg` : clé de couleur du thème (voir fonds.ts) ; son ton règle texte, liens et focus.
+ * - `couleur` : clé de couleur du thème (voir fonds.ts) ; son ton règle texte, liens et focus.
  * - `image` : photo en fond (cover) sous un voile noir, texte blanc ; une image importée passe
  *   par <Picture> (formats et tailles d'astro:assets), une chaîne par un <img>.
  *   `voile="droite"` : dès 900 px, photo à gauche sans voile, texte sur le bleu principal.
- * - `marginTop`, `suite`, `fixedWidth`, `minHeight`, `textAlign` : voir la fiche.
+ * - `margeHaut`, `suite`, `largeurFixe`, `hauteurMin`, `alignementTexte` : voir la fiche.
  * - `revelation` : pose data-revelation sur l'intérieur, pour l'animation d'apparition du site.
  */
 import '../src/composants/section.css'
@@ -19,30 +19,29 @@ import { Picture } from 'astro:assets'
 import { classes, fusionnerStyles, type Style } from './styles.ts'
 import { FONDS } from './fonds.ts'
 
+
 interface Props {
-  bg?: string
+  couleur?: string
   image?: ImageMetadata | string
   /** Texte de remplacement de l'image ; décorative par défaut */
   imageAlt?: string
   /** Voile sous le texte : uniforme (par défaut) ou foncé à droite seulement dès 900 px */
   voile?: 'uniforme' | 'droite'
-  marginTop?: boolean | string
+  margeHaut?: boolean | string
   suite?: boolean
   revelation?: boolean
-  fixedWidth?: boolean
-  minHeight?: string
-  textAlign?: 'left' | 'center' | 'right'
+  largeurFixe?: boolean
+  hauteurMin?: string
+  alignementTexte?: 'gauche' | 'centre' | 'droite'
   id?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
   [attribut: string]: unknown
 }
 
-const { bg, image, imageAlt = '', voile = 'uniforme', marginTop, suite = false, revelation = false, fixedWidth = false, minHeight, textAlign, id, class: classe, className, style, sx: _sx, ...reste } = Astro.props
+const { couleur: bg, image, imageAlt = '', voile = 'uniforme', margeHaut: marginTop, suite = false, revelation = false, largeurFixe: fixedWidth = false, hauteurMin: minHeight, alignementTexte: textAlign, id, class: classe, style, ...reste } = Astro.props
 
-if (bg && image) throw new Error('Section : les propriétés `image` et `bg` sont mutuellement exclusives.')
+if (bg && image) throw new Error('Section : les propriétés `image` et `couleur` sont mutuellement exclusives.')
 const fond = bg ? FONDS[bg as keyof typeof FONDS] : undefined
 if (bg && !fond) throw new Error(`Section : la couleur « ${bg} » n'existe pas dans le thème (${Object.keys(FONDS).join(', ')}).`)
 
@@ -57,10 +56,11 @@ const margeHaut = marginTop !== undefined && marginTop !== false && marginTop !=
     fond && `bib-section--${fond.modificateur}`,
     ton && `bib-section--${ton}`,
     ton === 'moyen' && 'theme-clair',
+    (ton === 'fonce' || image) && 'surface-foncee',
     { 'bib-section--image': image, 'bib-section--voile-droite': image && voile === 'droite', 'bib-section--marge-haut': margeHaut, 'bib-section--suite': suite, 'bib-section--largeur-fixe': fixedWidth },
-    classes(classe, className),
+    classes(classe),
   ]}
-  style={fusionnerStyles({ minHeight: minHeight !== 'auto' ? minHeight : undefined, textAlign }, style)}
+  style={fusionnerStyles({ minHeight: minHeight !== 'auto' ? minHeight : undefined, textAlign: textAlign ? ({ gauche: 'left', centre: 'center', droite: 'right' } as Record<string, string>)[textAlign] : undefined }, style)}
   {...reste}
 >
   {

@@ -9,25 +9,20 @@
 import '../src/composants/separateur.css'
 import { classes, fusionnerStyles } from './styles.ts'
 
+
 interface Props {
   orientation?: 'horizontal' | 'vertical'
-  /** Hérité de MUI : le filet vertical s'étire toujours sur la rangée */
-  flexItem?: boolean
   class?: string
-  /** Contenu repris de React */
-  className?: string
-  /** Hérité de MUI, ignoré */
-  variant?: string
   style?: string | Record<string, string | number>
   [attribut: string]: unknown
 }
 
-const { orientation = 'horizontal', flexItem: _flexItem, class: classe, className, style, variant: _variant, ...reste } = Astro.props
+const { orientation = 'horizontal', class: classe, style, ...reste } = Astro.props
 const vertical = orientation === 'vertical'
 ---
 
 <hr
-  class:list={['bib-separateur', { 'bib-separateur--vertical': vertical }, classes(classe, className)]}
+  class:list={['bib-separateur', { 'bib-separateur--vertical': vertical }, classes(classe)]}
   aria-orientation={vertical ? 'vertical' : undefined}
   style={fusionnerStyles(style)}
   {...reste}

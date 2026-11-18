@@ -21,6 +21,8 @@
  * - Jamais plus large que la mesure de lecture (--mesure-texte), sauf dans une grille ou des colonnes.
  * - Variables : --bib-lieu-adresse-fond (gris neutre), --bib-lieu-largeur (largeur maximale).
  */
+@import './commun/masque.css';
+
 .bib-lieu {
   display: flex;
   flex-direction: column;
@@ -37,7 +39,7 @@
 
 .bib-lieu__titre {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: var(--texte-grand);
   font-weight: var(--graisse-forte);
   line-height: 1.25;
   overflow-wrap: break-word;
@@ -48,7 +50,7 @@
   text-decoration: underline;
   text-decoration-color: transparent;
   text-underline-offset: 0.15em;
-  transition: text-decoration-color var(--duree-courte-4) var(--courbe-standard);
+  transition: text-decoration-color var(--duree-courte) var(--courbe-standard);
 }
 
 .bib-lieu__titre a:hover,
@@ -66,7 +68,7 @@
   padding: var(--espace-1) var(--espace-2);
   border-radius: var(--rayon-petit);
   background-color: var(--bib-lieu-adresse-fond, color-mix(in srgb, var(--couleur-bordure) 30%, var(--couleur-surface)));
-  font-size: 0.9444rem;
+  font-size: var(--texte-petit);
   line-height: 1.45;
 }
 
@@ -98,12 +100,12 @@
 
 .bib-lieu__carte {
   display: inline-flex;
-  gap: 0.35rem;
+  gap: var(--espace-0-5);
   align-items: center;
   align-self: flex-start;
-  min-height: 24px;
+  min-height: var(--taille-cible-min);
   color: var(--couleur-lien);
-  font-size: 0.9444rem;
+  font-size: var(--texte-petit);
   font-weight: var(--graisse-moyenne);
 }
 
@@ -136,18 +138,6 @@
 .bib-colonnes-texte .bib-lieu {
   max-inline-size: none;
   margin-block: 0;
-}
-
-.bib-masque {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0 0 0 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
 }
 
 @media (forced-colors: active) {

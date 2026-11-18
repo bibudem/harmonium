@@ -14,14 +14,12 @@ interface Props {
   href?: string
   texte?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
 }
 
-const { href = '/conditions-utilisation/', texte = 'Sauf indications contraires, ce site est sous licence CC BY 4.0', class: classe, className } = Astro.props
+const { href = '/conditions-utilisation/', texte = 'Sauf indications contraires, ce site est sous licence CC BY 4.0', class: classe } = Astro.props
 ---
 
-<div class:list={['bib-licence', classes(classe, className)]} prefix="cc: http://creativecommons.org/ns# dct: http://purl.org/dc/terms/">
+<div class:list={['bib-licence', classes(classe)]} prefix="cc: http://creativecommons.org/ns# dct: http://purl.org/dc/terms/">
   <span class="bib-licence__cc" aria-hidden="true"></span>
   <span class="bib-licence__cc bib-licence__cc--by" aria-hidden="true"></span>
   <a href={href} rel="license">{texte}</a>

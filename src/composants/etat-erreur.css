@@ -49,7 +49,7 @@
   font-weight: var(--graisse-moyenne);
   line-height: 1.2;
   cursor: pointer;
-  transition: background-color var(--duree-moyenne-1) var(--courbe-standard);
+  transition: background-color var(--duree-moyenne) var(--courbe-standard);
 }
 
 .bib-etat-erreur__bouton:hover {

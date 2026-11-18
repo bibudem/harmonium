@@ -29,17 +29,17 @@
 .bib-tableau-fonds__periodes {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25rem;
+  gap: var(--espace-0-5);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .bib-tableau-fonds__periodes li {
-  padding: 0.125rem var(--espace-1);
+  padding: var(--espace-0-5) var(--espace-1);
   border-radius: var(--rayon-plein);
   background-color: var(--couleur-teinte);
-  font-size: var(--texte-tres-petit);
+  font-size: var(--texte-minuscule);
   white-space: nowrap;
 }
 

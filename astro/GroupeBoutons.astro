@@ -5,7 +5,7 @@
  *
  *   <GroupeBoutons>
  *     <Bouton href="/salles/">Réserver une salle</Bouton>
- *     <Bouton href="/regles/" secondary>Voir les règles</Bouton>
+ *     <Bouton href="/regles/" secondaire>Voir les règles</Bouton>
  *   </GroupeBoutons>
  *   <GroupeBoutons pied centre>…</GroupeBoutons>
  */
@@ -18,12 +18,10 @@ interface Props {
   /** Boutons centrés */
   centre?: boolean
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const { pied = false, centre = false, class: classe, className, style, ...reste } = Astro.props
+const { pied = false, centre = false, class: classe, style, ...reste } = Astro.props
 ---
 
-<div class:list={['bib-groupe-boutons', { 'bib-groupe-boutons--pied': pied, 'bib-groupe-boutons--centre': centre }, classes(classe, className)]} style={fusionnerStyles(style)} {...reste}><slot /></div>
+<div class:list={['bib-groupe-boutons', { 'bib-groupe-boutons--pied': pied, 'bib-groupe-boutons--centre': centre }, classes(classe)]} style={fusionnerStyles(style)} {...reste}><slot /></div>

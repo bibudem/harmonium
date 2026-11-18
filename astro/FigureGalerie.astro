@@ -13,14 +13,12 @@ interface Props {
   image: ImageMetadata | string
   alt?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
 }
 
-const { image, alt, class: classe, className } = Astro.props
+const { image, alt, class: classe } = Astro.props
 ---
 
-<figure class:list={['bib-galerie__figure', classes(classe, className)]}>
+<figure class:list={['bib-galerie__figure', classes(classe)]}>
   {
     typeof image === 'string' ? (
       <img src={image} alt={alt ?? ''} loading="lazy" decoding="async" />
@@ -28,7 +26,7 @@ const { image, alt, class: classe, className } = Astro.props
       <Picture src={image} alt={alt ?? ''} formats={['avif', 'webp']} fallbackFormat="webp" widths={[400, 800].filter((l) => l < image.width).concat(Math.min(image.width, 800))} sizes="(min-width: 900px) 30vw, 100vw" loading="lazy" decoding="async" />
     )
   }
-  <Typographie variant="body2" component="figcaption" class="bib-galerie__legende">
+  <Typographie variante="texte-petit" balise="figcaption" class="bib-galerie__legende">
     <slot />
   </Typographie>
 </figure>

@@ -24,8 +24,8 @@
  *     </figure>
  *   </div>
  *
- * Couleurs des parts (palette validée : écart sous daltonisme, contraste de 3:1 au moins sur le
- * blanc) : bleu principal, rouge orangé, violet. Les nombres restent dans les couleurs du texte.
+ * Couleurs des parts : bleu principal, rouge orangé, jaune (distinctes sous daltonisme). La barre
+ * est décorative : chaque part est donnée en texte, avec son nombre et son pourcentage. Les nombres restent dans les couleurs du texte.
  *
  * Le nombre : la valeur dans .bib-chiffres__reserve pour tous, sa copie animée par-dessus
  * (.bib-chiffres__compteur, masquée aux lecteurs d'écran). L'état par défaut est l'état final.
@@ -94,9 +94,9 @@
 .bib-chiffres__legende {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem var(--espace-3);
+  gap: var(--espace-1) var(--espace-3);
   color: var(--couleur-texte-secondaire);
-  font-size: var(--texte-reduit);
+  font-size: var(--texte-petit);
 }
 
 .bib-chiffres__legende li {
@@ -127,7 +127,7 @@
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 0.25rem var(--espace-2);
+  gap: var(--espace-0-5) var(--espace-2);
 }
 
 .bib-chiffres__entete .bib-chiffres__titre {
@@ -136,7 +136,7 @@
 }
 
 .bib-chiffres__total {
-  font-size: 1.75rem;
+  font-size: var(--titre-3);
   font-weight: var(--graisse-forte);
   line-height: 1.2;
 }
@@ -228,7 +228,7 @@
 .bib-chiffres__tuile {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--espace-0-5);
   margin: 0;
   padding: var(--espace-element);
   border: 1px solid var(--couleur-bordure);
@@ -238,7 +238,7 @@
 
 .bib-chiffres__tuile .bib-chiffres__valeur {
   justify-self: start;
-  font-size: 1.75rem;
+  font-size: var(--titre-3);
   font-weight: var(--graisse-forte);
   line-height: 1.2;
 }
@@ -250,7 +250,7 @@
 
 .bib-chiffres__tuile .bib-chiffres__libelle {
   color: var(--couleur-texte-secondaire);
-  font-size: var(--texte-reduit);
+  font-size: var(--texte-petit);
   line-height: 1.4;
 }
 
@@ -263,8 +263,8 @@
 
 .bib-chiffres--a-animer.bib-chiffres--anime [data-chiffres-barre] {
   clip-path: inset(0);
-  transition: clip-path var(--duree-chiffres) var(--courbe-emphase-deceleree);
-  transition-delay: calc(var(--rang, 0) * var(--duree-courte-1));
+  transition: clip-path var(--duree-chiffres) var(--courbe-entree);
+  transition-delay: calc(var(--rang, 0) * var(--duree-decalage));
 }
 
 /* Contraste élevé : les couleurs sont remplacées, les parts se

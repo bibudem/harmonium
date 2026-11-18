@@ -14,6 +14,11 @@
  * Un seul lien par vignette, sur le nom : son ::after couvre la vignette. La photo est décorative (alt vide), le
  * nom est juste dessous. Largeur minimale en rem : avec le texte agrandi, une seule colonne plutôt que des noms
  * qui débordent (WCAG 1.4.10). Le focus du lien s'affiche sur toute la vignette (contour de 3 px).
+ *
+ * Sans photo : <span class="bib-equipe__photo bib-equipe__photo--initiales" aria-hidden="true">MT</span>
+ * Un service ou une équipe (pas une personne) : <span class="bib-equipe__photo bib-equipe__photo--service"
+ * aria-hidden="true"><svg …UsersThree…></svg></span> ; la fonction devient une courte description.
+ * (initiales du prénom et du nom). Variables : --bib-equipe-initiales-fond, --bib-equipe-initiales-texte.
  */
 .bib-equipe {
   display: grid;
@@ -36,8 +41,44 @@
   background-color: var(--couleur-surface);
   text-align: center;
   transition:
-    border-color var(--duree-courte-4) var(--courbe-standard),
-    box-shadow var(--duree-courte-4) var(--courbe-standard);
+    border-color var(--duree-courte) var(--courbe-standard),
+    box-shadow var(--duree-courte) var(--courbe-standard);
+}
+
+.bib-equipe__photo {
+  width: 5.5rem;
+  height: 5.5rem;
+  margin-block-end: var(--espace-0-5);
+  border-radius: var(--rayon-plein);
+  object-fit: cover;
+}
+
+/* Sans photo : les initiales, sur la teinte du thème (décoratives : le nom est juste dessous) */
+.bib-equipe__photo--initiales {
+  display: grid;
+  place-items: center;
+  background-color: var(--bib-equipe-initiales-fond, var(--couleur-teinte));
+  color: var(--bib-equipe-initiales-texte, var(--couleur-texte));
+  font-size: var(--titre-3);
+  font-weight: var(--graisse-forte);
+  letter-spacing: 0.02em;
+  user-select: none;
+}
+
+@media (width >= 600px) {
+  .bib-equipe__photo--initiales {
+    font-size: var(--titre-2);
+  }
+}
+
+/* Un service ou une équipe plutôt qu'une personne (Soutien informatique, Équipe des
+   bibliothèques) : une icône de groupe Phosphor à la place de la photo, sur la même teinte */
+.bib-equipe__photo--service {
+  display: grid;
+  place-items: center;
+  background-color: var(--bib-equipe-initiales-fond, var(--couleur-teinte));
+  color: var(--bib-equipe-initiales-texte, var(--couleur-accent));
+  font-size: var(--titre-1);
 }
 
 @media (width >= 600px) {
@@ -53,20 +94,12 @@
 
 .bib-equipe__vignette:hover {
   border-color: var(--couleur-lien);
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--bleu-fonce) 12%, transparent);
+  box-shadow: var(--ombre-1);
 }
 
 .bib-equipe__vignette:has(a:focus-visible) {
   outline: 3px solid var(--couleur-focus);
   outline-offset: 2px;
-}
-
-.bib-equipe__photo {
-  width: 5.5rem;
-  height: 5.5rem;
-  margin-block-end: 0.25rem;
-  border-radius: var(--rayon-plein);
-  object-fit: cover;
 }
 
 .bib-equipe__nom,
@@ -98,7 +131,7 @@
 .bib-equipe__fonction {
   margin: 0;
   color: var(--couleur-texte-secondaire);
-  font-size: var(--texte-reduit);
+  font-size: var(--texte-petit);
   line-height: 1.4;
 }
 

@@ -9,7 +9,7 @@
  *     </figure>
  *   </div>
  *
- * Le texte de la légende prend le corps réduit (body2) ; ajouter les classes bib-typographie bib-typographie--body2
+ * Le texte de la légende prend le corps réduit (texte-petit) ; ajouter les classes bib-typographie bib-typographie--texte-petit
  * pour la même apparence que les sites. L'image est décorative (alt vide), sauf si elle porte un
  * message.
  */
@@ -37,5 +37,5 @@
 
 /* Deux classes : l'emporte sur la marge nulle de .bib-typographie */
 .bib-galerie .bib-galerie__legende {
-  margin-top: 8px;
+  margin-top: var(--espace-1);
 }

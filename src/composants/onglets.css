@@ -1,10 +1,10 @@
 /*
- * Onglets : un jeu d'onglets vertical (liste à gauche dès 900 px, en rangées au-dessus du contenu sur petit
- * écran) ou horizontal (la rangée reste au-dessus du contenu à toutes les largeurs). Motif Onglets de l'APG
+ * Onglets : une rangée d'onglets au-dessus des panneaux, à toutes les largeurs. Motif Onglets de l'APG
  * WAI-ARIA, avec amélioration progressive.
  *
- *   <div class="bib-onglets" data-onglets data-orientation-large="vertical">
+ *   <div class="bib-onglets" data-onglets>
  *     <div class="bib-onglets__liste" data-onglets-liste data-aria-label="Services">
+ *       <span class="bib-onglets__indicateur" aria-hidden="true" data-indicateur></span>
  *       <button type="button" class="bib-onglets__onglet" data-onglet id="o-1" aria-controls="p-1" data-selectionne="true">Prêt</button>
  *       <button type="button" class="bib-onglets__onglet" data-onglet id="o-2" aria-controls="p-2" data-selectionne="false">Retour</button>
  *     </div>
@@ -21,20 +21,20 @@
  * Jeux synchronisés : data-groupe sur la racine et data-valeur sur les onglets lient tous les jeux de la page
  * qui portent le même groupe ; le choix est gardé dans localStorage (bib.onglets.<groupe>) et, avec data-url,
  * dans l'adresse (?<groupe>=<valeur>), qui l'emporte au chargement. Une ancre qui vise un onglet ou un élément
- * d'un panneau l'affiche. Horizontal, sous 900 px : les panneaux défilent à l'horizontale, aimantés ; une
+ * d'un panneau l'affiche. Sous 900 px : les panneaux défilent à l'horizontale, aimantés ; une
  * pastille (.bib-onglets__indicateur) suit le doigt.
  *
- * Variante bib-onglets--compact (horizontal seulement) : la rangée placée dans le texte d'une page,
+ * Variante bib-onglets--compact : la rangée placée dans le texte d'une page,
  * alignée à gauche, moins haute, l'onglet choisi en bleu foncé et le survol en jaune.
  *
  * Couleurs : --bib-onglets-texte et --bib-onglets-accent (un fond foncé ou coloré les redéfinit pour garder
- * 4,5:1 : le bleu principal ne passe pas sur violet foncé) ; onglet choisi des onglets horizontaux :
- * --bib-onglets-selection-fond et --bib-onglets-selection-texte (jetons --selection-* du site sinon) ;
+ * 4,5:1 : le bleu principal ne passe pas sur un fond moyen) ; onglet choisi :
+ * --bib-onglets-selection-fond et --bib-onglets-selection-texte (--couleur-fond-fort et --couleur-sur-fonce sinon) ;
  * survol : --bib-onglets-survol.
  */
 .bib-onglets {
-  --_selection-fond: var(--bib-onglets-selection-fond, var(--selection-fond, var(--couleur-fond-fort, #0b113a)));
-  --_selection-texte: var(--bib-onglets-selection-texte, var(--selection-texte, var(--couleur-sur-fonce, #fff)));
+  --_selection-fond: var(--bib-onglets-selection-fond, var(--couleur-fond-fort));
+  --_selection-texte: var(--bib-onglets-selection-texte, var(--couleur-sur-fonce));
   width: 100%;
   font-family: var(--police-sans);
 }
@@ -54,14 +54,14 @@
   position: relative;
   appearance: none;
   margin: 0 0 -1px;
-  padding: 12px 16px;
-  min-height: 48px;
+  padding: var(--espace-1-5) var(--espace-2);
+  min-height: var(--hauteur-controle);
   border: 0;
   border-bottom: 2px solid transparent;
   background: none;
   color: var(--bib-onglets-texte, var(--couleur-texte-secondaire));
   font: inherit;
-  font-size: 0.875rem;
+  font-size: var(--texte-petit);
   font-weight: var(--graisse-moyenne);
   line-height: 1.25;
   text-align: left;
@@ -89,7 +89,7 @@
   height: 2px;
   background-color: currentColor;
   transform: scaleX(0);
-  transition: transform var(--duree-courte-4) var(--courbe-emphase-deceleree);
+  transition: transform var(--duree-courte) var(--courbe-entree);
 }
 
 .bib-onglets__onglet[data-selectionne='true']::after {
@@ -121,9 +121,9 @@
      libellé choisi ; un scale déformerait son arrondi */
   .bib-onglets.bib-onglets--carrousel > .bib-onglets__liste.bib-onglets__liste--pret:not(.bib-onglets__liste--suivi) > .bib-onglets__indicateur {
     transition:
-      translate var(--duree-moyenne-2) var(--courbe-emphase-deceleree),
-      width var(--duree-moyenne-2) var(--courbe-emphase-deceleree),
-      height var(--duree-moyenne-2) var(--courbe-emphase-deceleree);
+      translate var(--duree-moyenne) var(--courbe-entree),
+      width var(--duree-moyenne) var(--courbe-entree),
+      height var(--duree-moyenne) var(--courbe-entree);
   }
 
   /* Une fois la pastille en place, c'est elle qui fait le fond de l'onglet actif */
@@ -135,10 +135,10 @@
      les anneaux de focus au bord ; l'écart entre panneaux (16 px) cache le voisin. */
   .bib-onglets.bib-onglets--carrousel > .bib-onglets__panneaux {
     display: flex;
-    gap: 16px;
+    gap: var(--espace-2);
     align-items: flex-start;
     margin: -4px;
-    padding: 4px;
+    padding: var(--espace-0-5);
     overflow: auto hidden;
     overscroll-behavior-x: contain;
     scroll-padding-inline: 4px;
@@ -146,7 +146,7 @@
     scrollbar-width: none;
     box-sizing: content-box;
     /* Exception voulue, comme la hauteur des accordéons : la zone suit le panneau choisi et pousse la suite */
-    transition: height var(--duree-moyenne-2) var(--courbe-standard);
+    transition: height var(--duree-moyenne) var(--courbe-standard);
   }
 
   .bib-onglets.bib-onglets--carrousel > .bib-onglets__panneaux::-webkit-scrollbar {
@@ -182,7 +182,7 @@
 .bib-onglets__titre-panneau {
   margin: 0 0 var(--espace-2);
   font-family: var(--police-sans);
-  font-size: 1.2222rem;
+  font-size: var(--texte-grand);
   font-weight: var(--graisse-forte);
   line-height: 1.2;
 }
@@ -194,53 +194,7 @@
 
 @media (min-width: 600px) {
   .bib-onglets__onglet {
-    font-size: 1rem;
-  }
-}
-
-@media (min-width: 900px) {
-  /* Flex plutôt que grille : sans JS la liste est absente et les panneaux
-     reprennent toute la largeur. */
-  .bib-onglets:not(.bib-onglets--horizontal) {
-    display: flex;
-    align-items: stretch;
-  }
-
-  .bib-onglets:not(.bib-onglets--horizontal) .bib-onglets__liste {
-    flex: 0 0 auto;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    /* 200 px, en rem pour suivre le texte agrandi */
-    width: 11.1111rem;
-    border-bottom: 0;
-    border-right: 1px solid var(--couleur-bordure);
-  }
-
-  .bib-onglets:not(.bib-onglets--horizontal) .bib-onglets__onglet {
-    margin: 0 -1px 0 0;
-    font-size: 1.125rem;
-    border-bottom: 0;
-    border-right: 2px solid transparent;
-  }
-
-  .bib-onglets:not(.bib-onglets--horizontal) .bib-onglets__onglet::after {
-    top: 0;
-    right: -2px;
-    bottom: 0;
-    left: auto;
-    width: 2px;
-    height: auto;
-    transform: scaleY(0);
-  }
-
-  .bib-onglets:not(.bib-onglets--horizontal) .bib-onglets__onglet[data-selectionne='true']::after {
-    transform: none;
-  }
-
-  .bib-onglets:not(.bib-onglets--horizontal) .bib-onglets__panneaux {
-    flex: 1 1 0;
-    min-width: 0;
-    min-height: 400px;
+    font-size: var(--texte-courant);
   }
 }
 
@@ -248,12 +202,12 @@
    (comme les onglets du Quoi de neuf sur mobile). Contrastes : bleu foncé
    sur blanc et blanc sur bleu foncé, 18:1 ; la capsule se détache du fond
    de la bande par son ombre. */
-.bib-onglets--horizontal .bib-onglets__liste {
-  gap: 0.25rem;
+.bib-onglets .bib-onglets__liste {
+  gap: var(--espace-0-5);
   width: fit-content;
   max-width: 100%;
   margin-inline: auto;
-  padding: 0.3125rem;
+  padding: var(--espace-0-5);
   border: 0;
   /* Coins arrondis sous 600 px : si le texte agrandi fait passer les
      onglets sur deux lignes, la capsule reste propre */
@@ -264,92 +218,92 @@
 
 /* Sous 600 px, chaque onglet prend sa part de la largeur ; un libellé
    long passe sur deux lignes dans son onglet */
-.bib-onglets--horizontal .bib-onglets__liste {
+.bib-onglets .bib-onglets__liste {
   flex-wrap: nowrap;
 }
 
-.bib-onglets--horizontal .bib-onglets__onglet {
+.bib-onglets .bib-onglets__onglet {
   flex: 1 1 0;
   min-width: 0;
   margin: 0;
-  padding: 0.5rem 0.75rem;
+  padding: var(--espace-1) var(--espace-1-5);
   border: 0;
   border-radius: var(--rayon-moyen);
   color: var(--couleur-texte);
   text-align: center;
   transition:
-    background-color var(--duree-courte-4) var(--courbe-standard),
-    color var(--duree-courte-4) var(--courbe-standard);
+    background-color var(--duree-courte) var(--courbe-standard),
+    color var(--duree-courte) var(--courbe-standard);
 }
 
-.bib-onglets--horizontal .bib-onglets__onglet::after {
+.bib-onglets .bib-onglets__onglet::after {
   display: none;
 }
 
-.bib-onglets--horizontal .bib-onglets__onglet:hover {
+.bib-onglets .bib-onglets__onglet:hover {
   background-color: var(--bib-onglets-survol, var(--couleur-teinte));
   color: var(--couleur-texte);
 }
 
-.bib-onglets--horizontal .bib-onglets__onglet[data-selectionne='true'] {
+.bib-onglets .bib-onglets__onglet[data-selectionne='true'] {
   background-color: var(--_selection-fond);
   color: var(--_selection-texte);
 }
 
-.bib-onglets--horizontal .bib-onglets__onglet:focus-visible {
+.bib-onglets .bib-onglets__onglet:focus-visible {
   outline: 3px solid var(--couleur-focus);
   outline-offset: 2px;
 }
 
-.bib-onglets--horizontal .bib-onglets__panneau {
+.bib-onglets .bib-onglets__panneau {
   padding-top: var(--espace-5);
 }
 
 @media (min-width: 600px) {
-  .bib-onglets--horizontal .bib-onglets__liste,
-  .bib-onglets--horizontal .bib-onglets__onglet {
+  .bib-onglets .bib-onglets__liste,
+  .bib-onglets .bib-onglets__onglet {
     border-radius: var(--rayon-plein);
   }
 
-  .bib-onglets--horizontal .bib-onglets__onglet {
+  .bib-onglets .bib-onglets__onglet {
     flex: 0 1 auto;
-    padding: 0.625rem 1.25rem;
+    padding: var(--espace-1) var(--espace-2-5);
   }
 }
 
 @media (min-width: 900px) {
-  .bib-onglets--horizontal .bib-onglets__onglet {
-    padding-inline: 1.75rem;
-    font-size: 1.125rem;
+  .bib-onglets .bib-onglets__onglet {
+    padding-inline: var(--espace-3);
+    font-size: var(--texte-moyen);
   }
 }
 
 /* ---- Compact : rangée du texte d'une page, alignée à gauche et moins haute.
    La hauteur des onglets reste au-dessus de 24 px (WCAG 2.5.8). ---- */
 .bib-onglets--compact {
-  --bib-onglets-survol: var(--action-douce-fond-survol, var(--jaune));
+  --bib-onglets-survol: var(--jaune);
   margin-block: var(--espace-bloc);
 }
 
-.bib-onglets--compact.bib-onglets--horizontal .bib-onglets__liste {
-  gap: 0.125rem;
+.bib-onglets--compact .bib-onglets__liste {
+  gap: var(--espace-0-5);
   margin-inline: 0;
-  padding: 0.1875rem;
+  padding: var(--espace-0-5);
 }
 
-.bib-onglets--compact.bib-onglets--horizontal .bib-onglets__onglet {
-  min-height: 2.25rem;
-  padding: 0.3125rem 0.875rem;
-  font-size: 0.9375rem;
+.bib-onglets--compact .bib-onglets__onglet {
+  min-height: var(--hauteur-controle-compacte);
+  padding: var(--espace-0-5) var(--espace-1-5);
+  font-size: var(--texte-petit);
 }
 
 /* L'onglet choisi est un état : il ne prend pas le fond du survol */
-.bib-onglets--compact.bib-onglets--horizontal .bib-onglets__onglet[data-selectionne='true']:hover {
+.bib-onglets--compact .bib-onglets__onglet[data-selectionne='true']:hover {
   background-color: var(--_selection-fond);
   color: var(--_selection-texte);
 }
 
-.bib-onglets--compact.bib-onglets--horizontal .bib-onglets__panneau {
+.bib-onglets--compact .bib-onglets__panneau {
   padding-top: var(--espace-3);
 }
 
@@ -371,7 +325,7 @@
 
   .bib-onglets--compact.bib-onglets--carrousel .bib-onglets__onglet {
     flex: 1 1 auto;
-    padding-inline: 0.75rem;
+    padding-inline: var(--espace-1-5);
     overflow-wrap: normal;
   }
 
@@ -382,7 +336,7 @@
 
 /* Dès 600 px, chaque onglet garde la largeur de son libellé */
 @media (min-width: 600px) {
-  .bib-onglets--compact.bib-onglets--horizontal .bib-onglets__onglet {
+  .bib-onglets--compact .bib-onglets__onglet {
     flex: 0 1 auto;
   }
 }
@@ -390,14 +344,14 @@
 /* Jamais de mot coupé (« Présentatio n ») : un onglet ne rétrécit pas sous son mot le plus long ; la
    rangée passe à la ligne si même ces mots n'y tiennent pas */
 @media (min-width: 900px) {
-  .bib-onglets--compact.bib-onglets--horizontal .bib-onglets__liste {
+  .bib-onglets--compact .bib-onglets__liste {
     flex-wrap: wrap;
   }
 
-  .bib-onglets--compact.bib-onglets--horizontal .bib-onglets__onglet {
+  .bib-onglets--compact .bib-onglets__onglet {
     min-width: auto;
-    padding-inline: 0.875rem;
-    font-size: 1rem;
+    padding-inline: var(--espace-1-5);
+    font-size: var(--texte-courant);
     overflow-wrap: normal;
   }
 }
@@ -413,7 +367,7 @@
     display: none;
   }
 
-  .bib-onglets--horizontal .bib-onglets__onglet[data-selectionne='true'] {
+  .bib-onglets .bib-onglets__onglet[data-selectionne='true'] {
     outline: 2px solid Highlight;
   }
 
@@ -422,13 +376,6 @@
     border-bottom-width: 4px;
     text-decoration: underline 2px;
     text-underline-offset: 0.2em;
-  }
-
-  @media (min-width: 900px) {
-    .bib-onglets:not(.bib-onglets--horizontal) .bib-onglets__onglet[data-selectionne='true'] {
-      border-bottom-width: 0;
-      border-right-width: 4px;
-    }
   }
 }
 

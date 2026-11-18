@@ -49,18 +49,16 @@ interface Props {
   /** Id du titre, à donner quand la page a plusieurs navigations de même variante (sommaire) */
   idTitre?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
 }
 
-const { racine, courante, variante = 'colonne', resume = 'Dans cette section', lang, class: classe, className } = Astro.props
+const { racine, courante, variante = 'colonne', resume = 'Dans cette section', lang, class: classe } = Astro.props
 const contient = (n: Noeud): boolean => n.url === courante || n.enfants.some(contient)
 const repliable = variante === 'repliable'
 const titreDansResume = repliable && !racine?.url && racine?.titre === resume
 const estSommaire = racine?.sommaire === true
 const idTitre = Astro.props.idTitre ?? idUnique('titre-navigation-section')
 const Enveloppe = repliable ? 'details' : Fragment
-const attributsEnveloppe = repliable ? { class: classes('bib-navigation-secondaire-repliable', classe, className), lang } : {}
+const attributsEnveloppe = repliable ? { class: classes('bib-navigation-secondaire-repliable', classe), lang } : {}
 const externe = (url: string) => versAilleurs(analyserLien(url, Astro.site?.origin ?? Astro.url.origin))
 ---
 
@@ -73,7 +71,7 @@ const externe = (url: string) => versAilleurs(analyserLien(url, Astro.site?.orig
           <span class="bib-navigation-secondaire__chevron" aria-hidden="true" />
         </summary>
       )}
-      <nav class:list={['bib-navigation-secondaire', { 'bib-navigation-secondaire--dans-repliable': repliable, 'bib-navigation-secondaire--sommaire': estSommaire }, !repliable && classes(classe, className)]} aria-labelledby={idTitre} lang={repliable ? undefined : lang}>
+      <nav class:list={['bib-navigation-secondaire', { 'bib-navigation-secondaire--dans-repliable': repliable, 'bib-navigation-secondaire--sommaire': estSommaire }, !repliable && classes(classe)]} aria-labelledby={idTitre} lang={repliable ? undefined : lang}>
         {racine.url ? (
           <a id={idTitre} class="bib-navigation-secondaire__titre" href={racine.url} lang={racine.lang} aria-current={racine.url === courante ? 'page' : undefined}>
             {racine.titre}

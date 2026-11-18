@@ -30,7 +30,7 @@
  * - Sous 900 px, l'onglet tient lieu de titre visible ; le h3 de la colonne reste pour la navigation par
  *   titres des lecteurs d'écran.
  *
- * Habillage : les onglets prennent --bleu-fonce (pastille) et --bleu-200 (contour).
+ * Habillage : les onglets prennent --bleu-fonce (pastille) et --bleu-20 (contour).
  */
 /* Mobile et tablette (onglets) : deux éléments par colonne seulement, le
      lien « Tous nos… » de la colonne mène à la suite. Les éléments chargés
@@ -54,11 +54,11 @@
   .bib-quoi-de-neuf__onglets {
     display: none;
     flex-wrap: wrap;
-    gap: 0.25rem;
+    gap: var(--espace-0-5);
     margin-bottom: var(--espace-3);
     position: relative;
-    padding: 0.25rem;
-    border: 1px solid var(--bleu-200);
+    padding: var(--espace-0-5);
+    border: 1px solid var(--bleu-20);
     border-radius: var(--rayon-grand);
   }
 
@@ -74,15 +74,15 @@
 
   .bib-quoi-de-neuf__onglets--pret:not(.bib-quoi-de-neuf__onglets--suivi) .bib-quoi-de-neuf__indicateur {
     transition:
-      translate var(--duree-moyenne-2) var(--courbe-emphase-deceleree),
-      width var(--duree-moyenne-2) var(--courbe-emphase-deceleree),
-      height var(--duree-moyenne-2) var(--courbe-emphase-deceleree);
+      translate var(--duree-moyenne) var(--courbe-entree),
+      width var(--duree-moyenne) var(--courbe-entree),
+      height var(--duree-moyenne) var(--courbe-entree);
   }
 
   .bib-quoi-de-neuf__onglet {
     position: relative;
     flex: 1 1 auto;
-    min-height: 2.75rem;
+    min-height: var(--hauteur-controle);
     padding-inline: var(--espace-1);
     border: 0;
     border-radius: var(--rayon-plein);
@@ -97,8 +97,8 @@
     cursor: pointer;
     touch-action: manipulation;
     transition:
-      background-color var(--duree-courte-4) var(--courbe-standard),
-      color var(--duree-courte-4) var(--courbe-standard);
+      background-color var(--duree-courte) var(--courbe-standard),
+      color var(--duree-courte) var(--courbe-standard);
   }
 
   .bib-quoi-de-neuf__onglet[data-actif='true'] {
@@ -152,17 +152,17 @@
        entre panneaux (16 px) cache le voisin. */
     .bib-quoi-de-neuf__grille.bib-quoi-de-neuf__grille--carrousel {
       display: flex;
-      gap: 16px;
+      gap: var(--espace-2);
       align-items: flex-start;
       margin: -4px;
-      padding: 4px;
+      padding: var(--espace-0-5);
       overflow: auto hidden;
       overscroll-behavior-x: contain;
       scroll-padding-inline: 4px;
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
       box-sizing: content-box;
-      transition: height var(--duree-moyenne-2) var(--courbe-standard);
+      transition: height var(--duree-moyenne) var(--courbe-standard);
     }
 
     .bib-quoi-de-neuf__grille.bib-quoi-de-neuf__grille--carrousel::-webkit-scrollbar {

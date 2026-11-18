@@ -14,10 +14,12 @@
  * Habillage (action douce par défaut) : --bib-copier-fond (surface), --bib-copier-fond-survol
  * (jaune), --bib-copier-texte (bleu foncé), --bib-copier-contour (contour du thème).
  */
+@import './commun/masque.css';
+
 .bib-copier {
   display: inline-flex;
   flex-wrap: wrap;
-  gap: 0.25rem;
+  gap: var(--espace-0-5);
   align-items: center;
   max-width: 100%;
   vertical-align: baseline;
@@ -31,21 +33,21 @@
 
 .bib-copier__bouton {
   display: inline-flex;
-  gap: 0.25rem;
+  gap: var(--espace-0-5);
   align-items: center;
   min-width: 24px;
-  min-height: 24px;
-  padding: 0.1rem 0.5rem;
+  min-height: var(--taille-cible-min);
+  padding: 0.1rem var(--espace-1);
   border: 1px solid var(--bib-copier-contour, var(--couleur-contour));
   border-radius: var(--rayon-petit);
   background-color: var(--bib-copier-fond, var(--couleur-surface));
   color: var(--bib-copier-texte, var(--bleu-fonce));
   font: inherit;
-  font-size: 0.8333rem;
+  font-size: var(--texte-minuscule);
   font-weight: var(--graisse-moyenne);
   line-height: 1.2;
   cursor: pointer;
-  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+  transition: background-color var(--duree-courte) var(--courbe-standard);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -65,18 +67,6 @@
 
 .bib-copier__bouton[data-copie] .bib-copier__icone-copie {
   display: inline;
-}
-
-.bib-copier .bib-masque {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0 0 0 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
 }
 
 @media (forced-colors: active) {

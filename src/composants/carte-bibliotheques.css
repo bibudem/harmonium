@@ -52,6 +52,8 @@
  *   d'un bouton de région au survol), -marqueur (bleu foncé). « Afficher la carte » prend les couleurs du bouton
  *   plein (--bib-bouton-plein-fond, -texte, -fond-survol).
  */
+@import './commun/masque.css';
+
 .bib-carte-bibliotheques {
   --_neutre: var(--bib-carte-bibliotheques-neutre, color-mix(in srgb, var(--couleur-bordure) 30%, var(--couleur-surface)));
   --_marqueur: var(--bib-carte-bibliotheques-marqueur, var(--bleu-fonce));
@@ -82,7 +84,7 @@
   font: inherit;
   font-weight: var(--graisse-forte);
   cursor: pointer;
-  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+  transition: background-color var(--duree-courte) var(--courbe-standard);
 }
 
 .bib-carte-bibliotheques__region:hover {
@@ -117,7 +119,7 @@
 
 .bib-carte-bibliotheques__carte {
   position: relative;
-  z-index: 0; /* sous l'en-tête et les menus */
+  z-index: var(--z-plan); /* sous l'en-tête et les menus */
   height: var(--_hauteur);
   overflow: hidden;
   border: 1px solid var(--couleur-bordure);
@@ -147,7 +149,7 @@
 .bib-carte-bibliotheques__invite p {
   margin: 0;
   color: var(--couleur-texte-secondaire);
-  font-size: 0.875rem;
+  font-size: var(--texte-petit);
 }
 
 .bib-carte-bibliotheques__afficher {
@@ -160,7 +162,7 @@
   font: inherit;
   font-weight: var(--graisse-forte);
   cursor: pointer;
-  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+  transition: background-color var(--duree-courte) var(--courbe-standard);
 }
 
 .bib-carte-bibliotheques__afficher:hover {
@@ -171,7 +173,7 @@
   max-inline-size: none;
   margin: var(--espace-1) 0 0;
   color: var(--couleur-texte-secondaire);
-  font-size: 0.875rem;
+  font-size: var(--texte-petit);
 }
 
 .bib-carte-bibliotheques__etat:empty {
@@ -192,25 +194,25 @@
   background: var(--couleur-surface);
   box-shadow: var(--ombre-1);
   color: var(--_marqueur);
-  font-size: 0.75rem;
+  font-size: var(--texte-minuscule);
   font-weight: var(--graisse-grasse);
   line-height: 1;
 }
 
 .bib-carte-bibliotheques__bulle-titre {
   display: block;
-  margin-bottom: 0.25rem;
-  font-size: 0.95rem;
+  margin-bottom: var(--espace-0-5);
+  font-size: var(--texte-courant);
 }
 
 .bib-carte-bibliotheques__bulle-liste {
-  margin: 0 0 0.4rem;
-  padding-left: 1.1rem;
+  margin: 0 0 var(--espace-1);
+  padding-left: var(--espace-2);
 }
 
 .bib-carte-bibliotheques__bulle-details {
-  margin: 0 0 0.4rem;
-  font-size: 0.85rem;
+  margin: 0 0 var(--espace-1);
+  font-size: var(--texte-petit);
 }
 
 .bib-carte-bibliotheques__carte .leaflet-container a {
@@ -235,14 +237,14 @@
   padding: var(--espace-1) var(--espace-2);
   border-bottom: 1px solid var(--couleur-bordure);
   background: var(--_neutre);
-  font-size: 0.875rem;
+  font-size: var(--texte-petit);
 }
 
 /* Seulement quand la liste a sa propre hauteur (carte à côté) */
 .bib-carte-bibliotheques__defiler {
   display: none;
   color: var(--couleur-texte-secondaire);
-  font-size: 0.8125rem;
+  font-size: var(--texte-minuscule);
 }
 
 .bib-carte-bibliotheques__sous-titre {
@@ -258,12 +260,12 @@
 
 .bib-carte-bibliotheques__lieu {
   display: flex;
-  gap: 0.75rem;
+  gap: var(--espace-1-5);
   max-inline-size: none;
   margin: 0;
-  padding: 0.75rem var(--espace-2);
+  padding: var(--espace-1-5) var(--espace-2);
   border-bottom: 1px solid var(--couleur-bordure);
-  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+  transition: background-color var(--duree-courte) var(--courbe-standard);
 }
 
 .bib-carte-bibliotheques__lieu:last-child {
@@ -288,7 +290,7 @@
   border-radius: var(--rayon-plein);
   background: var(--couleur-surface);
   color: var(--_marqueur);
-  font-size: 0.75rem;
+  font-size: var(--texte-minuscule);
   font-weight: var(--graisse-grasse);
   line-height: 1;
 }
@@ -300,7 +302,7 @@
 
 .bib-carte-bibliotheques__titre {
   margin: 0;
-  font-size: 1rem;
+  font-size: var(--texte-courant);
   font-weight: var(--graisse-forte);
   line-height: 1.3;
 }
@@ -309,7 +311,7 @@
 .bib-carte-bibliotheques__titre a {
   display: inline-flex;
   align-items: center;
-  min-height: 24px;
+  min-height: var(--taille-cible-min);
   color: var(--couleur-texte);
   text-decoration: none;
 }
@@ -322,11 +324,11 @@
 .bib-carte-bibliotheques__emplacement {
   display: flex;
   align-items: baseline;
-  gap: 0.35rem;
+  gap: var(--espace-0-5);
   max-inline-size: none;
-  margin: 0.2rem 0 0.45rem;
+  margin: var(--espace-0-5) 0 var(--espace-1);
   color: var(--couleur-texte-secondaire);
-  font-size: 0.875rem;
+  font-size: var(--texte-petit);
   line-height: 1.4;
 }
 
@@ -337,16 +339,16 @@
 }
 
 .bib-carte-bibliotheques__corps > .bib-pastilles {
-  gap: 0.35rem;
-  margin: 0 0 0.5rem;
+  gap: var(--espace-0-5);
+  margin: 0 0 var(--espace-1);
 }
 
 .bib-carte-bibliotheques__details {
   max-inline-size: none;
-  margin: 0 0 0.5rem;
-  padding-left: 1.1rem;
+  margin: 0 0 var(--espace-1);
+  padding-left: var(--espace-2);
   color: var(--couleur-texte-secondaire);
-  font-size: 0.875rem;
+  font-size: var(--texte-petit);
   line-height: 1.45;
   list-style: circle;
 }
@@ -361,15 +363,15 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0 var(--espace-2);
-  font-size: 0.875rem;
+  font-size: var(--texte-petit);
 }
 
 /* Cible de 24 px au moins (WCAG 2.5.8) */
 .bib-carte-bibliotheques__lien {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  min-height: 24px;
+  gap: var(--espace-0-5);
+  min-height: var(--taille-cible-min);
   padding: 0;
   border: 0;
   background: none;
@@ -438,18 +440,6 @@
     height: auto;
     min-height: var(--_hauteur);
   }
-}
-
-.bib-masque {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0 0 0 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

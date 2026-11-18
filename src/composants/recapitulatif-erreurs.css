@@ -1,0 +1,77 @@
+/*
+ * Récapitulatif d'erreurs : en haut d'un formulaire renvoyé avec des erreurs, la liste de ce qu'il faut corriger,
+ * chaque ligne étant un lien vers le champ concerné. Le message de chaque ligne est le même que celui du champ.
+ *
+ *   <div class="bib-recapitulatif-erreurs" tabindex="-1" aria-labelledby="erreurs-titre" data-recapitulatif-erreurs>
+ *     <h2 class="bib-recapitulatif-erreurs__titre" id="erreurs-titre">Il y a un problème</h2>
+ *     <ul class="bib-recapitulatif-erreurs__liste">
+ *       <li><a href="#courriel">Saisir une adresse complète, comme nom@umontreal.ca</a></li>
+ *       <li><a href="#format-salle">Choisir le format de la formation</a></li>
+ *     </ul>
+ *   </div>
+ *
+ * Avec bib-recapitulatif-erreurs.min.js (facultatif) : le récapitulatif reçoit le focus au chargement (il est
+ * lu en premier), et un lien place le champ sous les yeux avec son libellé (ou la légende de son groupe) avant
+ * de lui donner le focus. data-sans-focus : pas de focus au chargement (récapitulatif affiché après coup par
+ * le script de la page, qui gère lui-même le focus). Sans le script, les liens d'ancre mènent déjà au champ.
+ *
+ * Variables : --bib-recapitulatif-erreurs-couleur (bordure et liens ; défaut : rouge d'erreur des alertes).
+ */
+.bib-recapitulatif-erreurs {
+  --_couleur: var(--bib-recapitulatif-erreurs-couleur, var(--alerte-erreur-icone));
+
+  margin-block: 0 var(--espace-4);
+  padding: var(--espace-3);
+  border: 3px solid var(--_couleur);
+  border-radius: var(--rayon-petit);
+  background-color: var(--couleur-surface);
+  color: var(--couleur-texte);
+  font-family: var(--police-sans);
+}
+
+.bib-recapitulatif-erreurs:focus {
+  outline: none;
+}
+
+.bib-recapitulatif-erreurs:focus-visible {
+  outline: var(--focus-epaisseur) solid var(--couleur-focus);
+  outline-offset: var(--focus-retrait);
+}
+
+.bib-recapitulatif-erreurs__titre {
+  margin: 0 0 var(--espace-2);
+  font-size: var(--texte-grand);
+  font-weight: var(--graisse-grasse);
+  line-height: 1.25;
+}
+
+.bib-recapitulatif-erreurs__liste {
+  display: grid;
+  gap: var(--espace-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bib-recapitulatif-erreurs__liste a {
+  color: var(--_couleur);
+  font-weight: var(--graisse-forte);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+
+.bib-recapitulatif-erreurs__liste a:hover {
+  text-decoration-thickness: 3px;
+}
+
+.bib-recapitulatif-erreurs__liste a:focus-visible {
+  outline: var(--focus-epaisseur) solid var(--couleur-focus);
+  outline-offset: var(--focus-retrait);
+}
+
+@media (forced-colors: active) {
+  .bib-recapitulatif-erreurs {
+    border-color: CanvasText;
+  }
+}

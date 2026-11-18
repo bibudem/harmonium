@@ -6,7 +6,7 @@
  *   <section class="bib-colonne-actualites" aria-labelledby="col-ev" data-colonne="col-ev">
  *     <h3 class="bib-colonne-actualites__titre" id="col-ev">Événements</h3>
  *     <div class="bib-colonne-actualites__corps"><ul class="bib-actualites">…</ul></div>
- *     <div class="bib-colonne-actualites__plus"><a class="bib-bouton bib-bouton--texte" href="/evenements/"><span class="bib-bouton__libelle">Tous nos événements</span><span class="bib-bouton__fin" aria-hidden="true"></span></a></div>
+ *     <div class="bib-colonne-actualites__plus"><a class="bib-bouton bib-bouton--contour" href="/evenements/"><span class="bib-bouton__libelle">Tous nos événements</span><span class="bib-bouton__fin" aria-hidden="true"></span></a></div>
  *   </section>
  *
  * - __corps est un conteneur de requête (« quoi-de-neuf ») : les éléments (actualite.css) ne coupent leurs
@@ -28,7 +28,7 @@
 
 .bib-colonne-actualites__titre {
   margin: 0;
-  font-size: 1.75rem;
+  font-size: var(--titre-3);
   font-weight: var(--graisse-moyenne);
   line-height: 1.2;
 }

@@ -6,7 +6,7 @@
  *   <CarteLienCompacte titre="Nous joindre" description="Par téléphone, courriel ou clavardage." href="/nous-joindre/" Icone={PaperPlaneTiltIcon} />
  *
  * `element` : `li` dans une liste de cartes (par défaut), `div` dans une grille. `niveauTitre` : 2 à 6, ou
- * null pour un <div>. `etiquette` : libellé sous le titre. Couleur : neutre (par défaut), bleuPrincipal, vertFonce, rose300, jaune.
+ * null pour un <div>. `etiquette` : libellé sous le titre. Couleur : neutre (par défaut), bleuPrincipal, vertFonce, rose, jaune.
  */
 import '../src/composants/carte-compacte.css'
 import '../src/composants/carte-lien.css'
@@ -14,7 +14,7 @@ import PastilleFleche from './PastilleFleche.astro'
 import { lienCarte } from './liens.ts'
 import { classes, fusionnerStyles, type Style } from './styles.ts'
 
-type Couleur = 'neutre' | 'bleuPrincipal' | 'vertFonce' | 'rose300' | 'jaune'
+type Couleur = 'neutre' | 'bleuPrincipal' | 'vertFonce' | 'rose' | 'jaune'
 
 interface Props {
   titre: string
@@ -31,17 +31,15 @@ interface Props {
   element?: 'li' | 'div'
   id?: string
   class?: string
-  /** Contenu repris de React */
-  className?: string
   style?: Style
 }
 
-const { titre, description, etiquette, href, target, rel, Icone, niveauTitre = 3, couleur = 'neutre', element = 'li', class: classe, className, style, ...reste } = Astro.props
+const { titre, description, etiquette, href, target, rel, Icone, niveauTitre = 3, couleur = 'neutre', element = 'li', class: classe, style, ...reste } = Astro.props
 const { externe, afficherFleche, cible, rel: relFinal, annonce } = href ? lienCarte(href, target, rel, Astro.site?.origin ?? Astro.url.origin) : { externe: false, afficherFleche: false, cible: undefined, rel: undefined, annonce: '' }
 const Titre = (niveauTitre === null ? 'div' : `h${niveauTitre}`) as 'h3'
 const Element = element as 'li'
-const COULEUR_CSS: Record<Couleur, string> = { neutre: 'neutre', bleuPrincipal: 'bleu-principal', vertFonce: 'vert-fonce', rose300: 'rose-300', jaune: 'jaune' }
-const claire = couleur === 'neutre' || couleur === 'rose300' || couleur === 'jaune'
+const COULEUR_CSS: Record<Couleur, string> = { neutre: 'neutre', bleuPrincipal: 'bleu-principal', vertFonce: 'vert-fonce', rose: 'rose', jaune: 'jaune' }
+const claire = couleur === 'neutre' || couleur === 'rose' || couleur === 'jaune'
 // Sans les attributs de portée des composants parents : CarteIcone lui
 // délègue sa variante pleine largeur, et ses règles .carte (grande carte de
 // 400 px) s'appliqueraient sinon à cette rangée
@@ -49,7 +47,7 @@ const attributs = Object.fromEntries(Object.entries(reste).filter(([cle]) => !cl
 ---
 
 <Element
-  class:list={['bib-carte-compacte', 'bib-carte-lien', 'bib-anneau-carte', `bib-carte-compacte--${COULEUR_CSS[couleur]}`, { 'surface-claire': claire, 'bib-carte-compacte--sans-icone': !Icone, 'bib-carte-compacte--sans-description': !description, 'bib-carte-compacte--sans-lien': !href }, classes(classe, className)]}
+  class:list={['bib-carte-compacte', 'bib-carte-lien', 'bib-anneau-carte', `bib-carte-compacte--${COULEUR_CSS[couleur]}`, { 'surface-claire': claire, 'bib-carte-compacte--sans-icone': !Icone, 'bib-carte-compacte--sans-description': !description, 'bib-carte-compacte--sans-lien': !href }, classes(classe)]}
   style={fusionnerStyles(style)}
   {...attributs}
 >
