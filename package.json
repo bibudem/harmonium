@@ -1,16 +1,14 @@
 {
   "name": "harmonium",
-  "version": "1.0.0",
-  "description": "Composants partagés des sites des bibliothèques de l'UdeM : clavardage, avis, urgence, rétroaction, consentement, alertes.",
+  "version": "1.1.0",
+  "description": "Harmonium : système de design des sites des Bibliothèques de l’UdeM (jetons, composants CSS, scripts facultatifs et composants Astro).",
   "type": "module",
   "private": true,
   "exports": {
     "./alertes.css": "./src/alertes/alertes.css",
     "./astro/Accordeon.astro": "./astro/Accordeon.astro",
     "./astro/AccordeonContenu.astro": "./astro/AccordeonContenu.astro",
-    "./astro/AccordeonDetails.astro": "./astro/AccordeonContenu.astro",
     "./astro/AccordeonGroupe.astro": "./astro/GroupeAccordeons.astro",
-    "./astro/AccordeonResume.astro": "./astro/AccordeonTitre.astro",
     "./astro/AccordeonTitre.astro": "./astro/AccordeonTitre.astro",
     "./astro/Actualite.astro": "./astro/Actualite.astro",
     "./astro/Alerte.astro": "./astro/Alerte.astro",
@@ -120,7 +118,10 @@
     "./astro/IconeFlecheDroiteCercle.astro": "./astro/IconeFlecheDroiteCercle.astro",
     "./astro/IconeFlecheGaucheCercle.astro": "./astro/IconeFlecheGaucheCercle.astro",
     "./astro/IconeFlecheHautDroiteCercle.astro": "./astro/IconeFlecheHautDroiteCercle.astro",
-    "./astro/IconeSavoirsAutochtones.astro": "./astro/IconeSavoirsAutochtones.astro"
+    "./astro/IconeSavoirsAutochtones.astro": "./astro/IconeSavoirsAutochtones.astro",
+    "./astro/RecapitulatifErreurs.astro": "./astro/RecapitulatifErreurs.astro",
+    "./astro/Pagination.astro": "./astro/Pagination.astro",
+    "./astro/EtatVide.astro": "./astro/EtatVide.astro"
   },
   "files": [
     "astro/",
@@ -139,7 +140,8 @@
     "test:navigateur": "node scripts/build.mjs && node --test --test-concurrency=1 'tests/navigateur/*.test.mjs'",
     "pages": "node scripts/build.mjs && node scripts/site.mjs --publication",
     "site": "node scripts/site.mjs",
-    "test:site": "node --test 'tests/site/*.test.mjs'"
+    "test:site": "node --test 'tests/site/*.test.mjs'",
+    "vignettes": "node scripts/vignettes.mjs"
   },
   "engines": {
     "node": ">=22.18"
