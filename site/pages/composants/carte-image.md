@@ -12,9 +12,7 @@ fichiers: "`harmonium/astro/CarteImage.astro` · `bib-carte-image.min.css`"
 
 ::exemple[composants/carte-image/02.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <div class="bib-carte-image bib-carte-lien bib-anneau-carte surface-claire">
@@ -33,7 +31,15 @@ Les titres utilisent Figtree dans toutes les variantes.
 
 Habillage : la carte fait 330 × 500 px, la photo 220 px de haut, avec un contour gris (`--bib-carte-image-bordure`, `--couleur-bordure` par défaut) ; la flèche (→ ou ↗) suit l’adresse. Texte et flèche en bleu principal sur le fond : 6,8:1. Modificateur `--surface` : carte blanche à contour et ombre, 280 × 400 px, photo de 170 px, titre sans empattement en gras, texte d’appel en description sous le titre, pastille à contour (active : `--bib-pastille-active-fond`, voir [Lien étiré et pastille](@@/composants/carte-icone.html#lien-etire)). Plusieurs cartes : `<div class="bib-carte-image-grille">`, rangée qui défile sous 600 px, grille de trois au plus ensuite.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-carte-image.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -51,7 +57,7 @@ import CarteImage from 'harmonium/astro/CarteImage.astro'
 | alt | Texte de remplacement, seulement si la photo porte un message. | vide |
 | niveauTitre | 2 à 6 ; la police et la taille restent celles de la carte. | `3` |
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-carte-image}}
 

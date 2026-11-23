@@ -37,11 +37,15 @@ function menu(noeuds, courant, racine, niveau = 0) {
       html += `<li><a href="${racine}${chemin}"${actuel}>${titre}</a></li>`
       continue
     }
+    // Volets repliables : la première section, puis la section et le groupe de la page courante sont
+    // ouverts ; `name` fait des autres un accordéon (ouvrir un volet referme les autres du même niveau).
+    // La première section reste hors de l'accordéon : sinon le navigateur fermerait celle de la page.
     const contient = pagesAPlat(n.pages).some((p) => p.chemin === courant)
     if (niveau === 0) {
-      html += `<li class="nav-section"><span class="nav-section-titre">${n.titre}</span><ul>${menu(n.pages, courant, racine, 1)}</ul></li>`
+      const premiere = n === noeuds[0]
+      html += `<li class="nav-section"><details${premiere ? '' : ' name="nav-section"'}${contient || premiere ? ' open' : ''}><summary class="nav-section-titre">${n.titre}</summary><ul>${menu(n.pages, courant, racine, 1)}</ul></details></li>`
     } else {
-      html += `<li class="nav-groupe"><details${contient ? ' open' : ''}><summary>${n.titre}</summary><ul>${menu(n.pages, courant, racine, niveau + 1)}</ul></details></li>`
+      html += `<li class="nav-groupe"><details name="nav-groupe"${contient ? ' open' : ''}><summary>${n.titre}</summary><ul>${menu(n.pages, courant, racine, niveau + 1)}</ul></details></li>`
     }
   }
   return html

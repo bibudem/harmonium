@@ -13,9 +13,7 @@ statut: beta
 
 ::exemple[composants/etat-vide/02.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <div class="bib-etat-vide">
@@ -28,7 +26,15 @@ statut: beta
 
 `bib-etat-vide--compact` : sans icône ni fond, aligné à gauche, pour une colonne ou un encadré. Habillage : `--bib-etat-vide-fond`, `--bib-etat-vide-icone-fond`.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-etat-vide.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -50,7 +56,7 @@ import Bouton from 'harmonium/astro/Bouton.astro'
 | slot par défaut, slot `actions` | Quoi faire ; boutons. |  |
 | class | Classes ajoutées à la racine. |  |
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-etat-vide}}
 

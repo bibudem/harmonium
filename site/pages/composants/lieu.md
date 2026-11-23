@@ -1,5 +1,5 @@
 ---
-titre: "Lieu"
+titre: "Carte de lieu"
 description: "La fiche d’un studio, d’un local ou d’une salle réservable : son nom, son adresse, un lien vers la carte, un texte libre et des boutons d’action toujours alignés en bas."
 fichiers: "`harmonium/astro/Lieu.astro` · `bib-lieu.min.css` · `bib-bouton.min.css`"
 statut: beta
@@ -9,9 +9,7 @@ statut: beta
 
 ::exemple[composants/lieu/01.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <article class="bib-lieu">
@@ -30,7 +28,16 @@ statut: beta
 
 Habillage : `--bib-lieu-adresse-fond` (fond de la ligne d’adresse), `--bib-lieu-largeur` (largeur maximale ; par défaut la mesure de lecture).
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-lieu.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-bouton.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -57,7 +64,7 @@ import Bouton from 'harmonium/astro/Bouton.astro'
 | class | Classes ajoutées à la racine. |  |
 | slot `adresse`, slot par défaut, slot `pied` | Adresse ; texte libre ; boutons. |  |
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-lieu}}
 

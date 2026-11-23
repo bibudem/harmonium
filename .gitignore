@@ -1,8 +1,44 @@
+# Harmonium : les sources sont versionnées, plus dist/ (voir la note en bas).
+
+# Dépendances
 node_modules/
-.DS_Store
-_site/
-demo/
-*.construction-*/
-*.ancien-*/
-src/composants/tout.css
+
+# Sites de documentation produits par scripts/site.mjs
+/demo/
+/_site/
+# Dossiers temporaires d'une construction (interrompue ou en cours)
+/demo.construction-*/
+/demo.ancien-*/
+/_site.construction-*/
+/_site.ancien-*/
+
+# Feuille d'assemblage générée par scripts/build.mjs
+/src/composants/tout.css
 /tout.css
+
+# Journaux et rapports
+npm-debug.log*
+*.log
+/coverage/
+/test-results/
+/playwright-report/
+
+# Variables d'environnement locales
+.env
+.env.*
+
+# Réglages locaux (éditeur, Claude Code)
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+.claude/settings.local.json
+
+# Fichiers du système
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# dist/ n’est PAS ignoré : jsDelivr sert les fichiers d’une étiquette git tels quels, et la CI
+# (.github/workflows/pages.yml) vérifie que dist/ correspond à src/. Après une modification de
+# src/, lancer « npm run build » et committer dist/.

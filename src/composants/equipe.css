@@ -1,4 +1,7 @@
 /*
+ * OBSOLÈTE depuis 1.2 : remplacée par liste-profils.css (classes .bib-liste-profils). Conservée telle
+ * quelle pour les pages existantes ; retirée en 2.0.
+ *
  * Équipe : une grille de vignettes de personnes (photo ronde, nom, fonction). Chaque vignette est une carte-lien
  * (carte-lien.css, à charger aussi) qui mène à la fiche complète de la personne. Deux par rangée sur un
  * téléphone, puis autant que la largeur en permet.

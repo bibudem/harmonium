@@ -1,5 +1,5 @@
 ---
-titre: "Icône carrée"
+titre: "Icône sur fond"
 description: "Une icône dans un carré de couleur, pour illustrer une carte ou un bloc de texte. L’icône prend la couleur du fond, assombrie ; sur un fond très foncé, elle est éclaircie pour rester visible."
 fichiers: "`harmonium/astro/IconeCarree.astro` · `harmonium/astro/IconeTexte.astro` · `bib-icone-carree.min.css`"
 ressources: "composants/icone-carree"
@@ -13,9 +13,7 @@ ressources: "composants/icone-carree"
 
 ::exemple[composants/icone-carree/02.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <div class="bib-icone-carree" style="--bib-icone-carree-fond: var(--vert)">
@@ -32,7 +30,15 @@ ressources: "composants/icone-carree"
 </div>
 ```
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-icone-carree.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -61,7 +67,7 @@ L’icône passe dans le slot, en SVG.
 
 `<IconeTexte>` (avec texte) : `Icone`, le composant d’icône (obligatoire) ; `fond`, une clé de palette (`vert`) ou une couleur CSS. Le texte passe dans le slot.
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-icone-carree}}
 
@@ -75,7 +81,7 @@ L’icône passe dans le slot, en SVG.
 ### À éviter
 
 -   **Quand l’ensemble est un lien** : une [CarteIcone](@@/composants/carte-icone.html), qui est cliquable et nommée.
--   **Pour des renseignements courts en liste** : les [modalités](@@/composants/modalites.html), avec une petite icône par ligne.
+-   **Pour des renseignements courts en liste** : les [listes à icônes](@@/composants/liste-icones.html), avec une petite icône par ligne.
 -   **Quand une vraie photo existe** et montre le sujet : la photo dans le contenu, ou une [CarteImage](@@/composants/carte-image.html).
 -   **Pour transmettre une information** par l’icône seule : elle est masquée aux lecteurs d’écran.
 

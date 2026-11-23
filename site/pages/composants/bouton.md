@@ -26,9 +26,7 @@ Un bouton secondaire conserve toujours un contour visible, au repos comme au sur
 
 ::exemple[composants/bouton/05.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <a class="bib-bouton bib-bouton--plein bib-bouton--bleu-fonce" href="/services/">
@@ -52,7 +50,15 @@ Habillage commun : bouton plein (`--bib-bouton-plein-fond`, `-texte`, `-fond-sur
 
 Icône seule : `bib-bouton--icone` (carré rond, l’icône Phosphor en `currentColor`). Le nom va dans `aria-label` ; une [infobulle](@@/composants/infobulle.html) peut le redire à l’écran.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-bouton.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -80,7 +86,7 @@ import Bouton from 'harmonium/astro/Bouton.astro'
 
 En HTML, `bib-bouton--droite`, `--centre` et `--gauche` placent le bouton seul sur sa ligne ; `--contour-bleu` et `--contour-blanc` (fond foncé) donnent un contour sans flèche. Avec Astro, ces classes passent par `class`.
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-bouton}}
 

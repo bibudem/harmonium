@@ -9,9 +9,7 @@ ressources: "composants/table-matieres"
 
 ::exemple[composants/table-matieres/01.html]
 
-## Utilisation {#utilisation}
-
-### En HTML {#html}
+## Étape 1 : ajouter le HTML {#html}
 
 Charger les jetons, les deux feuilles et, pour le suivi de lecture, le script :
 
@@ -40,6 +38,23 @@ Charger les jetons, les deux feuilles et, pour le suivi de lecture, le script :
     </nav>
   </details>
 </div>
+```
+
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-table-matieres.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-navigation-secondaire.min.css">
+```
+
+## Étape 3 : ajouter le JavaScript {#javascript}
+
+Facultatif : le script ajoute le comportement interactif. Sans lui, le contenu reste lisible et utilisable.
+
+```
+<script type="module" src="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-table-matieres.min.js"></script>
 ```
 
 ### Avec Astro {#astro}
@@ -86,9 +101,9 @@ Dans Harmonium, le menu des pages occupe déjà la gauche, hors de la grille du 
 | Composant | Destination des liens | Usage |
 | --- | --- | --- |
 | Table des matières | Les titres de la page en cours. | Lire et parcourir une page longue. |
-| [Navigation secondaire](@@/composants/navigation-secondaire.html) | Les autres pages de la section. | Se déplacer dans un groupe de pages. |
+| [Navigation latérale](@@/composants/navigation-secondaire.html) | Les autres pages de la section. | Se déplacer dans un groupe de pages. |
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-table-matieres}}
 

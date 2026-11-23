@@ -70,12 +70,23 @@ a:hover { color: var(--couleur-lien-survol); }
 }
 .nav-liste a:hover { background: color-mix(in srgb, var(--couleur-sur-fonce) 12%, transparent); color: var(--couleur-sur-fonce); }
 .nav-liste a[aria-current='page'] { background: var(--couleur-surface); color: var(--couleur-texte); font-weight: var(--graisse-forte); }
-.nav-liste .nav-section { margin-top: var(--espace-2-5); }
+.nav-liste .nav-section { margin-top: var(--espace-1); }
 .nav-liste .nav-section:first-child { margin-top: 0; }
+/* Section du menu : un volet repliable, flèche à droite (les groupes ont la leur à gauche) */
 .nav-section-titre {
-  display: block; margin-bottom: var(--espace-0-5); padding: 0 var(--espace-1-5);
-  color: color-mix(in srgb, var(--couleur-sur-fonce) 70%, transparent); font-size: var(--texte-minuscule); font-weight: var(--graisse-grasse); letter-spacing: 0.07em; text-transform: uppercase;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--espace-1);
+  padding: var(--espace-1) var(--espace-1-5); border-radius: var(--rayon-tres-petit); cursor: pointer; list-style: none;
+  color: var(--couleur-sur-fonce); font-size: var(--texte-minuscule); font-weight: var(--graisse-grasse); letter-spacing: 0.07em; text-transform: uppercase;
 }
+.nav-section-titre::-webkit-details-marker { display: none; }
+.nav-section-titre::after {
+  content: ''; flex: none; width: 0.45rem; height: 0.45rem; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+  rotate: 45deg; translate: 0 -0.1rem; transition: rotate var(--duree-courte) var(--courbe-standard);
+}
+.nav-section > details[open] > .nav-section-titre::after { rotate: -135deg; translate: 0 0.1rem; }
+.nav-section-titre:hover { background: color-mix(in srgb, var(--couleur-sur-fonce) 12%, transparent); }
+.nav-section > details[open] > .nav-section-titre { margin-bottom: var(--espace-0-5); }
+.nav-section + .nav-section { border-top: 1px solid color-mix(in srgb, var(--couleur-sur-fonce) 15%, transparent); padding-top: var(--espace-1); }
 .nav-groupe summary {
   display: flex; align-items: center; gap: var(--espace-1); padding: var(--espace-0-5) var(--espace-1-5); border-radius: var(--rayon-tres-petit);
   font-size: var(--texte-petit); font-weight: var(--graisse-forte); cursor: pointer; list-style: none;
@@ -311,7 +322,7 @@ html.mode-apercu .apercu-seul { margin: 0 !important; border: 0 !important; bord
 .marque-ressources figure { margin: 0; min-width: 0; }
 .marque-ressources figcaption { margin-top: var(--espace-1); font-size: var(--texte-petit); }
 @media (prefers-reduced-motion: reduce) {
-  .nav-groupe summary::before { transition: none; }
+  .nav-groupe summary::before, .nav-section-titre::after { transition: none; }
 }
 
 /* Les tables et blocs de code peuvent défiler localement, sans élargir la page. */

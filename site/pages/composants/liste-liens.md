@@ -12,11 +12,9 @@ fichiers: "`harmonium/astro/ListeLiens.astro` · `harmonium/astro/ElementListeLi
 
 ::exemple[composants/liste-liens/02.html]
 
-## Utilisation {#utilisation}
+## Étape 1 : ajouter le HTML {#html}
 
 Chaque carte de la liste repose sur le lien étiré et la pastille fléchée, décrits dans [Carte à icône](@@/composants/carte-icone.html#lien-etire).
-
-### En HTML
 
 ```
 <ul class="bib-liste-liens">
@@ -32,7 +30,15 @@ Chaque carte de la liste repose sur le lien étiré et la pastille fléchée, d�
 
 Habillage : chaque carte a un contour gris clair (`--bib-liste-liens-bordure`, `--gris-200` par défaut). `bib-liste-liens--grille` : sans retrait, les cartes côte à côte (14 rem au moins chacune), puis empilées sur écran étroit ; une carte seule garde sa pastille à droite, centrée. `bib-element-liste-liens--vert-fonce` (sur une section vert foncé) : pastille vert pâle avec une flèche bleu foncé (7,32:1). Sans `bib-element-liste-liens__bouton`, une pastille fléchée.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-liste-liens.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -55,7 +61,7 @@ import ElementListeLiens from 'harmonium/astro/ElementListeLiens.astro'
 | couleur | (`ElementListeLiens`) `neutre` ou `vertFonce` (sur une section vert foncé). | `neutre` |
 | niveauTitre | (`ElementListeLiens`) 2 à 6, sans changer la taille. | `3` |
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-liste-liens}}
 

@@ -9,9 +9,7 @@ ressources: "composants/infobulle"
 
 ::exemple[composants/infobulle/01.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <button type="button" class="bib-infobulle bib-infobulle--gauche"
@@ -20,7 +18,23 @@ ressources: "composants/infobulle"
 
 Habillage : la position se choisit par le modificateur : `--gauche` (centrée en hauteur, pour les boutons du bord droit), `--dessus` (centrée), `--dessous` (alignée à gauche, pour les liens d’en-tête). L’élément est positionné en `relative` par défaut pour ancrer la bulle au bon endroit ; un positionnement explicite (`fixed`, `absolute`…) reste prioritaire. Pour taire l’infobulle dans un état (rangée ouverte, bouton masqué) : `--bib-infobulle-visibilite: hidden` et `--bib-infobulle-opacite: 0`.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-infobulle.min.css">
+```
+
+## Étape 3 : ajouter le JavaScript {#javascript}
+
+Facultatif : le script ajoute le comportement interactif. Sans lui, le contenu reste lisible et utilisable.
+
+```
+<script type="module" src="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-infobulle.min.js"></script>
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -31,7 +45,7 @@ import 'harmonium/dist/bib-infobulle.min.css'  // la feuille ; pas de composant 
 
 Un utilitaire, pas un composant Astro : la classe et l’attribut `data-infobulle` suffisent. Le script facultatif `bib-infobulle.min.js` ferme l’infobulle avec Échap, comme l’exige WCAG 1.4.13 (contenu au survol ou au focus).
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-infobulle}}
 

@@ -10,9 +10,7 @@ statut: beta
 
 ::exemple[composants/liste-filtrable/01.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <div class="bib-liste-filtrable" data-liste-filtrable data-unite="logiciel" data-unites="logiciels">
@@ -43,7 +41,24 @@ statut: beta
 
 La recherche ignore la casse et les accents et porte sur `data-texte` ; le filtre porte sur `data-categorie`. Deux colonnes de fiches dès que le composant a 36 rem de large (requête de conteneur).
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-liste-filtrable.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-champ-liste.min.css">
+```
+
+## Étape 3 : ajouter le JavaScript {#javascript}
+
+Facultatif : le script ajoute le comportement interactif. Sans lui, le contenu reste lisible et utilisable.
+
+```
+<script type="module" src="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-liste-filtrable.min.js"></script>
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -72,7 +87,7 @@ import FicheFiltrable from 'harmonium/astro/FicheFiltrable.astro'
 | texte | Texte cherché, s’il diffère du nom et de la description. |  |
 | niveauTitre | Niveau du titre, de 2 à 6. | 3 |
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-liste-filtrable}}
 
@@ -86,7 +101,7 @@ import FicheFiltrable from 'harmonium/astro/FicheFiltrable.astro'
 
 -   **Pour des données tabulaires** à comparer en colonnes : le tableau filtrable.
 -   **Pour moins d’une quinzaine d’éléments** : une simple liste, sans formulaire.
--   **Pour une recherche dans le catalogue des bibliothèques** : la [recherche](@@/composants/recherche.html).
+-   **Pour une recherche dans le catalogue des bibliothèques** : la [barre de recherche](@@/composants/recherche.html).
 
 ## Accessibilité {#accessibilite}
 

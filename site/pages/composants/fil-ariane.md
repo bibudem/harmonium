@@ -12,9 +12,7 @@ fichiers: "`harmonium/astro/FilAriane.astro` · `bib-fil-ariane.min.css`"
 
 ::exemple[composants/fil-ariane/02.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <nav class="bib-fil-ariane" aria-label="Fil d’Ariane">
@@ -29,7 +27,15 @@ fichiers: "`harmonium/astro/FilAriane.astro` · `bib-fil-ariane.min.css`"
 
 Habillage : `--bib-fil-ariane-lien`, `--bib-fil-ariane-lien-survol` et `--bib-fil-ariane-transition` : couleur des liens (celle des liens du thème par défaut), au survol, et transition (aucune par défaut). Exemple d’habillage dans l’aperçu.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-fil-ariane.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -52,7 +58,7 @@ import FilAriane from 'harmonium/astro/FilAriane.astro'
 
 C’est le site qui calcule les maillons (cela dépend de son contenu).
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-fil-ariane}}
 

@@ -1,5 +1,5 @@
 ---
-titre: "Intégration tierce"
+titre: "Contenu intégré"
 description: "Le conteneur où un service externe vient se loger dans la page : formulaire LibWizard ou LibAnswers, fenêtre de clavardage LibChat, iframe. Il garde la place du contenu avant son arrivée, affiche « Chargement… » et annonce un échec au lieu de laisser un trou."
 fichiers: "`harmonium/astro/Integration.astro` · `bib-integration.min.css` · `bib-integration.min.js`"
 ressources: "composants/integration"
@@ -13,9 +13,7 @@ ressources: "composants/integration"
 
 ::exemple[composants/integration/02.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <div class="bib-integration" style="--bib-integration-hauteur: 860px; --bib-integration-hauteur-large: 650px"
@@ -41,7 +39,23 @@ La cible reste vide dans le HTML : elle porte l’`id` que le script du fournis
 
 **Régler la place réservée** : mesurer le contenu chargé à 390 et à 1440 px de large, puis prendre un peu moins, pour ne jamais laisser de vide sous lui. En `rem` si le contenu suit la taille du texte du navigateur (iframe LibWizard : `120rem`), en `px` s’il est en pixels fixes (widget LibAnswers). À refaire quand le formulaire change.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-integration.min.css">
+```
+
+## Étape 3 : ajouter le JavaScript {#javascript}
+
+Le script fait fonctionner le composant : le charger sur chaque page qui l’utilise.
+
+```
+<script type="module" src="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-integration.min.js"></script>
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -64,7 +78,7 @@ import Integration from 'harmonium/astro/Integration.astro'
 | hauteur, hauteurLarge | Place réservée, puis dès 1200 px (longueur CSS). | `auto` (402 px avec `clavardage`) |
 | chargement, erreur, sansScript | Messages d’attente, d’échec et sans JavaScript. | ceux du formulaire ou du clavardage |
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-integration}}
 

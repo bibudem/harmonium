@@ -1,5 +1,5 @@
 ---
-titre: "Avis"
+titre: "Bandeau d’avis"
 fichiers: "`bib-avis.min.js` · `<bib-avis>`"
 description: "Un bandeau jaune en haut de page pour informer d’une fermeture, de travaux ou d’un service perturbé. Le texte vient du service d’avis des bibliothèques : rien ne paraît quand il n’y a pas d’avis."
 ressources: "composants/avis"
@@ -18,7 +18,7 @@ vignette: 2
 
 ::exemple[composants/avis/03.html]
 
-## Utilisation {#utilisation}
+## Étape 1 : ajouter le script et l’élément {#html}
 
 1.  **Dans le `<head>`**
     
@@ -35,7 +35,7 @@ vignette: 2
     ```
     
 
-### Réglages {#reglages}
+## Étape 2 : régler le composant (facultatif) {#reglages}
 
 | Attribut | Rôle |
 | --- | --- |
@@ -70,7 +70,7 @@ Le texte du service est nettoyé avant d’être affiché, car il paraît sur de
 -   Un lien accepte http, https, mailto, tel ou une adresse relative ; ouvert dans un nouvel onglet, il reçoit `rel="noopener noreferrer"`.
 -   Le contenu écrit dans la page, lui, n’est pas nettoyé : il vient du site.
 
-## Habillage {#habillage}
+## Personnaliser {#habillage}
 
 ```
 bib-avis {

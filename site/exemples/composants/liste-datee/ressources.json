@@ -1,0 +1,9 @@
+{
+  "styles": [],
+  "scripts": [
+    {
+      "src": "@@dist/bib-listes-dynamiques.min.js",
+      "attributs": "type=\"module\""
+    }
+  ]
+}

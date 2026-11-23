@@ -1,0 +1,43 @@
+/*
+ * Liste à icônes (anciennement Modalités) : liste sans puces de renseignements courts, chacun précédé d'une icône décorative.
+ *
+ *   <ul class="bib-liste-icones">
+ *     <li class="bib-liste-icones__element">
+ *       <span class="bib-liste-icones__icone" aria-hidden="true"><svg width="32" height="32">…</svg></span>
+ *       <span class="bib-liste-icones__texte">Durée du prêt : 3 jours</span>
+ *     </li>
+ *   </ul>
+ *
+ * L'icône vient du site (SVG en ligne, sprite, police d'icônes) : Harmonium n'en impose pas.
+ */
+.bib-liste-icones {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espace-1, var(--espace-1));
+  margin: 0 0 1em;
+  padding: 0;
+  list-style: none;
+}
+
+.bib-liste-icones__element {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--espace-1, var(--espace-1));
+}
+
+.bib-liste-icones__icone {
+  display: inline-flex;
+  flex: none;
+}
+
+/* Le texte peut passer à la ligne et couper un long mot (URL, adresse) :
+   rien ne déborde avec le texte agrandi à 200 % (WCAG 1.4.4, 1.4.10). */
+.bib-liste-icones__texte {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.bib-liste-icones__texte > p:last-child {
+  margin-block-end: 0;
+}

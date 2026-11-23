@@ -1,5 +1,5 @@
 ---
-titre: "Copier"
+titre: "Copier dans le presse-papiers"
 description: "Un texte court à saisir tel quel (adresse de serveur, identifiant, commande), en code, suivi d’un bouton « Copier ». Tout est en ligne : il se place dans une phrase ou un élément de liste."
 fichiers: "`harmonium/astro/Copier.astro` · `bib-copier.min.css` · `bib-copier.min.js`"
 ressources: "composants/copier"
@@ -10,9 +10,7 @@ statut: beta
 
 ::exemple[composants/copier/01.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <span class="bib-copier" data-copier><code class="bib-copier__code">https://proxy.umontreal.ca</code><button type="button" class="bib-copier__bouton" data-texte="https://proxy.umontreal.ca" aria-label="Copier https://proxy.umontreal.ca" hidden><svg class="bib-copier__icone" …></svg><svg class="bib-copier__icone-copie" …></svg><span class="bib-copier__libelle" aria-hidden="true">Copier</span></button><span class="bib-masque" role="status"></span></span>
@@ -22,7 +20,23 @@ Garder le HTML sur une seule ligne : un blanc entre les éléments deviendrait u
 
 Habillage : `--bib-copier-fond`, `--bib-copier-fond-survol`, `--bib-copier-texte`, `--bib-copier-contour`.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-copier.min.css">
+```
+
+## Étape 3 : ajouter le JavaScript {#javascript}
+
+Le script fait fonctionner le composant : le charger sur chaque page qui l’utilise.
+
+```
+<script type="module" src="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-copier.min.js"></script>
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -36,7 +50,7 @@ import Copier from 'harmonium/astro/Copier.astro'
 | texte | Le texte affiché et copié. Obligatoire. |  |
 | class | Classes ajoutées à la racine. |  |
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-copier}}
 

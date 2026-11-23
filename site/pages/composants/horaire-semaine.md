@@ -10,9 +10,7 @@ statut: beta
 
 ::exemple[composants/horaire-semaine/01.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 Le HTML de départ contient le titre, un texte de repli, l’état de chargement, l’[état d’erreur](@@/composants/etat-erreur.html) et la vue vide ; le script lit l’API des horaires et construit les onglets des jours. Le HTML complet est dans l’en-tête de `src/composants/horaire-semaine.css`.
 
@@ -28,7 +26,24 @@ Le HTML de départ contient le titre, un texte de repli, l’état de chargement
 
 Habillage : `--bib-horaire-semaine-choisi-fond` et `-texte`, `--bib-horaire-semaine-action-survol`, `--bib-horaire-semaine-panneau-fond`, `--bib-horaire-semaine-aujourdhui`.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-horaire-semaine.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-etat-erreur.min.css">
+```
+
+## Étape 3 : ajouter le JavaScript {#javascript}
+
+Le script fait fonctionner le composant : le charger sur chaque page qui l’utilise.
+
+```
+<script type="module" src="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-horaire-semaine.min.js"></script>
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -46,7 +61,7 @@ import HoraireSemaine from 'harmonium/astro/HoraireSemaine.astro'
 | api | Autre adresse de l’API (essais). | API des bibliothèques |
 | class | Classes ajoutées à la racine. |  |
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-horaire-semaine}}
 

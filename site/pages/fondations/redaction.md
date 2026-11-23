@@ -1,4 +1,5 @@
 ---
+titre-court: "Rédaction"
 titre: "Rédaction et messages"
 description: "Des textes cohérents pour les sites des bibliothèques de l’UdeM : procédures, rédaction épicène, noms des outils et messages d’interface."
 ---
@@ -25,7 +26,7 @@ Le « vous » permet souvent une formulation courte et sans marque de genre. L�
 -   Préférer une action par étape. Si un chemin de menus est nécessaire, séparer ses éléments par une flèche ou un chevron : **Fichier** › **Ouvrir**.
 -   Mettre en **gras** les libellés des commandes à activer : menus, boutons et cases à cocher.
 -   Mettre en *italique* une variable à adapter : nom de fichier, code d’identification ou autre valeur propre à la personne.
--   Présenter les valeurs à saisir en Courier, avec `code`. Dans Harmonium, utiliser `bib-saisie` ou placer le code dans une liste `bib-procedure`.
+-   Présenter les valeurs à saisir en Courier, avec `code`. Dans Harmonium, utiliser `bib-saisie` ou placer le code dans une [liste d’étapes](@@/composants/liste-etapes.html) (`bib-procedure`).
 -   Écrire les formats de fichiers en majuscules (PDF, DOCX) et leurs extensions en minuscules (`.pdf`, `.docx`).
 -   Réserver le soulignement aux liens hypertextes. Une commande mentionnée dans une étape est en gras, sans faux lien.
 

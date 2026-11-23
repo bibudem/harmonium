@@ -1,5 +1,5 @@
 ---
-titre: "Retour en haut"
+titre: "Bouton de retour en haut"
 description: "Un bouton fixé en bas à droite qui ramène en haut de la page. Il apparaît quand on a défilé de plus d’un écran et demi ; sur grand écran, c’est un onglet collé au bord, dans la marge."
 fichiers: "`harmonium/astro/RetourHaut.astro` · `bib-retour-haut.min.css` · `bib-retour-haut.min.js` (facultatif)"
 ---
@@ -8,21 +8,34 @@ fichiers: "`harmonium/astro/RetourHaut.astro` · `bib-retour-haut.min.css` · `b
 
 ::exemple[composants/retour-haut/01.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <button type="button" class="bib-retour-haut bib-infobulle bib-infobulle--gauche"
         data-retour-haut aria-label="Retour en haut de la page" data-infobulle="Retour en haut">
   <span class="bib-retour-haut__fleche" aria-hidden="true"></span>
 </button>
-<script type="module" src="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-retour-haut.min.js"></script>
 ```
 
 Habillage : le placement est propre à chaque site (un clavardage, une barre de liens rapides ou une bannière de consentement occupent le coin) : `--bib-retour-haut-bas` (distance du bas sous 900 px), `--bib-retour-haut-bas-large` (dès 900 px) et `--bib-retour-haut-retrait` (décalage vers le bas quand une barre de liens rapides sort de l’écran, multiplié par `--bib-liens-rapides-retrait`, de 0 à 1). Par défaut, le bouton est à 1 rem du bas. L’infobulle est celle de la [fiche Infobulle](@@/composants/infobulle.html).
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-retour-haut.min.css">
+```
+
+## Étape 3 : ajouter le JavaScript {#javascript}
+
+Facultatif : le script ajoute le comportement interactif. Sans lui, le contenu reste lisible et utilisable.
+
+```
+<script type="module" src="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-retour-haut.min.js"></script>
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -39,7 +52,7 @@ import RetourHaut from 'harmonium/astro/RetourHaut.astro'
 
 **Le script est nécessaire à l’affichage.** `bib-retour-haut.min.js` pose `[data-visible]` quand on a défilé de plus d’un écran et demi. Sans lui, le bouton reste masqué (le défilement natif suffit : Début, ou le lien d’évitement). Sous 900 px, il se retire aussi après 2,5 s sans défilement, sauf s’il a le focus, le survol ou le toucher.
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-retour-haut}}
 

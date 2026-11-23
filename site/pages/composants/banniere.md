@@ -16,9 +16,7 @@ fichiers: "`harmonium/astro/Banniere.astro` · `bib-banniere.min.css`"
 
 ::exemple[composants/banniere/03.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <div class="bib-banniere bib-banniere--vague surface-foncee">
@@ -41,7 +39,15 @@ fichiers: "`harmonium/astro/Banniere.astro` · `bib-banniere.min.css`"
 
 Habillage : `--bib-banniere-voile` (voile uniforme, 50 %), `--bib-banniere-cadrage` (hauteur de la photo à garder, « 20 % » : les visages restent sous l’en-tête). Modificateurs : `--vague` (dégradé bleu foncé qui monte du coin bas gauche, avec une ombre diffuse sous les lettres), `--petite` (15 / 16 / 18 rem), `--titre-long` (titre de plus de 45 caractères : environ 70 % de la taille), `--section` (bande basse). Hauteurs minimales : 26 / 30 / 34 rem, puis le quart de la largeur dès 1536 px. **Placement propre à chaque site** : `--bib-banniere-entete` (hauteur d’un en-tête transparent que la bannière glisse sous elle dès 1200 px) et `--bib-banniere-marge-basse` (chevauchement avec le contenu suivant) valent 0 par défaut. Les deux réglages s’adaptent au gabarit du site.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-banniere.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -66,7 +72,7 @@ La photo est chargée en priorité (`fetchpriority="high"`, `loading="eager"`) :
 
 Le site garde, de son côté, le choix des images (par nom de fichier) et le cadrage propre à chaque photo : il les passe en propriétés.
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-banniere}}
 

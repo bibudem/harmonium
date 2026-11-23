@@ -16,9 +16,7 @@ fichiers: "`harmonium/astro/Lien.astro` · `bib-lien.min.css`"
 
 ::exemple[composants/lien/03.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <a class="bib-lien" href="/services/">Voir les services</a>
@@ -34,7 +32,15 @@ fichiers: "`harmonium/astro/Lien.astro` · `bib-lien.min.css`"
 
 Habillage : `--bib-lien-couleur` et `--bib-lien-couleur-survol` (ceux des liens du thème par défaut), `--bib-lien-pdf` (rouge orangé, couleur de l’icône PDF). `bib-lien--sans-pdf` retire l’icône PDF d’un lien.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-lien.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -52,7 +58,7 @@ import Lien from 'harmonium/astro/Lien.astro'
 | flecheExterne | Un lien vers un autre site (hors famille des bibliothèques) porte la flèche ↗ et l’annonce « (lien externe) » ; jamais pour un PDF, un courriel ni un téléphone. | non |
 | target, rel | `target="_blank"` reçoit `rel="noopener"` ; un PDF s’ouvre dans un nouvel onglet. |  |
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-lien}}
 

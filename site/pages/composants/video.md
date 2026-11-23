@@ -13,9 +13,7 @@ ressources: "composants/video"
 
 ::exemple[composants/video/02.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```html
 <div class="bib-video bib-video--photo bib-video--avec-transcription" data-video
@@ -40,7 +38,23 @@ Sans photo, retirer `bib-video--photo` et l’image : le fond est bleu foncé. U
 
 Habillage : `--bib-video-fond` (bleu foncé, aussi la couleur du voile sur la photo), `--bib-video-texte` (blanc), `--bib-video-pastille` (rouge orangé), `--bib-video-largeur` (45 rem).
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-video.min.css">
+```
+
+## Étape 3 : ajouter le JavaScript {#javascript}
+
+Facultatif : le script ajoute le comportement interactif. Sans lui, le contenu reste lisible et utilisable.
+
+```
+<script type="module" src="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-video.min.js"></script>
+```
+
+## Avec Astro {#astro}
 
 ```astro
 ---
@@ -65,7 +79,7 @@ import photo from './images/ouvrages.webp'
 
 Une seule source parmi `youtube`, `loom`, `integration` et `fichier`.
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-video}}
 

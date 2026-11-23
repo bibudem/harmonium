@@ -1,5 +1,5 @@
 ---
-titre: "Surface"
+titre: "Panneau"
 description: "Un fond « papier » posé sur la page : fond et texte du thème, coins de 4 px, ombre légère ou contour. Une boîte neutre, qui ne dit rien de son contenu et ne pose aucune marge intérieure."
 fichiers: "`harmonium/astro/Surface.astro` · `bib-surface.min.css`"
 ressources: "composants/surface"
@@ -9,9 +9,7 @@ ressources: "composants/surface"
 
 ::exemple[composants/surface/01.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <section class="bib-surface bib-surface--contour" aria-labelledby="titre-salles">
@@ -20,7 +18,15 @@ ressources: "composants/surface"
 </section>
 ```
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-surface.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -41,7 +47,7 @@ import Surface from 'harmonium/astro/Surface.astro'
 
 En HTML, les modificateurs sont `--contour`, `--sans-ombre` et `--carre`.
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-surface}}
 

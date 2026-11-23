@@ -1,5 +1,5 @@
 ---
-titre: "Urgence"
+titre: "Bandeau d’urgence"
 fichiers: "`udem-urgence.min.js` · `<udem-urgence>`"
 description: "Le message d’urgence de l’Université de Montréal (Bureau de la sûreté), en haut de page. Rien ne s’affiche tant qu’il n’y a pas d’urgence en cours."
 ressources: "composants/urgence"
@@ -18,7 +18,7 @@ vignette: 2
 
 ::exemple[composants/urgence/03.html]
 
-## Utilisation {#utilisation}
+## Étape 1 : ajouter le script et l’élément {#html}
 
 1.  **Dans le `<head>`**
     
@@ -35,7 +35,7 @@ vignette: 2
     ```
     
 
-### Réglages (facultatifs) {#reglages}
+## Étape 2 : régler le composant (facultatif) {#reglages}
 
 | Attribut | Rôle |
 | --- | --- |

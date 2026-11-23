@@ -124,13 +124,13 @@ Les sous-titres donnent un `<p>`, pas un faux titre ; `variante="p"` donne un `<
 
 ## Procédures et valeurs à saisir {#composant-procedures}
 
-Le guide de rédaction des bibliothèques distingue le texte d’une étape, la commande à activer et la valeur à saisir. La feuille de typographie fournit deux classes légères : `bib-procedure` sur une liste numérotée et `bib-saisie` sur une valeur à reproduire.
+Le guide de rédaction des bibliothèques distingue le texte d’une étape, la commande à activer et la valeur à saisir. La feuille de typographie fournit deux classes légères : `bib-saisie` sur une valeur à reproduire et `bib-procedure` sur une liste numérotée.
 
 ```
-<ol class="bib-procedure">
-  <li>Ouvrir le menu <strong>Fichier</strong>.</li>
-  <li>Saisir <code class="bib-saisie">rapport-<var>nom</var>.pdf</code>.</li>
-</ol>
+<p>Adresse du serveur : <code class="bib-saisie">vpn-cisco.umontreal.ca</code></p>
+<p>Nommer le fichier <code class="bib-saisie">rapport-<var>nom</var>.pdf</code>.</p>
 ```
 
-Les commandes sont en gras, les variables en italique et les valeurs à saisir en Courier (`--police-saisie`). Les formats sont en majuscules (PDF, DOCX) ; les extensions restent en minuscules (`.pdf`, `.docx`). Choisir l’infinitif ou le « vous » et terminer chaque étape par un point. Voir [Rédaction et messages](@@/fondations/redaction.html) pour l’exemple complet.
+`bib-saisie` met la valeur en Courier (`--police-saisie`) et la laisse passer à la ligne au besoin ; une variable à adapter se place en `var`, en italique. Les formats sont en majuscules (PDF, DOCX) ; les extensions restent en minuscules (`.pdf`, `.docx`).
+
+La liste `bib-procedure` (commandes en gras, variables en italique, valeurs en Courier) a sa propre fiche : [Liste d’étapes](@@/composants/liste-etapes.html). Voir aussi [Rédaction et messages](@@/fondations/redaction.html#procedures).

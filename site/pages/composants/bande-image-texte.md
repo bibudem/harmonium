@@ -8,9 +8,7 @@ fichiers: "`harmonium/astro/BandeImageTexte.astro` · `bib-bande-image-texte.min
 
 ::exemple[composants/bande-image-texte/01.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <div class="bib-colonne-decalee bib-bande-image-texte" style="--bib-decalage: 0.5">
@@ -26,9 +24,17 @@ fichiers: "`harmonium/astro/BandeImageTexte.astro` · `bib-bande-image-texte.min
 </div>
 ```
 
-Habillage : dès 900 px : texte sur 5 colonnes de 12, espace d’une colonne, image sur 6, centrés verticalement ; `--image-gauche` met l’image à gauche et, sous 900 px, la place avant le texte. `bib-bande-image-texte__rangee--compact` (pages de texte) réduit l’image à une vignette carrée à côté du premier élément sous 900 px, pour qu’une page qui en enchaîne une douzaine ne s’allonge pas d’autant. `bib-bande-image-texte__titre-large` place le titre au-dessus des deux colonnes. La [colonne décalée](@@/composants/colonne-decalee.html) et les [boutons](@@/composants/bouton.html) sont ceux d’Harmonium.
+Habillage : dès 900 px : texte sur 5 colonnes de 12, espace d’une colonne, image sur 6, centrés verticalement ; `--image-gauche` met l’image à gauche et, sous 900 px, la place avant le texte. `bib-bande-image-texte__rangee--compact` (pages de texte) réduit l’image à une vignette carrée à côté du premier élément sous 900 px, pour qu’une page qui en enchaîne une douzaine ne s’allonge pas d’autant. `bib-bande-image-texte__titre-large` place le titre au-dessus des deux colonnes. La [conteneur](@@/composants/colonne-decalee.html) et les [boutons](@@/composants/bouton.html) sont ceux d’Harmonium.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-bande-image-texte.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -53,7 +59,7 @@ import Bouton from 'harmonium/astro/Bouton.astro'
 | slots | `titre` (au-dessus des deux colonnes), `pied` (les boutons, rendus une seule fois). |  |
 
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-bande-image-texte}}
 
@@ -67,7 +73,7 @@ import Bouton from 'harmonium/astro/Bouton.astro'
 
 ### À éviter
 
--   **Sans image pertinente** : une [grille](@@/fondations/espacements.html) avec une [icône carrée](@@/composants/icone-carree.html).
+-   **Sans image pertinente** : une [grille](@@/fondations/espacements.html) avec une [icône sur fond](@@/composants/icone-carree.html).
 -   **Pour une photo de fond** sous un titre : une [section](@@/composants/section.html) avec photo voilée ou une [bannière](@@/composants/banniere.html).
 -   **Pour plusieurs images** : une galerie ou un [carrousel](@@/composants/carrousel.html).
 -   **Pour une image qui porte l’information** (schéma, affiche) dans le format normal : elle y est décorative ; la montrer en figure avec sa description.

@@ -1,5 +1,5 @@
 ---
-titre: "Clavardage"
+titre: "Fenêtre de clavardage"
 fichiers: "`bib-clavardage.min.js`"
 description: "Un bouton rond, en bas à droite, ouvre le clavardage LibChat des bibliothèques. Après 30 secondes, une bulle invite discrètement à poser une question, si le service est en ligne."
 ressources: "composants/clavardage"
@@ -17,7 +17,7 @@ Le rond est en bas à droite de cette page. L’invitation paraît ici après **
 
 Une invitation fermée ne revient pas pendant la visite (onglet ouvert). Sur un écran de moins de 700 px, le rond reste en bas à droite et la conversation s’ouvre dans un nouvel onglet.
 
-## Utilisation {#utilisation}
+## Étape 1 : ajouter le script et l’élément {#html}
 
 1.  **Juste avant `</body>`, sur toutes les pages**
     
@@ -28,7 +28,7 @@ Une invitation fermée ne revient pas pendant la visite (onglet ouvert). Sur un 
     C’est tout : le rond, le panneau et l’invitation sont créés par le script. Par défaut, c’est le widget des bibliothèques.
     
 
-### Réglages (facultatifs) {#reglages}
+## Étape 2 : régler le composant (facultatif) {#reglages}
 
 En attributs `data-*` sur la même balise `<script>` :
 
@@ -56,7 +56,7 @@ N’importe quel bouton du site (menu, page « Nous joindre »…) peut ouvrir l
 <button type="button" onclick="window.dispatchEvent(new Event('bib:ouvrir-clavardage'))">Clavarder avec nous</button>
 ```
 
-## Habillage {#habillage}
+## Personnaliser {#habillage}
 
 Dans la feuille de style du site (toutes facultatives) :
 

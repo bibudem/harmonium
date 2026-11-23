@@ -16,9 +16,7 @@ fichiers: "`harmonium/astro/Tableau.astro` · `bib-tableau.min.css` · `bib-tabl
 
 ::exemple[composants/tableau/03.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <div class="bib-tableau-zone" role="region" aria-label="Frais de retard" tabindex="0" data-tableau-defilant>
@@ -41,7 +39,23 @@ fichiers: "`harmonium/astro/Tableau.astro` · `bib-tableau.min.css` · `bib-tabl
 
 Habillage : en-tête sur fond teinté et en graisse forte, filets gris clair entre rangées et colonnes, contour gris autour de la zone. Couleurs : `--bib-tableau-entete-fond` (`--couleur-teinte`), `--bib-tableau-filet` (`--gris-200`), `--bib-tableau-bordure` (`--couleur-bordure`). Variantes : `bib-tableau--compact` (cellules plus serrées), `bib-tableau__cellule--centre`, `--droite` et `--justifie` (alignement des colonnes), `bib-tableau__rangee--survol` (surligne la rangée au survol).
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-tableau.min.css">
+```
+
+## Étape 3 : ajouter le JavaScript {#javascript}
+
+Facultatif : le script ajoute le comportement interactif. Sans lui, le contenu reste lisible et utilisable.
+
+```
+<script type="module" src="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-tableau.min.js"></script>
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -65,7 +79,7 @@ import Tableau from 'harmonium/astro/Tableau.astro'
 
 Le script facultatif `bib-tableau.min.js` ne garde la zone comme arrêt de tabulation et région nommée que si le tableau défile vraiment (sinon un arrêt inutile, et le nom annoncé deux fois).
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-tableau}}
 

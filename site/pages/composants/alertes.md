@@ -1,5 +1,5 @@
 ---
-titre: "Alertes"
+titre: "Alerte"
 fichiers: "`astro/Alerte.astro` · `bib-alertes.min.css`"
 description: "Une alerte est un encadré qui met en avant une information, une confirmation, une mise en garde ou une erreur dans le contenu d’une page. C’est le composant commun aux sites des bibliothèques."
 ---
@@ -16,9 +16,7 @@ description: "Une alerte est un encadré qui met en avant une information, une c
 
 ::exemple[composants/alertes/03.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <div class="bib-alerte bib-alerte--avertissement">
@@ -32,7 +30,15 @@ description: "Une alerte est un encadré qui met en avant une information, une c
 
 Changer le type à deux endroits : la classe (`bib-alerte--info`, `--succes`, `--avertissement`, `--erreur`) et le libellé masqué (« Information : », « Succès : », « Avertissement : », « Erreur : »). Avec un titre : `<p class="bib-alerte__titre">Titre</p>` juste après le libellé masqué. Sans icône : retirer la ligne `bib-alerte__icone`.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-alertes.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---

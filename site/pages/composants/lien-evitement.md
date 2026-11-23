@@ -8,9 +8,7 @@ fichiers: "`harmonium/astro/LienEvitement.astro` · `bib-lien-evitement.min.css`
 
 Depuis le début de cette page, appuyer sur Tab : « Aller au contenu » apparaît. Entrée mène au contenu principal et la prochaine tabulation poursuit dans le contenu.
 
-## Utilisation {#utilisation}
-
-### En HTML {#html}
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <body>
@@ -35,7 +33,15 @@ import LienEvitement from 'harmonium/astro/LienEvitement.astro'
 
 `cible` vaut `contenu` par défaut et reçoit un id sans `#`. Le slot permet de changer le libellé. Aucun script n’est nécessaire.
 
-### Variables d’habillage {#variables}
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-lien-evitement.min.css">
+```
+
+## Personnaliser {#variables}
 
 {{habillage-lien-evitement}}
 

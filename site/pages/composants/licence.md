@@ -1,5 +1,5 @@
 ---
-titre: "Licence"
+titre: "Mention de licence"
 description: "La mention de licence CC BY 4.0 du pied de page, avec les deux logos Creative Commons. Le lien ne porte que sur le texte ; les logos sont décoratifs."
 fichiers: "`harmonium/astro/Licence.astro` · `bib-licence.min.css`"
 ---
@@ -8,9 +8,7 @@ fichiers: "`harmonium/astro/Licence.astro` · `bib-licence.min.css`"
 
 ::exemple[composants/licence/01.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <div class="bib-licence" prefix="cc: http://creativecommons.org/ns# dct: http://purl.org/dc/terms/">
@@ -20,7 +18,15 @@ fichiers: "`harmonium/astro/Licence.astro` · `bib-licence.min.css`"
 </div>
 ```
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-licence.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -37,7 +43,7 @@ import Licence from 'harmonium/astro/Licence.astro'
 
 Le préfixe RDFa passe par `prefix` : les attributs `xmlns:cc` et `xmlns:dct` ne sont pas valides en HTML. Sur téléphone, les logos se placent dans le fil du texte, à la hauteur des lettres, et le lien devient un texte en ligne.
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-licence}}
 
