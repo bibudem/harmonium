@@ -157,11 +157,7 @@ ${corps}
         </main>
         <footer class="pied">
           <p>Harmonium : système de design des sites des bibliothèques de l’UdeM.</p>
-          <div class="bib-licence" prefix="cc: http://creativecommons.org/ns# dct: http://purl.org/dc/terms/">
-            <span class="bib-licence__cc" aria-hidden="true"></span>
-            <span class="bib-licence__cc bib-licence__cc--by" aria-hidden="true"></span>
-            <a href="https://creativecommons.org/licenses/by/4.0/deed.fr" rel="license">Sauf indications contraires, ce site est sous licence CC BY 4.0</a>
-          </div>
+          <p>© Université de Montréal, Bibliothèques. Usage réservé aux sites de l’Université de Montréal.</p>
         </footer>
       </div>
     </div>

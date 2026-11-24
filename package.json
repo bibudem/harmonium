@@ -4,6 +4,7 @@
   "description": "Harmonium : système de design des sites des Bibliothèques de l’UdeM (jetons, composants CSS, scripts facultatifs et composants Astro).",
   "type": "module",
   "private": true,
+  "license": "SEE LICENSE IN LICENCE.md",
   "exports": {
     "./alertes.css": "./src/alertes/alertes.css",
     "./astro/Accordeon.astro": "./astro/Accordeon.astro",

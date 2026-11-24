@@ -37,3 +37,7 @@ npm run test:site        # tests du mini-site
 npm run test:navigateur  # tests dans Chrome
 npm run pages            # construit le site publié dans _site/
 ```
+
+## Licence
+
+© Université de Montréal, Bibliothèques. Usage réservé aux sites de l’Université de Montréal : voir [LICENCE.md](LICENCE.md).
