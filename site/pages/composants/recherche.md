@@ -1,5 +1,5 @@
 ---
-titre: Recherche
+titre: "Barre de recherche"
 description: "Un formulaire de recherche natif dans une capsule : une étiquette visible en surtitre, le champ et un bouton loupe. La destination et les résultats appartiennent au site."
 fichiers: "`harmonium/astro/Recherche.astro` · `bib-recherche.min.css`"
 ---
@@ -12,9 +12,7 @@ fichiers: "`harmonium/astro/Recherche.astro` · `bib-recherche.min.css`"
 
 ::exemple[composants/recherche/02.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <form class="bib-recherche" action="/recherche/" method="get" role="search" aria-label="Rechercher dans le site">
@@ -35,7 +33,15 @@ Un sélecteur de portée (par exemple « Nos sites » et « Catalogue ») peut p
 
 Habillage : `--bib-recherche-etiquette` (couleur de l’étiquette ; `--couleur-accent`), `--bib-recherche-bouton` et `--bib-recherche-bouton-survol` (fond du bouton rond ; bleu principal).
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-recherche.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -64,7 +70,7 @@ import Recherche from 'harmonium/astro/Recherche.astro'
 
 Les attributs `data-*` passent au `<form>` : un script du site peut ainsi le repérer pour ajouter des suggestions.
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-recherche}}
 

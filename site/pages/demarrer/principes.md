@@ -1,4 +1,5 @@
 ---
+titre-court: "Principes"
 titre: "Principes et qualité"
 description: "Une base commune à la taille des bibliothèques de l’UdeM : les décisions qui se répètent vivent ici, les besoins particuliers restent dans leur site."
 ---
@@ -52,3 +53,42 @@ Avant d’ajouter, réutiliser : un composant existant, puis une variante s’il
 Ce qui est propre à un seul site y reste : ses catalogues, ses liens avec ses propres outils (réservations, horaires, bases de données) et sa façon de publier le contenu. Une idée peut y mûrir avant de rejoindre Harmonium.
 
 Une modification qui casse l’existant demande une version majeure et une note de migration.
+
+## Noms et structure des fiches {#nomenclature}
+
+Les noms des composants reprennent le vocabulaire de W3Schools, traduit en français : un nom d’objet reconnu (« Accordéon », « Infobulle », « Barre de recherche »), jamais le nom d’un contenu particulier. Les menus suivent ses catégories « How To » : menus et navigation, boutons, formulaires, images, tableaux, listes, cartes, messages.
+
+Un composant nommé « Liste » est toujours une `<ul>` ou une `<ol>` ; un `<div>` autour n’est permis que pour ajouter des commandes à la liste, comme les filtres de la liste filtrable. Ce qui n’est pas une liste HTML porte un autre nom et se range ailleurs : la grille de logos, la galerie d’images et le carrousel sont dans « Images et médias ». À l’inverse, un fil d’Ariane, une pagination ou des étiquettes sont des listes HTML, mais ils gardent le nom de leur objet, comme chez W3Schools.
+
+| Harmonium | W3Schools |
+| --- | --- |
+| Accordéon | Accordion |
+| Onglets | Tabs |
+| Fil d’Ariane | Breadcrumbs |
+| Pagination | Pagination |
+| Barre de navigation | Navbar, Top Navigation |
+| Navigation latérale | Side Navigation |
+| Barre de recherche | Search Bar |
+| Bouton de retour en haut | Scroll To Top Button |
+| Pied de page | Footer |
+| Bouton | Buttons |
+| Copier dans le presse-papiers | Copy Text to Clipboard |
+| Liste filtrable | Filter List |
+| Bannière | Hero Image |
+| Galerie d’images | Image Gallery |
+| Tableau | Tables |
+| Carte, carte de profil | Cards, Profile Card |
+| Alerte | Alerts |
+| Étiquette | Tags |
+| Infobulle | Tooltips |
+| Citation | Quotes |
+| Conteneur | Containers |
+| Grille | Grid, Responsive Columns |
+| Panneau | Panels |
+| Séparateur | Dividers |
+| Fenêtre de clavardage | Popup Chat Window |
+| Contenu intégré | Responsive Iframes |
+
+Chaque fiche suit le même plan, celui des pages « How To » : un aperçu, puis **Étape 1 : ajouter le HTML**, **Étape 2 : ajouter le CSS**, **Étape 3 : ajouter le JavaScript** quand il y en a, la version Astro, la personnalisation (variables d’habillage), l’usage et l’accessibilité.
+
+Les noms dans le code (composants Astro, classes `bib-*`) rejoignent ces noms au fil des versions ; un ancien nom reste disponible, déconseillé, jusqu’à la version majeure suivante.

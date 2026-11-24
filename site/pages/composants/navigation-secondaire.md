@@ -1,5 +1,5 @@
 ---
-titre: "Navigation secondaire"
+titre: "Navigation latérale"
 description: "La navigation de la section courante : une liste imbriquée de liens, où la page courante est marquée et la branche qui la contient ouverte. En colonne de gauche sur grand écran, en volet « Dans cette section » sur écran étroit."
 fichiers: "`harmonium/astro/NavigationSecondaire.astro` · `bib-navigation-secondaire.min.css`"
 ---
@@ -10,9 +10,7 @@ Pour les titres du contenu et le repère « Sur cette page », voir le composant
 
 ::exemple[composants/navigation-secondaire/01.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <nav class="bib-navigation-secondaire" aria-labelledby="titre-nav">
@@ -34,7 +32,15 @@ Pour les titres du contenu et le repère « Sur cette page », voir le composant
 
 Habillage : `bib-navigation-secondaire--sommaire` : un sommaire « Sur cette page », où la section en cours de lecture porte `aria-current="true"`, en gras, avec le trait épais et un fond pâle. Un lien vers un autre site porte la flèche oblique `bib-navigation-secondaire__externe`.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-navigation-secondaire.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -55,7 +61,7 @@ import NavigationSecondaire from 'harmonium/astro/NavigationSecondaire.astro'
 
 Le composant reçoit l’arbre de navigation du site (`navigationDeSection` dépend du contenu du site) : le site le passe en propriété.
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-navigation-secondaire}}
 

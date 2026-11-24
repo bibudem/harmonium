@@ -14,6 +14,12 @@ export const libelle = (chemin) => {
   return data['titre-court'] ?? data.titre
 }
 
+/*
+ * Ordre des sections : démarrer, marque et rédaction, fondations visuelles, composants (classés par fonction),
+ * services des Bibliothèques (modules branchés sur un service externe).
+ * Dans « Composants », les groupes suivent les catégories « How To » de W3Schools (Menus, Buttons, Forms,
+ * Filters, Images, Tables, Lists, Cards, Alerts…), traduites. Les listes vont de la plus simple à la plus riche.
+ */
 export const NAVIGATION = [
   {
     titre: 'Démarrer',
@@ -21,6 +27,15 @@ export const NAVIGATION = [
       'index.html',
       'demarrer/principes.html',
       'demarrer/integration.html',
+      'sites/index.html',
+    ],
+  },
+  {
+    titre: 'Marque et rédaction',
+    pages: [
+      'fondations/identite.html',
+      'composants/sceau.html',
+      'fondations/redaction.html',
     ],
   },
   {
@@ -31,8 +46,6 @@ export const NAVIGATION = [
       'fondations/espacements.html',
       'fondations/formes.html',
       'fondations/mouvement.html',
-      'fondations/redaction.html',
-      'fondations/identite.html',
       'fondations/icones.html',
       'fondations/images.html',
       'fondations/jetons.html',
@@ -43,100 +56,123 @@ export const NAVIGATION = [
     pages: [
       'composants/index.html',
       {
-        titre: 'Services',
+        titre: 'Menus et navigation',
         pages: [
-          'composants/urgence.html',
-          'composants/avis.html',
-          'composants/clavardage.html',
-          'composants/retroaction.html',
-          'composants/consentement.html',
-          'composants/integration.html',
-        ],
-      },
-      {
-        titre: 'Contenu',
-        pages: [
-          'composants/alertes.html',
-          'composants/accordeons.html',
-          'composants/chiffres.html',
+          'composants/entete.html',
+          'composants/navigation-secondaire.html',
+          'composants/fil-ariane.html',
+          'composants/table-matieres.html',
           'composants/onglets.html',
-          'composants/citation.html',
-          'composants/separateur.html',
-          'composants/surface.html',
-          'composants/modalites.html',
-          'composants/tableau.html',
-          'composants/video.html',
-          'composants/galerie.html',
-          'composants/etat-erreur.html',
-          'composants/etat-vide.html',
+          'composants/accordeons.html',
+          'composants/pagination.html',
+          'composants/lien-evitement.html',
+          'composants/retour-haut.html',
+          'composants/pied-de-page.html',
+          'composants/licence.html',
         ],
       },
       {
-        titre: 'Primitives',
+        titre: 'Boutons et liens',
         pages: [
           'composants/bouton.html',
-          'composants/etiquettes.html',
           'composants/lien.html',
           'composants/copier.html',
         ],
       },
       {
-        titre: 'Cartes et listes',
+        titre: 'Formulaires',
         pages: [
-          'composants/carte-icone.html',
-          'composants/carte-image.html',
-          'composants/liste-liens.html',
-          'composants/carrousel.html',
-          'composants/liste-filtrable.html',
-          'composants/equipe.html',
+          'composants/recherche.html',
         ],
       },
       {
-        titre: 'Lieux et horaires',
+        titre: 'Images et médias',
         pages: [
+          'composants/banniere.html',
+          'composants/bande-image-texte.html',
+          'composants/galerie.html',
+          'composants/grille-logos.html',
+          'composants/carrousel.html',
+          'composants/video.html',
+          'composants/icone-carree.html',
+        ],
+      },
+      {
+        titre: 'Tableaux',
+        pages: [
+          'composants/tableau.html',
+        ],
+      },
+      {
+        titre: 'Listes',
+        pages: [
+          'composants/liste-simple.html',
+          'composants/liste-etapes.html',
+          'composants/liste-icones.html',
+          'composants/liste-illustree.html',
+          'composants/liste-liens.html',
+          'composants/liste-datee.html',
+          'composants/liste-filtrable.html',
+          'composants/liste-profils.html',
+        ],
+      },
+      {
+        titre: 'Cartes',
+        pages: [
+          'composants/carte-icone.html',
+          'composants/carte-image.html',
           'composants/lieu.html',
-          'composants/horaire-semaine.html',
+        ],
+      },
+      {
+        titre: 'Messages',
+        pages: [
+          'composants/alertes.html',
+          'composants/etiquettes.html',
+          'composants/infobulle.html',
+          'composants/etat-vide.html',
+          'composants/etat-erreur.html',
+        ],
+      },
+      {
+        titre: 'Contenu',
+        pages: [
+          'composants/citation.html',
+          'composants/chiffres.html',
         ],
       },
       {
         titre: 'Mise en page',
         pages: [
           'composants/section.html',
-          'composants/banniere.html',
           'composants/colonne-decalee.html',
-          'composants/icone-carree.html',
-          'composants/bande-image-texte.html',
-        ],
-      },
-      {
-        titre: 'Navigation',
-        pages: [
-          'composants/lien-evitement.html',
-          'composants/table-matieres.html',
-          'composants/fil-ariane.html',
-          'composants/entete.html',
-          'composants/recherche.html',
-          'composants/navigation-secondaire.html',
-          'composants/pagination.html',
-          'composants/retour-haut.html',
-          'composants/infobulle.html',
-        ],
-      },
-      {
-        titre: 'Pied de page',
-        pages: [
-          'composants/pied-de-page.html',
-          'composants/sceau.html',
-          'composants/licence.html',
+          'composants/grille.html',
+          'composants/surface.html',
+          'composants/separateur.html',
         ],
       },
     ],
   },
   {
-    titre: 'Intégration',
-    pages: ['sites/index.html'],
+    titre: 'Services des Bibliothèques',
+    pages: [
+      'composants/urgence.html',
+      'composants/avis.html',
+      'composants/clavardage.html',
+      'composants/retroaction.html',
+      'composants/consentement.html',
+      'composants/integration.html',
+      'composants/horaire-semaine.html',
+    ],
   },
 ]
+
+/** Anciennes adresses de pages renommées : une page de redirection les remplace dans le site publié */
+export const REDIRECTIONS = {
+  'composants/typographie.html': 'fondations/typographie.html#composant',
+  'composants/modalites.html': 'composants/liste-icones.html',
+  'composants/equipe.html': 'composants/liste-profils.html',
+}
 
 /** Liste à plat des pages, dans l'ordre de lecture, avec leur chemin de groupes */
 export function pagesAPlat(noeuds = NAVIGATION, parents = []) {

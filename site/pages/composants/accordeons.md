@@ -1,5 +1,5 @@
 ---
-titre: "Accordéons"
+titre: "Accordéon"
 description: "Des volets repliables, pour une foire aux questions ou des renseignements qu’on ne lit pas tous. Ils s’ouvrent au clavier et sans JavaScript, et un groupe n’en ouvre qu’un à la fois."
 fichiers: "`harmonium/astro/GroupeAccordeons.astro` · `harmonium/astro/Accordeon.astro` · `harmonium/astro/AccordeonTitre.astro` · `harmonium/astro/AccordeonContenu.astro` · `bib-accordeons.min.css` · `bib-accordeons.min.js` (facultatif)"
 ressources: "composants/accordeons"
@@ -9,9 +9,7 @@ ressources: "composants/accordeons"
 
 ::exemple[composants/accordeons/01.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <div class="bib-accordeons">
@@ -28,7 +26,23 @@ ressources: "composants/accordeons"
 
 Habillage : bleu par défaut ; `bib-accordeons--neutre` (pastille jaune, filet gris), `bib-accordeons--rose` et `bib-accordeons--vert` sur le groupe (ou sur un volet). Les quatre variables `--bib-accordeon-accent` (titre ouvert, icône), `-filet` (trait sous le titre), `-pastille` (rond derrière l’icône) et `-fond` (fond du contenu) donnent un autre habillage.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-accordeons.min.css">
+```
+
+## Étape 3 : ajouter le JavaScript {#javascript}
+
+Facultatif : le script ajoute le comportement interactif. Sans lui, le contenu reste lisible et utilisable.
+
+```
+<script type="module" src="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-accordeons.min.js"></script>
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -54,7 +68,7 @@ import AccordeonContenu from 'harmonium/astro/AccordeonContenu.astro'
 
 Le script facultatif `bib-accordeons.min.js` ouvre le volet qui contient la cible d’une ancre, et garde le titre cliqué sous le pointeur quand un autre volet se ferme plus haut. Sans lui, tout fonctionne sauf ces deux finesses.
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-accordeons}}
 

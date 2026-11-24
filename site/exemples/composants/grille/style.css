@@ -1,0 +1,4 @@
+/* Repères visuels des aperçus : douze colonnes en fond, contour des blocs */
+.ex-grille { padding: var(--espace-1) 0; background: repeating-linear-gradient(to right, var(--couleur-teinte) 0 calc(100% / 12 - 2px), transparent calc(100% / 12 - 2px) calc(100% / 12)); }
+  .ex-bloc { padding: var(--espace-1) var(--espace-1-5); border: 1px solid var(--couleur-accent); border-radius: var(--rayon-minuscule); background: var(--couleur-surface); font-size: var(--texte-petit); }
+  @media (forced-colors: active) { .ex-grille { background: none; } }

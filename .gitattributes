@@ -1,0 +1,2 @@
+# Fins de ligne LF partout, quel que soit le système : dist/ doit être identique d’une machine à l’autre.
+* text=auto eol=lf

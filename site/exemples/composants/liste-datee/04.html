@@ -1,0 +1,23 @@
+<div class="demo-cadre">
+  <p class="etiquette">Échec du chargement</p>
+  <div class="contenu contenu--moyen">
+    <section class="bib-colonne-actualites" aria-labelledby="ex-liste-datee-echec" data-colonne="ex-liste-datee-echec">
+      <h3 class="bib-colonne-actualites__titre" id="ex-liste-datee-echec">Formations</h3>
+      <div class="bib-colonne-actualites__corps">
+        <div class="bib-actualites-dynamique" data-liste-formations data-service="data:application/json,{" data-limite="2" aria-busy="true">
+          <ul class="bib-actualites" data-etat="chargement">
+            <li class="bib-actualite bib-actualite--compact bib-actualite--squelette" aria-hidden="true"><span class="bib-actualite__vignette" data-champ="vignette"></span><div class="bib-actualite__texte"><p class="bib-actualite__ligne"><span class="bib-actualite__barre bib-actualite__barre--courte"></span></p><span class="bib-actualite__titre" data-champ="lien"><span class="bib-actualite__barre"></span></span></div></li>
+            <li class="bib-actualite bib-actualite--compact bib-actualite--squelette" aria-hidden="true"><span class="bib-actualite__vignette" data-champ="vignette"></span><div class="bib-actualite__texte"><p class="bib-actualite__ligne"><span class="bib-actualite__barre bib-actualite__barre--courte"></span></p><span class="bib-actualite__titre" data-champ="lien"><span class="bib-actualite__barre"></span></span></div></li>
+          </ul>
+          <p class="bib-masque" data-etat="chargement">Chargement des formations…</p>
+          <ul class="bib-actualites" data-etat="pret" data-liste hidden></ul>
+          <div class="bib-etat-erreur" data-etat="erreur" hidden><p>Les formations ne sont pas disponibles pour le moment.</p><button type="button" class="bib-etat-erreur__bouton" data-reessayer><svg viewBox="0 0 256 256" width="18" height="18" fill="currentColor" aria-hidden="true" focusable="false"><path d="M240,56v48a8,8,0,0,1-8,8H184a8,8,0,0,1,0-16H211.4L184.81,71.64l-.25-.24a80,80,0,1,0-1.67,114.78,8,8,0,0,1,11,11.63A95.44,95.44,0,0,1,128,224h-1.32A96,96,0,1,1,195.75,60L224,85.8V56a8,8,0,1,1,16,0Z"></path></svg>Réessayer</button></div>
+          <p data-etat="vide" hidden>Aucune formation à venir pour le moment.</p>
+          <p class="bib-actualites-dynamique__sans-js">Les formations s’affichent avec JavaScript. Consultez-les dans le <a href="#apercu">calendrier des formations</a>.</p>
+          <template data-gabarit><li class="bib-actualite bib-carte-lien bib-actualite--compact"><span class="bib-actualite__vignette" data-champ="vignette"></span><div class="bib-actualite__texte"><p class="bib-actualite__ligne"><span class="bib-actualite__calendrier" aria-hidden="true"></span><span data-champ="date"></span></p><a class="bib-actualite__titre bib-lien-etire" href="#" target="_blank" rel="noopener" data-champ="lien"><span data-champ="titre"></span><span class="bib-masque"> (nouvel onglet)</span></a></div><span class="bib-actualite__coin"><span class="bib-pastille-fleche bib-pastille-fleche--externe bib-pastille-fleche--petite" aria-hidden="true"><span class="bib-pastille-fleche__fleche"></span></span></span></li></template>
+        </div>
+      </div>
+    </section>
+  </div>
+  <p class="legende">La source simulée renvoie une réponse illisible&nbsp;: le squelette laisse place au message et à «&nbsp;Réessayer&nbsp;», qui relance le chargement (et échoue de nouveau ici).</p>
+</div>

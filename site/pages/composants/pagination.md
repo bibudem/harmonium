@@ -13,9 +13,7 @@ statut: beta
 
 ::exemple[composants/pagination/02.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <nav class="bib-pagination" aria-label="Pagination">
@@ -33,7 +31,15 @@ statut: beta
 
 Habillage : `--bib-pagination-courante-fond` et `--bib-pagination-courante-texte`.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-pagination.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -52,7 +58,7 @@ import Pagination from 'harmonium/astro/Pagination.astro'
 | nom | Nom de la navigation (deux paginations sur une page : les distinguer). | Pagination |
 | class | Classes ajoutées à la racine. |  |
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-pagination}}
 

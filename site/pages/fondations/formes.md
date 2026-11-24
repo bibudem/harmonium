@@ -1,4 +1,5 @@
 ---
+titre-court: "Formes et élévation"
 titre: "Formes, ombres, empilement"
 description: "Des coins arrondis à six paliers, deux ombres teintées de bleu foncé, et un ordre d’empilement qui évite la course aux `z-index`."
 ---

@@ -1,5 +1,5 @@
 ---
-titre: "Consentement"
+titre: "Bandeau de consentement"
 fichiers: "`bib-consentement.min.js` · `<bib-consentement>`"
 description: "Demande l’accord de la personne avant de mesurer la fréquentation (Google Analytics, Google Tag Manager, Microsoft Clarity). Rien n’est chargé ni envoyé avant sa réponse."
 ressources: "composants/consentement"
@@ -17,7 +17,7 @@ La carte paraît en bas de l’écran tant qu’aucun choix n’est enregistré 
 
 Dernier choix : **aucun pendant cette visite**.
 
-## Utilisation {#utilisation}
+## Étape 1 : ajouter le script et l’élément {#html}
 
 1.  **Dans le `<head>`**
     
@@ -48,7 +48,7 @@ Dernier choix : **aucun pendant cette visite**.
     ```
     
 
-### Réglages {#reglages}
+## Étape 2 : régler le composant (facultatif) {#reglages}
 
 | Attribut | Rôle |
 | --- | --- |
@@ -97,7 +97,7 @@ Une page vue est envoyée au chargement du conteneur. Un site qui change de page
 window.dispatchEvent(new Event('bib:page-vue'))
 ```
 
-## Habillage {#habillage}
+## Personnaliser {#habillage}
 
 Dans la feuille de style du site, une fois (toutes facultatives ; chaque propriété a une valeur par défaut neutre). Exemple avec les jetons communs :
 

@@ -9,15 +9,15 @@
 import { donneesHabillage } from '../site/donnees/habillage.mjs'
 import { cp, mkdir, readdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { dirname, join, relative } from 'node:path'
-import { pathToFileURL } from 'node:url'
-import { pagesAPlat } from '../site/navigation.mjs'
-import { rendre } from '../site/gabarit.mjs'
+import { fileURLToPath, pathToFileURL } from 'node:url'
+import { REDIRECTIONS, libelle, pagesAPlat } from '../site/navigation.mjs'
+import { rendre, versRacine } from '../site/gabarit.mjs'
 import { donneesCatalogue } from '../site/donnees/catalogue.mjs'
 import { donneesFondations } from '../site/donnees/fondations.mjs'
 import { donneesIntegration } from '../site/integration.mjs'
 import { lirePage } from '../site/markdown.mjs'
 
-const RACINE = new URL('..', import.meta.url).pathname
+const RACINE = fileURLToPath(new URL('..', import.meta.url))
 
 async function* fichiers(dossier) {
   for (const e of await readdir(dossier, { withFileTypes: true })) {
@@ -29,10 +29,11 @@ async function* fichiers(dossier) {
 
 /** Une construction interrompue laisse son dossier temporaire : le retirer si son processus n'existe plus */
 async function nettoyerConstructionsAbandonnees(cible) {
-  const prefixe = `${cible.split(/[\\/]/).pop()}.construction-`
+  // Dossier en construction ou ancien site mis de côté par un échange qui n'a pas abouti
+  const motif = new RegExp(`^${cible.split(/[\\/]/).pop()}\\.(?:construction|ancien)-(\\d+)$`)
   for (const nom of await readdir(RACINE)) {
-    if (!nom.startsWith(prefixe)) continue
-    const pid = Number(nom.slice(prefixe.length))
+    const pid = Number(nom.match(motif)?.[1])
+    if (!pid) continue
     let vivant = false
     try {
       process.kill(pid, 0)
@@ -71,7 +72,7 @@ export async function construireSite({ publication = false } = {}) {
   // Fragments qui ne figurent pas dans le plan
   const connus = new Set(liste.map((p) => p.chemin))
   for await (const f of fichiers(join(RACINE, 'site/pages'))) {
-    const chemin = relative(join(RACINE, 'site/pages'), f)
+    const chemin = relative(join(RACINE, 'site/pages'), f).replaceAll('\\', '/')
     if (f.endsWith('.md') && !connus.has(chemin.replace(/\.md$/, '.html'))) erreurs.push(`${chemin} : absent de site/navigation.mjs`)
   }
   if (erreurs.length) {
@@ -80,12 +81,17 @@ export async function construireSite({ publication = false } = {}) {
   }
 
   // Fichiers communs et polices
-  // Conserver les anciennes adresses après regroupement des fiches.
-  await writeFile(join(sortie, 'composants/typographie.html'), `<!doctype html>
+  // Conserver les anciennes adresses après un renommage ou un regroupement de fiches.
+  for (const [ancienne, nouvelle] of Object.entries(REDIRECTIONS)) {
+    const cible = versRacine(ancienne) + nouvelle
+    const titre = libelle(nouvelle.split('#')[0])
+    await mkdir(dirname(join(sortie, ancienne)), { recursive: true })
+    await writeFile(join(sortie, ancienne), `<!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="refresh" content="0;url=../fondations/typographie.html#composant">
-<link rel="canonical" href="../fondations/typographie.html"><title>Typographie</title></head>
-<body><p><a href="../fondations/typographie.html#composant">Consulter la page Typographie.</a></p></body></html>`)
+<meta http-equiv="refresh" content="0;url=${cible}">
+<link rel="canonical" href="${cible.split('#')[0]}"><title>${titre}</title></head>
+<body><p><a href="${cible}">Consulter la page ${titre}.</a></p></body></html>`)
+  }
   for (const nom of await readdir(join(RACINE, 'site/assets'))) {
     if (publication && nom === 'rechargement.js') continue
     await cp(join(RACINE, 'site/assets', nom), join(sortie, nom), { recursive: true })
@@ -112,14 +118,37 @@ export async function construireSite({ publication = false } = {}) {
     // Lu par rechargement.js : la page se recharge quand le site est reconstruit
     await writeFile(join(sortie, 'version.txt'), String(Date.now()))
   }
-  // Échange : l'ancien site est mis de côté (renommer ne lui demande rien), le nouveau prend
-  // sa place, puis l'ancien est effacé (macOS refuse parfois d'effacer un dossier en cours de
-  // lecture : nouvelles tentatives)
-  const ancien = `${cible}.ancien-${process.pid}`
-  await rename(cible, ancien).catch(() => {})
-  await rename(sortie, cible)
-  await rm(ancien, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 }).catch(() => {})
+  await remplacer(sortie, cible)
   return { sortie: cible, pages: liste.length }
+}
+
+/** Codes d'un dossier verrouillé : Windows refuse de renommer un dossier dont un fichier est ouvert */
+const VERROU = new Set(['EPERM', 'EBUSY', 'EACCES', 'ENOTEMPTY'])
+const attendre = (ms) => new Promise((resoudre) => setTimeout(resoudre, ms))
+
+/**
+ * Échange : l'ancien site est mis de côté (renommer ne lui demande rien), le nouveau prend sa
+ * place, puis l'ancien est effacé (macOS refuse parfois d'effacer un dossier en cours de lecture).
+ * Sous Windows, le serveur de développement, le navigateur ou l'antivirus peuvent garder un
+ * fichier ouvert : nouvelles tentatives, puis, en dernier recours, copie par-dessus l'ancien site.
+ */
+async function remplacer(sortie, cible) {
+  const ancien = `${cible}.ancien-${process.pid}`
+  for (let essai = 1; essai <= 8; essai++) {
+    try {
+      await rename(cible, ancien).catch((erreur) => { if (erreur.code !== 'ENOENT') throw erreur })
+      await rename(sortie, cible)
+      await rm(ancien, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 }).catch(() => {})
+      return
+    } catch (erreur) {
+      if (!VERROU.has(erreur.code)) throw erreur
+      // L'ancien site a pu être déplacé avant l'échec : le remettre en place
+      await rename(ancien, cible).catch(() => {})
+      await attendre(100 * essai)
+    }
+  }
+  await cp(sortie, cible, { recursive: true, force: true })
+  await rm(sortie, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 }).catch(() => {})
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {

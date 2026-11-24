@@ -16,9 +16,7 @@ fichiers: "`harmonium/astro/Section.astro` · `bib-section.min.css`"
 
 ::exemple[composants/section/03.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <section class="bib-section bib-section--vert-fonce bib-section--fonce surface-foncee">
@@ -37,7 +35,15 @@ fichiers: "`harmonium/astro/Section.astro` · `bib-section.min.css`"
 
 Habillage : un modificateur de couleur (`--bleu-principal`, `--bleu-fonce`, `--bleu-principal-fonce`, `--vert-fonce`, `--rouge-orange`, `--orange`, `--vert`, `--jaune`, `--rouge-orange-40`, `--bleu-10`, `--bleu-20`, `--jaune-40`, `--rose-50`, `--rose`) **et** son ton (`--fonce`, `--moyen` ou `--clair`, voir le tableau ci-dessous). Pour une autre couleur : `--bib-section-fond` avec le ton qui convient. `--bib-section-voile` règle le voile d’une photo (60 %), `--bib-section-cadrage` son cadrage (50 %).
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-section.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -69,7 +75,7 @@ Le ton règle la couleur du texte, des liens et du focus d’après le contraste
 | `--moyen` | rouge orangé, orange, vert pâle, jaune, rose 500 | Texte foncé ; liens de la couleur du texte, soulignés (le blanc et le lien bleu ne passent pas). |
 | `--clair` | bleu 100, bleu 200, jaune pâle, rose 100, rose 300 | Texte foncé, liens bleus. |
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-section}}
 
@@ -82,7 +88,7 @@ Le ton règle la couleur du texte, des liens et du focus d’après le contraste
 
 ### À éviter
 
--   **Dans une page de texte**, pour encadrer un paragraphe : une [surface](@@/composants/surface.html) ou un encadré suffit.
+-   **Dans une page de texte**, pour encadrer un paragraphe : une [panneau](@@/composants/surface.html) ou un encadré suffit.
 -   **Pour un message d’état** (fermeture, panne) : une [alerte](@@/composants/alertes.html), qui a une icône et un libellé pour les lecteurs d’écran.
 -   **Deux bandes foncées de suite** : la séparation ne se voit plus ; alterner les tons ou utiliser `suite` pour prolonger la même bande.
 -   **Pour une photo porteuse de sens** : sous un voile, elle devient décor ; la montrer plutôt dans le contenu.

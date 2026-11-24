@@ -1,5 +1,5 @@
 ---
-titre: "Étiquettes"
+titre: "Étiquette"
 description: "De petites étiquettes arrondies, en texte ou en lien : le statut d’un événement (complet, liste d’attente), les caractéristiques d’une ressource, un lieu, un compte."
 fichiers: "`harmonium/astro/Pastilles.astro` · `bib-pastilles.min.css`"
 statut: beta
@@ -9,9 +9,7 @@ statut: beta
 
 ::exemple[composants/etiquettes/01.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <ul class="bib-pastilles" aria-label="Places">
@@ -39,7 +37,15 @@ Variantes :
 
 Habillage : `--bib-pastille-fond`, `--bib-pastille-bordure`, `--bib-pastille-texte`, `--bib-pastille-point`.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-pastilles.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -57,7 +63,7 @@ import Pastilles from 'harmonium/astro/Pastilles.astro'
 | pastilles | Liste de `{ libelle, lien?, variante?, icone?, masque? }`. `icone` : `libre`, `distance`, `lien`, `lieu`. `masque` : texte ajouté pour les lecteurs d’écran. |  |
 | class | Classes ajoutées à la racine. |  |
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-pastilles}}
 

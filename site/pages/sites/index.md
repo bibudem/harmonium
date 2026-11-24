@@ -1,4 +1,5 @@
 ---
+titre-court: "Suivi d’adoption"
 titre: "Suivi d’intégration"
 description: "Harmonium est le socle commun des sites des Bibliothèques. Les composants et leurs règles sont définis une seule fois ; cette page indique où le socle est réellement intégré."
 ---

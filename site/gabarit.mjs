@@ -37,11 +37,14 @@ function menu(noeuds, courant, racine, niveau = 0) {
       html += `<li><a href="${racine}${chemin}"${actuel}>${titre}</a></li>`
       continue
     }
+    // Volets en accordéon (`name`) : seuls la section et le groupe de la page courante sont ouverts ;
+    // la première section l'est par défaut quand aucune autre ne contient la page.
     const contient = pagesAPlat(n.pages).some((p) => p.chemin === courant)
     if (niveau === 0) {
-      html += `<li class="nav-section"><span class="nav-section-titre">${n.titre}</span><ul>${menu(n.pages, courant, racine, 1)}</ul></li>`
+      const parDefaut = n === noeuds[0] && !noeuds.some((s) => typeof s !== 'string' && pagesAPlat(s.pages).some((p) => p.chemin === courant))
+      html += `<li class="nav-section"><details name="nav-section"${contient || parDefaut ? ' open' : ''}><summary class="nav-section-titre">${n.titre}</summary><ul>${menu(n.pages, courant, racine, 1)}</ul></details></li>`
     } else {
-      html += `<li class="nav-groupe"><details${contient ? ' open' : ''}><summary>${n.titre}</summary><ul>${menu(n.pages, courant, racine, niveau + 1)}</ul></details></li>`
+      html += `<li class="nav-groupe"><details name="nav-groupe"${contient ? ' open' : ''}><summary>${n.titre}</summary><ul>${menu(n.pages, courant, racine, niveau + 1)}</ul></details></li>`
     }
   }
   return html
@@ -100,7 +103,8 @@ export function rendre(page, { rechargement, dist }) {
     ? page.contenu.replace('</h1>', '</h1>\n' + statutComposant(page.statut))
     : page.contenu
   const contenuNomme = nommerTableaux(contenu)
-  const som = sommaire(contenuNomme)
+  // Pas de sommaire sur l'accueil.
+  const som = page.chemin === 'index.html' ? '' : sommaire(contenuNomme)
   // Sur petit écran, le volet suit l’introduction ; en bureau, le même composant est dans la colonne droite.
   const debutSections = som ? contenuNomme.search(/<h2 id="/) : -1
   const introduction = debutSections >= 0 ? contenuNomme.slice(0, debutSections) : ''
@@ -153,11 +157,7 @@ ${corps}
         </main>
         <footer class="pied">
           <p>Harmonium : système de design des sites des bibliothèques de l’UdeM.</p>
-          <div class="bib-licence" prefix="cc: http://creativecommons.org/ns# dct: http://purl.org/dc/terms/">
-            <span class="bib-licence__cc" aria-hidden="true"></span>
-            <span class="bib-licence__cc bib-licence__cc--by" aria-hidden="true"></span>
-            <a href="https://creativecommons.org/licenses/by/4.0/deed.fr" rel="license">Sauf indications contraires, ce site est sous licence CC BY 4.0</a>
-          </div>
+          <p>© Université de Montréal, Bibliothèques. Usage réservé aux sites de l’Université de Montréal.</p>
         </footer>
       </div>
     </div>

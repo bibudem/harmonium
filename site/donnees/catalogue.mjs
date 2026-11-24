@@ -1,5 +1,5 @@
 /* Le plan et les fiches sont la source du catalogue : pas de deuxième inventaire à maintenir. */
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import matter from 'gray-matter'
 import { NAVIGATION } from '../navigation.mjs'
@@ -7,6 +7,7 @@ import { STATUTS } from '../integration.mjs'
 import { echapper } from '../outils.mjs'
 
 const VIGNETTES = new URL('../assets/vignettes/', import.meta.url)
+const COMPOSANTS = new Set(JSON.parse(readFileSync(new URL('./composants.json', import.meta.url), 'utf8')))
 
 /** Une carte par composant (vignette, nom, usage, statut), construite sur le lien étiré d’Harmonium. */
 function carte(chemin, nom, data) {
@@ -21,11 +22,16 @@ function carte(chemin, nom, data) {
 }
 
 export async function donneesCatalogue() {
-  const groupes = NAVIGATION.find((g) => g.titre === 'Composants').pages.filter((g) => typeof g !== 'string')
+  // Les groupes de « Composants », puis les services des Bibliothèques ; seules les fiches de composant
+  // (donnees/composants.json) ont une carte.
+  const groupes = [
+    ...NAVIGATION.find((g) => g.titre === 'Composants').pages.filter((g) => typeof g !== 'string'),
+    NAVIGATION.find((g) => g.titre === 'Services des Bibliothèques'),
+  ]
   const sections = []
   for (const groupe of groupes) {
     const cartes = []
-    for (const chemin of groupe.pages) {
+    for (const chemin of groupe.pages.filter((p) => COMPOSANTS.has(p))) {
       const { data } = matter(await readFile(new URL('../pages/' + chemin.replace(/\.html$/, '.md'), import.meta.url), 'utf8'))
       cartes.push(carte(chemin, data['titre-court'] ?? data.titre, data))
     }

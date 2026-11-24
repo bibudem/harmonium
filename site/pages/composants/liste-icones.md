@@ -1,51 +1,61 @@
 ---
-titre: "Modalités"
+titre: "Liste à icônes"
 description: "Une liste sans puces de renseignements courts, chacun précédé d’une icône décorative : conditions de prêt, équipements d’une salle, légende des icônes du site."
-fichiers: "`harmonium/astro/Modalites.astro` · `bib-modalites.min.css`"
-ressources: "composants/modalites"
+fichiers: "`harmonium/astro/ListeIcones.astro` · `bib-liste-icones.min.css`"
+ressources: "composants/liste-icones"
 ---
 
 ## Aperçu {#apercu}
 
-::exemple[composants/modalites/01.html]
+::exemple[composants/liste-icones/01.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
-<ul class="bib-modalites">
-  <li class="bib-modalite">
-    <span class="bib-modalite__icone" aria-hidden="true"><svg width="32" height="32" viewBox="0 0 256 256" fill="currentColor">…</svg></span>
-    <span class="bib-modalite__texte">Durée du prêt : 3 jours</span>
+<ul class="bib-liste-icones">
+  <li class="bib-liste-icones__element">
+    <span class="bib-liste-icones__icone" aria-hidden="true"><svg width="32" height="32" viewBox="0 0 256 256" fill="currentColor">…</svg></span>
+    <span class="bib-liste-icones__texte">Durée du prêt : 3 jours</span>
   </li>
 </ul>
 ```
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-liste-icones.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
-import Modalites from 'harmonium/astro/Modalites.astro'
-import Modalite from 'harmonium/astro/Modalite.astro'
+import ListeIcones from 'harmonium/astro/ListeIcones.astro'
+import ElementListeIcones from 'harmonium/astro/ElementListeIcones.astro'
 ---
-<Modalites>
-  <Modalite Icone={BooksIcon}>Nombre maximum de documents : 100</Modalite>
-  <Modalite><svg slot="icone" …></svg>Icône sur mesure</Modalite>
-</Modalites>
+<ListeIcones>
+  <ElementListeIcones Icone={BooksIcon}>Nombre maximum de documents : 100</ElementListeIcones>
+  <ElementListeIcones><svg slot="icone" …></svg>Icône sur mesure</ElementListeIcones>
+</ListeIcones>
 ```
 
 | Propriété | Rôle | Défaut |
 | --- | --- | --- |
-| `Icone` | (`Modalite`) Un composant d’icône, rendu avec `size` et `color`. Une icône déjà prête (SVG, planche d’icônes du site) passe dans le slot `icone`, qui l’emporte. |  |
-| `taille` | (`Modalite`) Taille de l’icône en pixels. | `32` |
-| `couleur` | (`Modalite`) Couleur CSS de l’icône, de préférence un jeton. | `currentColor` |
+| `Icone` | (`ElementListeIcones`) Un composant d’icône, rendu avec `size` et `color`. Une icône déjà prête (SVG, planche d’icônes du site) passe dans le slot `icone`, qui l’emporte. |  |
+| `taille` | (`ElementListeIcones`) Taille de l’icône en pixels. | `32` |
+| `couleur` | (`ElementListeIcones`) Couleur CSS de l’icône, de préférence un jeton. | `currentColor` |
 
 L’icône vient toujours du site : Harmonium n’impose aucune bibliothèque d’icônes.
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
-{{habillage-modalites}}
+{{habillage-liste-icones}}
+
+### Ancien nom {#ancien-nom}
+
+Jusqu’à la version 1.1, ce composant s’appelait « Modalités » : `Modalites.astro`, `Modalite.astro`, classes `bib-modalites` et `bib-modalite`, feuille `bib-modalites.min.css`. Ces noms fonctionnent encore, mais ils sont obsolètes et seront retirés en 2.0.
 
 ## Quand l’utiliser {#quand}
 

@@ -1,0 +1,28 @@
+---
+/*
+ * <ElementListeIcones> : un élément de <ListeIcones> (voir src/composants/liste-icones.css). L'icône est
+ * décorative. Elle se donne par `Icone` (un composant d'icône, rendu directement) ou par le slot « icone »
+ * (une icône prête : SVG, planche d'icônes du site). Le slot l'emporte. Remplace <Modalite> (obsolète depuis 1.2).
+ */
+import { classes } from './styles.ts'
+
+interface Props {
+  /** Composant d'icône (Phosphor ou icône maison) */
+  Icone?: any
+  /** Taille de l'icône en px */
+  taille?: number
+  /** Couleur CSS de l'icône, de préférence un jeton ; celle du texte par défaut */
+  couleur?: string
+  class?: string
+  style?: string
+}
+
+const { Icone: Icon, taille = 32, couleur = 'currentColor', class: classe, style } = Astro.props
+---
+
+<li class:list={['bib-liste-icones__element', classes(classe)]} style={style}>
+  <span class="bib-liste-icones__icone" aria-hidden="true">
+    <slot name="icone">{Icon && <Icon size={taille} color={couleur} aria-hidden="true" focusable="false" />}</slot>
+  </span>
+  <span class="bib-liste-icones__texte"><slot /></span>
+</li>

@@ -1,0 +1,24 @@
+---
+/*
+ * <ListeIcones> : liste sans puces de renseignements courts, chacun précédé d'une icône décorative. Produit
+ * le HTML documenté dans src/composants/liste-icones.css et importe cette feuille. Aucun JavaScript.
+ * Remplace <Modalites> (obsolète depuis 1.2).
+ *
+ *   <ListeIcones>
+ *     <ElementListeIcones Icone={BooksIcon}>Nombre maximum de documents : 100</ElementListeIcones>
+ *   </ListeIcones>
+ */
+import '../src/composants/liste-icones.css'
+import { classes } from './styles.ts'
+
+interface Props {
+  class?: string
+  style?: string
+}
+
+const { class: classe, style } = Astro.props
+---
+
+<ul class:list={['bib-liste-icones', classes(classe)]} style={style}>
+  <slot />
+</ul>

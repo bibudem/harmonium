@@ -8,9 +8,7 @@ fichiers: "`harmonium/astro/Citation.astro` · `bib-citation.min.css`"
 
 ::exemple[composants/citation/01.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <figure class="bib-citation">
@@ -23,7 +21,15 @@ fichiers: "`harmonium/astro/Citation.astro` · `bib-citation.min.css`"
 
 Habillage : `--bib-citation-filet` (couleur du filet, bleu principal par défaut) et `--bib-citation-marge`.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-citation.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -39,7 +45,7 @@ import Citation from 'harmonium/astro/Citation.astro'
 | `source` | Attribution affichée sous la citation (`<figcaption>`). |
 | `cite` | Adresse de la source, posée sur le `<blockquote>`. |
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-citation}}
 

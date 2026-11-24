@@ -8,9 +8,7 @@ fichiers: "`harmonium/astro/Separateur.astro` · `bib-separateur.min.css`"
 
 ::exemple[composants/separateur/01.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <hr class="bib-separateur">
@@ -24,7 +22,15 @@ fichiers: "`harmonium/astro/Separateur.astro` · `bib-separateur.min.css`"
 
 Habillage : `--bib-separateur-couleur` (couleur des bordures par défaut).
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-separateur.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -38,7 +44,7 @@ import Separateur from 'harmonium/astro/Separateur.astro'
 | --- | --- | --- |
 | `orientation` | `horizontal` ou `vertical` ; vertical pose `aria-orientation` et s’étire sur la hauteur d’une rangée flex. | `horizontal` |
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-separateur}}
 

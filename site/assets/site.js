@@ -3,17 +3,30 @@
 
 // ---- Menu replié sur téléphone, ouvert sur grand écran ----
 const navMobile = document.querySelector('.nav-mobile')
-const petit = matchMedia('(max-width: 56rem)')
+const petit = matchMedia('(width < 900px)')
 const ajuster = () => navMobile && (navMobile.open = !petit.matches)
 ajuster()
 petit.addEventListener('change', ajuster)
+// Échap referme le menu sur petit écran.
+navMobile?.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape' || !petit.matches || !navMobile.open) return
+  navMobile.open = false
+  navMobile.querySelector('summary').focus()
+})
 
 // ---- Filtre des pages ----
 const filtre = document.getElementById('filtre-nav')
 const etatFiltre = document.querySelector('.filtre-etat')
 const sansAccents = (t) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+// Volets du menu (sections et groupes) : état d'origine, rétabli quand le filtre est vidé
+const volets = [...document.querySelectorAll('.nav-liste details')].map((d) => ({ d, ouvert: d.open, nom: d.getAttribute('name') }))
 filtre?.addEventListener('input', () => {
   const q = sansAccents(filtre.value.trim())
+  // Pendant une recherche, plusieurs volets s'ouvrent à la fois : l'accordéon (`name`) est suspendu
+  for (const { d, nom } of volets) {
+    if (q) d.removeAttribute('name')
+    else if (nom) d.setAttribute('name', nom)
+  }
   let visibles = 0
   for (const a of document.querySelectorAll('.nav-liste a')) {
     const li = a.parentElement
@@ -27,7 +40,12 @@ filtre?.addEventListener('input', () => {
     g.hidden = aucun
     if (q && !aucun) g.querySelector('details').open = true
   }
-  for (const s of document.querySelectorAll('.nav-section')) s.hidden = ![...s.querySelectorAll(':scope > ul > li')].some((li) => !li.hidden)
+  for (const s of document.querySelectorAll('.nav-section')) {
+    const aucun = ![...s.querySelectorAll(':scope > details > ul > li')].some((li) => !li.hidden)
+    s.hidden = aucun
+    if (q && !aucun) s.querySelector('details').open = true
+  }
+  if (!q) for (const { d, ouvert } of volets) d.open = ouvert
   if (etatFiltre) etatFiltre.textContent = q ? `${visibles} page${visibles > 1 ? 's' : ''}` : ''
 })
 

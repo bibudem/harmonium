@@ -1,4 +1,5 @@
 ---
+titre-court: "Espacements"
 titre: "Espacements et mise en page"
 description: "Une échelle de base (pas de 0,5 rem, avec des demi-pas), et surtout des rôles : la même relation entre deux éléments a toujours le même écart, du plus petit au plus grand : élément < titre < bloc < blocs < bande."
 ---

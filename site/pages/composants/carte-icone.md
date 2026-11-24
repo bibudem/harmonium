@@ -16,9 +16,7 @@ fichiers: "`harmonium/astro/CarteIcone.astro` · `harmonium/astro/PastilleFleche
 
 ::exemple[composants/carte-icone/03.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <div class="bib-carte-icone bib-carte-icone--bleu-principal bib-carte-lien bib-anneau-carte">
@@ -35,7 +33,16 @@ fichiers: "`harmonium/astro/CarteIcone.astro` · `harmonium/astro/PastilleFleche
 
 Habillage : cinq couleurs : `--bleu-principal`, `--vert-fonce`, `--rose`, `--jaune` et `--neutre`, blanche à contour (ajouter `surface-claire` sur les trois dernières, qui sont claires) ; `--petite` pour le petit format. La carte est bâtie sur le [lien étiré et pastille](#lien-etire), dont la feuille se charge aussi.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-carte-icone.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-carte-lien.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -56,7 +63,7 @@ import CarteIcone from 'harmonium/astro/CarteIcone.astro'
 | pleineLargeur | Carte compacte en rangée : voir [Carte compacte](@@/composants/carte-icone.html#compacte). | non |
 | etiquette | Avec `pleineLargeur` : libellé collé sous le titre, hors du lien (« Méthode recommandée »). |  |
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-carte-icone}}
 

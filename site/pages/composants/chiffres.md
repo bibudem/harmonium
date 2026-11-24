@@ -17,9 +17,7 @@ ressources: "composants/chiffres"
 
 ::exemple[composants/chiffres/03.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <div class="bib-chiffres bib-chiffres--barres" data-chiffres>
@@ -42,7 +40,23 @@ ressources: "composants/chiffres"
 
 Habillage : les parts prennent le bleu principal, le rouge orangé et le jaune, dans cet ordre (distincts sous daltonisme) ; la couleur suit la part (`--couleur` de chaque pastille et barre).
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-chiffres.min.css">
+```
+
+## Étape 3 : ajouter le JavaScript {#javascript}
+
+Facultatif : le script ajoute le comportement interactif. Sans lui, le contenu reste lisible et utilisable.
+
+```
+<script type="module" src="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-chiffres.min.js"></script>
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -63,7 +77,7 @@ import Chiffres from 'harmonium/astro/Chiffres.astro'
 
 **Animation.** Le script `bib-chiffres.min.js` remplit les barres de gauche à droite et fait monter les nombres, une seule fois, quand le bloc entre à l’écran. Le nombre animé est masqué aux lecteurs d’écran, qui lisent la valeur finale ; une copie invisible réserve sa largeur, donc rien ne bouge autour. Rien ne s’anime avec le mouvement réduit, sur un rechargement ou à l’impression.
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-chiffres}}
 
@@ -78,7 +92,7 @@ import Chiffres from 'harmonium/astro/Chiffres.astro'
 
 -   **Pour des données détaillées ou à comparer ligne par ligne** : un [tableau](@@/composants/tableau.html).
 -   **Pour plus de trois parts** : la barre devient illisible ; un tableau ou un graphique dédié.
--   **Pour des conditions de service** (durée de prêt, frais) : les [modalités](@@/composants/modalites.html).
+-   **Pour des conditions de service** (durée de prêt, frais) : les [listes à icônes](@@/composants/liste-icones.html).
 -   **Pour un chiffre isolé dans une phrase** : le laisser dans le texte.
 
 ## Accessibilité {#accessibilite}

@@ -10,9 +10,7 @@ fichiers: "`harmonium/astro/SceauBibliotheques.astro` · `bib-sceau.min.css` · 
 
 ::exemple[composants/sceau/02.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <a href="/">
@@ -23,7 +21,23 @@ fichiers: "`harmonium/astro/SceauBibliotheques.astro` · `bib-sceau.min.css` · 
 </a>
 ```
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-sceau.min.css">
+```
+
+## Étape 3 : ajouter le JavaScript {#javascript}
+
+Facultatif : le script ajoute le comportement interactif. Sans lui, le contenu reste lisible et utilisable.
+
+```
+<script type="module" src="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-sceau.min.js"></script>
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -40,7 +54,7 @@ import SceauBibliotheques from 'harmonium/astro/SceauBibliotheques.astro'
 
 Sur fond clair, remplacer `bib-sceau-anneau.svg` par `bib-sceau-anneau-noir.svg`. Deux fichiers SVG empilés (le U, l’anneau de texte) plutôt qu’un SVG en ligne : l’anneau pèse 21 Ko, et en fichier le navigateur le garde en cache. Le script facultatif `bib-sceau.min.js` fait tourner l’anneau ; il ne fait rien si l’appareil limite les animations.
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-sceau}}
 

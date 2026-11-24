@@ -9,9 +9,7 @@ ressources: "composants/carrousel"
 
 ::exemple[composants/carrousel/01.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <div class="bib-carrousel" role="region" aria-roledescription="carrousel" aria-labelledby="car-titre" data-carrousel>
@@ -36,12 +34,27 @@ ressources: "composants/carrousel"
   <div class="bib-carrousel__progression bib-carrousel__progression-piste" aria-hidden="true" hidden data-progression><span class="bib-carrousel__curseur" data-curseur></span></div>
   <div class="bib-carrousel__plus"><a class="bib-bouton …" href="/services/">Voir tout</a></div>
 </div>
-<script type="module" src="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-carrousel.min.js"></script>
 ```
 
 Habillage : l’espace entre les groupes vient de `--espace-bloc` et celui entre les cartes de `--espace-grille`. Tant qu’il reste des cartes à droite, la piste porte `data-suite` et son bord droit s’efface en fondu (discret : 40 % d’opacité au plus bas). Les cartes qui défilent sont celles d’Harmonium : [à image](@@/composants/carte-image.html), [à icône](@@/composants/carte-icone.html)…
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-carrousel.min.css">
+```
+
+## Étape 3 : ajouter le JavaScript {#javascript}
+
+Facultatif : le script ajoute le comportement interactif. Sans lui, le contenu reste lisible et utilisable.
+
+```
+<script type="module" src="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-carrousel.min.js"></script>
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -67,7 +80,7 @@ import CarteImage from 'harmonium/astro/CarteImage.astro'
 
 **Les flèches** avancent d’une « page » : la première diapositive coupée à droite vient au début (l’inverse en reculant). Elles sont désactivées aux extrémités et masquées quand tout tient dans la largeur.
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-carrousel}}
 

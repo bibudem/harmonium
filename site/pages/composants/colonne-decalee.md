@@ -1,5 +1,5 @@
 ---
-titre: "Colonne décalée"
+titre: "Conteneur"
 description: "Un bloc centré, avec des marges égales à gauche et à droite mesurées en colonnes d’une grille de 12. Il resserre un contenu sans changer sa structure, à toutes les largeurs d’écran."
 fichiers: "`harmonium/astro/ColonneDecalee.astro` · `bib-colonne-decalee.min.css`"
 ressources: "composants/colonne-decalee"
@@ -9,9 +9,7 @@ ressources: "composants/colonne-decalee"
 
 ::exemple[composants/colonne-decalee/01.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <div class="bib-colonne-decalee" style="--bib-decalage: 0.5">
@@ -21,7 +19,15 @@ ressources: "composants/colonne-decalee"
 </div>
 ```
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-colonne-decalee.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -37,7 +43,7 @@ import ColonneDecalee from 'harmonium/astro/ColonneDecalee.astro'
 | `decalage` | Colonnes laissées de chaque côté, de 0 à 6 (demi-valeurs permises). En HTML : la variable `--bib-decalage`. | `0` |
 
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-colonne-decalee}}
 
@@ -50,7 +56,7 @@ import ColonneDecalee from 'harmonium/astro/ColonneDecalee.astro'
 ### À éviter
 
 -   **Pour limiter la longueur des lignes de texte** : la mesure du texte (`--mesure-texte`) le fait déjà sur les paragraphes.
--   **Pour placer plusieurs blocs côte à côte** : utiliser une [grille](@@/fondations/espacements.html).
+-   **Pour placer plusieurs blocs côte à côte** : utiliser la [grille](@@/composants/grille.html).
 -   **Avec un grand décalage sur un contenu dense** : sur téléphone, la même proportion s’applique et la colonne devient très étroite (à `decalage={3}`, la moitié de l’écran).
 
 ## Accessibilité {#accessibilite}

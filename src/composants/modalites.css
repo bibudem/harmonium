@@ -1,4 +1,7 @@
 /*
+ * OBSOLÈTE depuis 1.2 : remplacée par liste-icones.css (classes .bib-liste-icones). Conservée telle
+ * quelle pour les pages existantes ; retirée en 2.0.
+ *
  * Modalités : liste sans puces de renseignements courts, chacun précédé d'une icône décorative.
  *
  *   <ul class="bib-modalites">

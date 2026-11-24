@@ -1,5 +1,5 @@
 ---
-titre: "Galerie"
+titre: "Galerie d’images"
 description: "Des images côte à côte, recadrées à la même hauteur, chacune avec sa légende : pièces d’une collection, photos d’un événement."
 fichiers: "`harmonium/astro/Galerie.astro` · `harmonium/astro/FigureGalerie.astro` · `bib-galerie.min.css`"
 statut: beta
@@ -9,9 +9,7 @@ statut: beta
 
 ::exemple[composants/galerie/01.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <div class="bib-galerie">
@@ -24,7 +22,15 @@ statut: beta
 
 Chaque figure fait au moins 170 px de large ; la photo est recadrée à 200 px de haut.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-galerie.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -43,7 +49,7 @@ import FigureGalerie from 'harmonium/astro/FigureGalerie.astro'
 | slot par défaut | La légende. |  |
 | class | Classes ajoutées (aussi sur Galerie). |  |
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-galerie}}
 

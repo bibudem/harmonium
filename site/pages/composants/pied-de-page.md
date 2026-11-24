@@ -12,9 +12,7 @@ vignette: place
 
 > Le mode Bureau rend le pied de page dans une fenêtre de 1440 px, puis adapte son aperçu à l’espace disponible. « Ouvrir à taille réelle » permet de le consulter sans réduction. Le mode Téléphone montre sa disposition mobile et les volets repliables.
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <footer class="bib-pied-de-page theme-clair">
@@ -45,7 +43,23 @@ vignette: place
 
 Habillage : le fond est le bleu foncé du thème et la barre du bas le bleu principal ; la classe `theme-clair` garde ces couleurs sur les différentes bandes. La première colonne porte, sous ses liens, l’urgence (`bib-pied-de-page__urgence`, avec une icône de sirène dans `bib-pied-de-page__sirene`) puis les réseaux (`<ul class="bib-pied-de-page__reseaux">`) ; un lien à pictogramme porte un `<svg>` de 18 px, un lien de « Sites connexes » une pastille (`--point`).
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-pied-de-page.min.css">
+```
+
+## Étape 3 : ajouter le JavaScript {#javascript}
+
+Facultatif : le script ajoute le comportement interactif. Sans lui, le contenu reste lisible et utilisable.
+
+```
+<script type="module" src="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-pied-de-page.min.js"></script>
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -72,16 +86,16 @@ import PiedDePage from 'harmonium/astro/PiedDePage.astro'
 | accueil | Adresse du sceau et du logo. | `/` |
 | logo | Logo horizontal blanc, affiché sur téléphone : `{ src, alt?, width?, height? }`. |  |
 | titre | Titre du pied. | « Les bibliothèques de l’Université de Montréal » |
-| licence | Réglages de [Licence](@@/composants/licence.html) : `{ href?, texte? }`. |  |
+| licence | Réglages de [Mention de licence](@@/composants/licence.html) : `{ href?, texte? }`. |  |
 | parametresTemoins | Texte du bouton des témoins ; `null` le retire. | « Paramètres des témoins » |
 
 **Volets repliables.** Sous 900 px, le pied reste court : « Besoin d’aide? » reste ouvert, les autres colonnes (attribut `data-pliable-pied`) deviennent un volet replié (motif Disclosure de l’APG : le titre porte un bouton `aria-expanded`). Le bouton n’est ajouté que par le script `bib-pied-de-page.min.js` (facultatif), et seulement sous 900 px : sans lui, ou sur grand écran, les listes sont visibles.
 
 Le bouton « Paramètres des témoins » (`data-parametres-temoins`) émet l’événement `bib:parametres-temoins` sur `window`, que [`<bib-consentement>`](@@/composants/consentement.html) écoute pour rouvrir ses réglages.
 
-Le [sceau](@@/composants/sceau.html) et la [licence](@@/composants/licence.html) sont des composants à part entière.
+Le [sceau](@@/composants/sceau.html) et la [mention de licence](@@/composants/licence.html) sont des composants à part entière.
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-pied-de-page}}
 

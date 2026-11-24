@@ -1,5 +1,5 @@
 ---
-titre: "Rétroaction"
+titre: "Formulaire de rétroaction"
 fichiers: "`bib-retroaction-usager.min.js` · `<bib-retroaction-usager>`"
 description: "« Cette page vous a été utile? » en bas du contenu. Un pouce en haut envoie la réponse tout de suite ; un pouce en bas ouvre un champ de commentaire facultatif."
 ressources: "composants/retroaction"
@@ -13,7 +13,7 @@ ressources: "composants/retroaction"
 
 ::exemple[composants/retroaction/03.html]
 
-## Utilisation {#utilisation}
+## Étape 1 : ajouter le script et l’élément {#html}
 
 1.  **Dans le `<head>`**
     
@@ -51,7 +51,7 @@ Textes et étapes du composant commun :
 -   L’heure de la réponse, à l’heure de Montréal.
 -   Pas d’adresse IP.
 
-## Habillage {#habillage}
+## Personnaliser {#habillage}
 
 Le composant utilise les jetons communs quand la page les définit : boutons, champ et focus suivent le thème du site. C’est le cas de cette page.
 

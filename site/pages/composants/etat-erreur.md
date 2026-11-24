@@ -9,9 +9,7 @@ statut: beta
 
 ::exemple[composants/etat-erreur/01.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <div class="bib-etat-erreur" data-etat="erreur" hidden>
@@ -22,7 +20,15 @@ statut: beta
 
 Le script du contenu (par exemple `bib-listes-dynamiques.min.js`) affiche l’état voulu et branche le bouton. Pendant le nouveau chargement, le focus passe au conteneur plutôt que de se perdre en haut de la page.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-etat-erreur.min.css">
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -38,7 +44,7 @@ import EtatErreur from 'harmonium/astro/EtatErreur.astro'
 | libelle | Texte du bouton. | Réessayer |
 | class | Classes ajoutées à la racine. |  |
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-etat-erreur}}
 

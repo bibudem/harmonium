@@ -13,9 +13,7 @@ ressources: "composants/onglets"
 
 ::exemple[composants/onglets/02.html]
 
-## Utilisation {#utilisation}
-
-### En HTML
+## Étape 1 : ajouter le HTML {#html}
 
 ```
 <div class="bib-onglets" data-onglets>
@@ -29,12 +27,27 @@ ressources: "composants/onglets"
     <div class="bib-onglets__panneau" id="p-2" data-selectionne="false"><h3 class="bib-onglets__titre-panneau" data-titre-panneau>Retour</h3>…</div>
   </div>
 </div>
-<script type="module" src="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-onglets.min.js"></script>
 ```
 
 Habillage : `--bib-onglets-texte` (libellé des onglets) et `--bib-onglets-accent` (onglet choisi) ; sur un fond foncé ou coloré, les redéfinir pour garder 4,5:1 (le bleu principal ne passe pas sur un fond moyen). Sous 900 px, les panneaux défilent à l’horizontale, aimantés, et une pastille (`bib-onglets__indicateur`) suit le doigt. `bib-onglets--compact` : la rangée alignée à gauche et moins haute, pour un jeu d’onglets dans le texte d’une page. Onglet choisi : `--bib-onglets-selection-fond` et `--bib-onglets-selection-texte` (par défaut les jetons `--selection-fond` et `--selection-texte` du site, sinon bleu foncé et blanc) ; survol : `--bib-onglets-survol`.
 
-### Avec Astro
+## Étape 2 : ajouter le CSS {#css}
+
+Ajouter la feuille du composant dans le `<head>`, après les jetons (`bib-jetons.min.css`). Un site qui charge déjà `bib-composants.min.css` n’a rien à ajouter : cette feuille les réunit toutes.
+
+```
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-onglets.min.css">
+```
+
+## Étape 3 : ajouter le JavaScript {#javascript}
+
+Facultatif : le script ajoute le comportement interactif. Sans lui, le contenu reste lisible et utilisable.
+
+```
+<script type="module" src="https://cdn.jsdelivr.net/gh/bibudem/harmonium@1/dist/bib-onglets.min.js"></script>
+```
+
+## Avec Astro {#astro}
 
 ```
 ---
@@ -61,7 +74,7 @@ import Onglets from 'harmonium/astro/Onglets.astro'
 
 **Jeux synchronisés.** Le choix de la personne est gardé dans `localStorage` (clé `bib.onglets.<groupe>`) ; le script émet l’événement `bib:onglets-groupe` (`detail : { groupe, valeur }`) sur `window` à chaque changement, pour qu’un autre composant le suive. Une ancre qui vise un onglet ou un élément d’un panneau l’affiche.
 
-### Variables d’habillage {#variables}
+## Personnaliser {#variables}
 
 {{habillage-onglets}}
 

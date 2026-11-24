@@ -1,4 +1,5 @@
 ---
+titre-court: "Installation"
 titre: "Intégrer à un site"
 description: "Harmonium se charge de la même façon dans tout site : WordPress, Drupal, HTML statique ou Astro. Les composants sont du HTML et du CSS, avec un peu de JavaScript quand il le faut."
 ---
@@ -47,9 +48,9 @@ Sans son script, le composant ne fonctionne pas ou n’apparaît pas.
 | Script | Composant | Rôle |
 | --- | --- | --- |
 | `bib-onglets.min.js` | [Onglets](@@/composants/onglets.html) | Rôles ARIA, flèches du clavier, groupes synchronisés. Sans lui, les panneaux s’affichent l’un sous l’autre. |
-| `bib-retour-haut.min.js` | [Retour en haut](@@/composants/retour-haut.html) | Affiche le bouton après un défilement et ramène en haut. |
+| `bib-retour-haut.min.js` | [Bouton de retour en haut](@@/composants/retour-haut.html) | Affiche le bouton après un défilement et ramène en haut. |
 | `bib-entete.min.js` | [En-tête](@@/composants/entete.html) | Montre les commandes et ouvre le menu. |
-| `bib-integration.min.js` | [Intégration tierce](@@/composants/integration.html) | Charge le formulaire ou le clavardage du fournisseur. |
+| `bib-integration.min.js` | [Contenu intégré](@@/composants/integration.html) | Charge le formulaire ou le clavardage du fournisseur. |
 | `bib-horaire-semaine.min.js` | [Horaire d’un service](@@/composants/horaire-semaine.html) | Lit l’horaire dans l’API ; sans lui, le texte de repli reste. |
 | `bib-avis.min.js`, `udem-urgence.min.js`, `bib-clavardage.min.js`, `bib-consentement.min.js`, `bib-retroaction-usager.min.js` | [Avis](@@/composants/avis.html), [urgence](@@/composants/urgence.html), [clavardage](@@/composants/clavardage.html), [consentement](@@/composants/consentement.html), [rétroaction](@@/composants/retroaction.html) | Le composant entier : il se charge par balise `<script>` dans tous les sites, Astro compris. |
 
@@ -62,7 +63,7 @@ Le composant marche sans eux ; le script ajoute un confort.
 | `bib-accordeons.min.js` | [Accordéons](@@/composants/accordeons.html) | Ouvre le volet visé par une ancre ; le titre cliqué reste sous le pointeur. |
 | `bib-carrousel.min.js` | [Carrousel](@@/composants/carrousel.html) | Flèches, annonce des cartes visibles, barre de progression, fondu du bord. |
 | `bib-chiffres.min.js` | [Chiffres clés](@@/composants/chiffres.html) | Remplissage des barres et montée des nombres à l’affichage. |
-| `bib-copier.min.js` | [Copier](@@/composants/copier.html) | Montre le bouton « Copier » si le presse-papiers est disponible. |
+| `bib-copier.min.js` | [Copier dans le presse-papiers](@@/composants/copier.html) | Montre le bouton « Copier » si le presse-papiers est disponible. |
 | `bib-infobulle.min.js` | [Infobulle](@@/composants/infobulle.html) | Échap ferme l’infobulle affichée. |
 | `bib-liste-filtrable.min.js` | [Liste filtrable](@@/composants/liste-filtrable.html) | Recherche et filtre par catégorie ; sans lui, la liste complète reste lisible. |
 | `bib-pied-de-page.min.js` | [Pied de page](@@/composants/pied-de-page.html) | Colonnes repliables sous 900 px ; bouton des témoins. |

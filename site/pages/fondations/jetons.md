@@ -1,4 +1,5 @@
 ---
+titre-court: "Jetons de design"
 titre: "Utiliser les jetons"
 description: "Les jetons sont des variables CSS : couleurs, polices, tailles, espacements, durées. Un site qui les charge peut utiliser les composants d’Harmonium et ses propres composants avec la même apparence."
 ---
