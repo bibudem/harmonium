@@ -3,7 +3,7 @@
 
 // ---- Menu replié sur téléphone, ouvert sur grand écran ----
 const navMobile = document.querySelector('.nav-mobile')
-const petit = matchMedia('(max-width: 56rem)')
+const petit = matchMedia('(width < 900px)')
 const ajuster = () => navMobile && (navMobile.open = !petit.matches)
 ajuster()
 petit.addEventListener('change', ajuster)

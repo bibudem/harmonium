@@ -43,7 +43,9 @@ a:hover { color: var(--couleur-lien-survol); }
 
 
 
-/* ---- Mise en page : barre latérale, contenu ---- */
+/* ---- Mise en page : grille responsive de Material Design ----
+   Seuils des composants : 600, 900, 1200, 1536 px. Tiroir de navigation permanent dès 900 px,
+   marges de page = --gouttiere ; dès 1200 px, 12 colonnes : 9 pour le contenu, 3 pour le sommaire. */
 .mise-en-page { display: grid; grid-template-columns: var(--doc-barre) minmax(0, 1fr); min-height: 100vh; }
 
 .barre {
@@ -107,7 +109,7 @@ a:hover { color: var(--couleur-lien-survol); }
 .colonne { display: flex; flex-direction: column; min-width: 0; }
 
 /* Petit écran : en-tête collant avec logo et bouton Menu ; le menu se déplie dessous. */
-@media (max-width: 56rem) {
+@media (width < 900px) {
   html { scroll-padding-top: 5rem; }
   .mise-en-page { display: block; }
   .barre { position: sticky; top: 0; z-index: 20; height: auto; overflow: visible; padding: var(--espace-1-5) var(--espace-2); box-shadow: var(--ombre-2); }
@@ -133,23 +135,25 @@ a:hover { color: var(--couleur-lien-survol); }
   .nav-mobile nav { max-height: calc(100dvh - 13rem); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--couleur-sur-fonce) 30%, transparent) transparent; }
   .table-matieres-doc { --hauteur-entete: 4.5rem; }
 }
-@media (max-width: 56rem) and (forced-colors: active) {
+@media (width < 900px) and (forced-colors: active) {
   .nav-mobile > summary::before { forced-color-adjust: none; background: ButtonText; }
 }
 
 /* ---- Contenu ---- */
-main { width: 100%; max-width: 76rem; padding: var(--espace-3) var(--espace-5) var(--espace-6); }
-@media (max-width: 40rem) { main { padding: var(--espace-2) var(--espace-2) var(--espace-5); } }
+main { width: 100%; max-width: 100rem; padding: var(--espace-3) var(--gouttiere) var(--espace-6); }
 
 
 .page { display: block; }
-.page-contenu { min-width: 0; max-width: 50rem; }
-.page-contenu > .large, .page-contenu > .demo-cadre, .page-contenu > .bib-tableau-zone { max-width: none; }
+/* Le texte courant garde une longueur de ligne lisible ; aperçus, code et tableaux prennent la colonne. */
+.page-contenu { min-width: 0; }
+:is(.page-contenu, .page-introduction) > :is(p, ul:not([class]), ol:not([class]), blockquote) { max-width: 50rem; }
 .page.avec-sommaire { display: grid; grid-template-areas: 'introduction' 'sommaire' 'contenu'; row-gap: 0; }
 .page.avec-sommaire > .page-introduction { grid-area: introduction; }
-@media (width >= 75rem) {
-  .page.avec-sommaire { grid-template-areas: 'introduction sommaire' 'contenu sommaire'; column-gap: var(--espace-6); }
-  .page.avec-sommaire > .table-matieres-doc { grid-column: 2; grid-row: 1 / span 2; margin: 0; }
+@media (width >= 1200px) {
+  .page.avec-sommaire { grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-areas: none; column-gap: var(--espace-grille); }
+  .page.avec-sommaire > .page-introduction { grid-area: 1 / 1 / 2 / span 9; }
+  .page.avec-sommaire > .page-contenu { grid-area: 2 / 1 / 3 / span 9; }
+  .page.avec-sommaire > .table-matieres-doc { grid-area: 1 / 10 / 3 / span 3; margin: 0 0 0 var(--espace-2); }
 }
 
 h1 { margin: 0 0 var(--espace-1); font-size: var(--titre-2); font-weight: var(--graisse-forte); line-height: 1.1; text-wrap: pretty; overflow-wrap: break-word; }
@@ -216,9 +220,9 @@ pre code { padding: 0; border-radius: 0; background: none; color: inherit; font-
 .voisin--suivant { margin-inline-start: auto; }
 
 /* Pied */
-.pied { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--espace-1) var(--espace-4); margin-top: auto; padding: var(--espace-2-5) var(--espace-5); border-top: 1px solid var(--couleur-bordure); background: var(--couleur-surface); color: var(--couleur-texte-secondaire); font-size: var(--texte-minuscule); }
+.pied { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--espace-1) var(--espace-4); margin-top: auto; padding: var(--espace-2-5) var(--gouttiere); border-top: 1px solid var(--couleur-bordure); background: var(--couleur-surface); color: var(--couleur-texte-secondaire); font-size: var(--texte-minuscule); }
 .pied p { margin: 0; }
-@media (max-width: 40rem) { .pied { padding: var(--espace-2); } }
+@media (width < 600px) { .pied { padding: var(--espace-2); } }
 
 /* ---- Fondations ---- */
 .nuancier { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr)); gap: var(--espace-2); margin: var(--espace-2) 0; padding: 0; list-style: none; }
@@ -354,10 +358,11 @@ html.mode-apercu .apercu-seul { margin: 0 !important; border: 0 !important; bord
 /* Signature horizontale sur fond clair dans l’accueil du système. */
 .accueil-marque { margin-block-end: var(--espace-2); }
 .accueil-marque img { display: block; width: min(100%, 30rem); height: auto; }
-/* Accueil : pleine largeur, cartes par rangées de 3 ou de 6. */
-main:has(.accueil-marque), .page-contenu:has(> .accueil-marque) { max-width: none; }
-@media (width >= 75rem) { .accueil-marque ~ .bib-liste-liens--grille { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (width >= 110rem) { .accueil-marque ~ .bib-liste-liens--grille { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+/* Accueil : même grille que les autres pages, sans sommaire : le texte suit la largeur des cartes ;
+   cartes sur 4 colonnes de 12 (3 par rangée) dès 1200 px, sur 2 (6 par rangée) dès 1536 px. */
+main:has(.accueil-marque) .page-contenu > * { max-width: none; }
+@media (width >= 1200px) { .accueil-marque ~ .bib-liste-liens--grille { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (width >= 1536px) { .accueil-marque ~ .bib-liste-liens--grille { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
 
 /* Les composants de pleine largeur peuvent choisir un vrai viewport de bureau. */
 .apercu-bureau { position: relative; width: 100%; overflow: hidden; background: var(--doc-code); }
