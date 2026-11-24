@@ -146,6 +146,7 @@ export const NAVIGATION = [
         pages: [
           'composants/section.html',
           'composants/colonne-decalee.html',
+          'composants/grille.html',
           'composants/surface.html',
           'composants/separateur.html',
         ],

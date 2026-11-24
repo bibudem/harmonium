@@ -35,6 +35,7 @@
   "composants/liste-icones.html",
   "composants/liste-liens.html",
   "composants/grille-logos.html",
+  "composants/grille.html",
   "composants/liste-profils.html",
   "composants/liste-simple.html",
   "composants/navigation-secondaire.html",

@@ -11,11 +11,12 @@
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright-core'
 import matter from 'gray-matter'
 import { NAVIGATION, pagesAPlat } from '../site/navigation.mjs'
 
-const RACINE = new URL('../', import.meta.url).pathname
+const RACINE = fileURLToPath(new URL('../', import.meta.url))
 const SITE = join(RACINE, '_site')
 const SORTIE = join(RACINE, 'site/assets/vignettes')
 const ORIGINE = 'http://localhost:9997'

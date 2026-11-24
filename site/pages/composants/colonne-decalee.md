@@ -56,7 +56,7 @@ import ColonneDecalee from 'harmonium/astro/ColonneDecalee.astro'
 ### À éviter
 
 -   **Pour limiter la longueur des lignes de texte** : la mesure du texte (`--mesure-texte`) le fait déjà sur les paragraphes.
--   **Pour placer plusieurs blocs côte à côte** : utiliser une [grille](@@/fondations/espacements.html).
+-   **Pour placer plusieurs blocs côte à côte** : utiliser la [grille](@@/composants/grille.html).
 -   **Avec un grand décalage sur un contenu dense** : sur téléphone, la même proportion s’applique et la colonne devient très étroite (à `decalage={3}`, la moitié de l’écran).
 
 ## Accessibilité {#accessibilite}

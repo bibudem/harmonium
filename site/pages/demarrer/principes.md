@@ -83,6 +83,7 @@ Un composant nommé « Liste » est toujours une `<ul>` ou une `<ol>` ; un `<div
 | Infobulle | Tooltips |
 | Citation | Quotes |
 | Conteneur | Containers |
+| Grille | Grid, Responsive Columns |
 | Panneau | Panels |
 | Séparateur | Dividers |
 | Fenêtre de clavardage | Popup Chat Window |

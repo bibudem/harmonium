@@ -76,7 +76,7 @@ import ElementListeLiens from 'harmonium/astro/ElementListeLiens.astro'
 ### À éviter
 
 -   **Pour mettre en avant trois pages en image** : la [CarteImage](@@/composants/carte-image.html).
--   **Pour des liens en couleur, sans description** : la [GrilleElargissable](@@/fondations/espacements.html) de [CarteLienCompacte](@@/composants/carte-icone.html#compacte).
+-   **Pour des liens en couleur, sans description** : la [grille](@@/composants/grille.html#cartes) de [CarteLienCompacte](@@/composants/carte-icone.html#compacte).
 -   **Pour une seule action** : un [bouton](@@/composants/bouton.html) ou un [lien](@@/composants/lien.html) dans le texte.
 -   **Pour des liens dans une phrase** : de simples liens ; la liste interrompt la lecture.
 
