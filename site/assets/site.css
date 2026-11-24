@@ -86,6 +86,9 @@ a:hover { color: var(--couleur-lien-survol); }
 .nav-section > details[open] > .nav-section-titre::after { rotate: -135deg; translate: 0 0.1rem; }
 .nav-section-titre:hover { background: color-mix(in srgb, var(--couleur-sur-fonce) 12%, transparent); }
 .nav-section > details[open] > .nav-section-titre { margin-bottom: var(--espace-0-5); }
+/* Section fermée : texte atténué ; section ouverte : texte plein. */
+.nav-section-titre { color: var(--couleur-texte-secondaire); }
+.nav-section > details[open] > .nav-section-titre, .nav-section-titre:hover { color: var(--couleur-sur-fonce); }
 .nav-section + .nav-section { border-top: 1px solid color-mix(in srgb, var(--couleur-sur-fonce) 15%, transparent); padding-top: var(--espace-1); }
 .nav-groupe summary {
   display: flex; align-items: center; gap: var(--espace-1); padding: var(--espace-0-5) var(--espace-1-5); border-radius: var(--rayon-tres-petit);
@@ -103,19 +106,35 @@ a:hover { color: var(--couleur-lien-survol); }
 
 .colonne { display: flex; flex-direction: column; min-width: 0; }
 
-/* Téléphone et petite fenêtre : barre au-dessus, menu repliable */
+/* Petit écran : en-tête collant avec logo et bouton Menu ; le menu se déplie dessous. */
 @media (max-width: 56rem) {
+  html { scroll-padding-top: 5rem; }
   .mise-en-page { display: block; }
-  .barre { position: static; height: auto; padding: var(--espace-2); }
-  .marque-sous-titre { margin-bottom: var(--espace-1-5); }
+  .barre { position: sticky; top: 0; z-index: 20; height: auto; overflow: visible; padding: var(--espace-1-5) var(--espace-2); box-shadow: var(--ombre-2); }
+  .marque { display: flex; align-items: center; min-height: var(--taille-cible); max-width: calc(100% - 7.5rem); }
+  .marque svg { max-width: 10rem; }
+  .marque-sous-titre { display: none; }
   .nav-mobile > summary {
-    display: flex; align-items: center; min-height: var(--taille-cible); padding: 0 var(--espace-1-5);
-    border: 1px solid color-mix(in srgb, var(--couleur-sur-fonce) 40%, transparent); border-radius: var(--rayon-tres-petit); font-weight: var(--graisse-forte); cursor: pointer; list-style: none;
+    position: absolute; top: var(--espace-1-5); right: var(--espace-2);
+    display: inline-flex; align-items: center; gap: var(--espace-1); min-height: var(--taille-cible); padding: 0 var(--espace-1-5);
+    border: 1px solid color-mix(in srgb, var(--couleur-sur-fonce) 40%, transparent); border-radius: var(--rayon-tres-petit);
+    color: var(--couleur-sur-fonce); font-size: var(--texte-petit); font-weight: var(--graisse-forte); cursor: pointer; list-style: none;
   }
+  .nav-mobile > summary:hover { background: color-mix(in srgb, var(--couleur-sur-fonce) 12%, transparent); }
   .nav-mobile > summary::-webkit-details-marker { display: none; }
-  .nav-mobile > summary::after { content: ''; width: 0.5rem; height: 0.5rem; margin-left: auto; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; rotate: 45deg; translate: 0 -0.15rem; }
-  .nav-mobile[open] > summary::after { rotate: -135deg; translate: 0 0.15rem; }
-  .nav-mobile[open] > summary { margin-bottom: var(--espace-1-5); }
+  .nav-mobile > summary::before {
+    content: ''; flex: none; width: 1.25rem; height: 1.25rem; background: currentColor;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.25' stroke-linecap='round'%3E%3Cpath d='M4 6h16M4 12h16M4 18h16'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+  .nav-mobile[open] > summary::before {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.25' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E");
+  }
+  .nav-mobile[open] { margin-top: var(--espace-1-5); padding-top: var(--espace-1-5); border-top: 1px solid color-mix(in srgb, var(--couleur-sur-fonce) 15%, transparent); }
+  .nav-mobile nav { max-height: calc(100dvh - 13rem); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--couleur-sur-fonce) 30%, transparent) transparent; }
+  .table-matieres-doc { --hauteur-entete: 4.5rem; }
+}
+@media (max-width: 56rem) and (forced-colors: active) {
+  .nav-mobile > summary::before { forced-color-adjust: none; background: ButtonText; }
 }
 
 /* ---- Contenu ---- */
@@ -335,6 +354,10 @@ html.mode-apercu .apercu-seul { margin: 0 !important; border: 0 !important; bord
 /* Signature horizontale sur fond clair dans l’accueil du système. */
 .accueil-marque { margin-block-end: var(--espace-2); }
 .accueil-marque img { display: block; width: min(100%, 30rem); height: auto; }
+/* Accueil : pleine largeur, cartes par rangées de 3 ou de 6. */
+main:has(.accueil-marque), .page-contenu:has(> .accueil-marque) { max-width: none; }
+@media (width >= 75rem) { .accueil-marque ~ .bib-liste-liens--grille { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (width >= 110rem) { .accueil-marque ~ .bib-liste-liens--grille { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
 
 /* Les composants de pleine largeur peuvent choisir un vrai viewport de bureau. */
 .apercu-bureau { position: relative; width: 100%; overflow: hidden; background: var(--doc-code); }

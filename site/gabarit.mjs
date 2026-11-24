@@ -104,7 +104,8 @@ export function rendre(page, { rechargement, dist }) {
     ? page.contenu.replace('</h1>', '</h1>\n' + statutComposant(page.statut))
     : page.contenu
   const contenuNomme = nommerTableaux(contenu)
-  const som = sommaire(contenuNomme)
+  // Pas de sommaire sur l'accueil.
+  const som = page.chemin === 'index.html' ? '' : sommaire(contenuNomme)
   // Sur petit écran, le volet suit l’introduction ; en bureau, le même composant est dans la colonne droite.
   const debutSections = som ? contenuNomme.search(/<h2 id="/) : -1
   const introduction = debutSections >= 0 ? contenuNomme.slice(0, debutSections) : ''

@@ -23,7 +23,7 @@ function carte(chemin, nom, data) {
 
 export async function donneesCatalogue() {
   // Les groupes de « Composants », puis les services des Bibliothèques ; seules les fiches de composant
-  // (donnees/composants.json) ont une carte : une page d’aide comme « Choisir une liste » n’en a pas.
+  // (donnees/composants.json) ont une carte.
   const groupes = [
     ...NAVIGATION.find((g) => g.titre === 'Composants').pages.filter((g) => typeof g !== 'string'),
     NAVIGATION.find((g) => g.titre === 'Services des Bibliothèques'),

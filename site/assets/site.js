@@ -7,6 +7,12 @@ const petit = matchMedia('(max-width: 56rem)')
 const ajuster = () => navMobile && (navMobile.open = !petit.matches)
 ajuster()
 petit.addEventListener('change', ajuster)
+// Échap referme le menu sur petit écran.
+navMobile?.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape' || !petit.matches || !navMobile.open) return
+  navMobile.open = false
+  navMobile.querySelector('summary').focus()
+})
 
 // ---- Filtre des pages ----
 const filtre = document.getElementById('filtre-nav')

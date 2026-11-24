@@ -8,21 +8,6 @@ description: >-
   utilisable dans tout site, Astro ou non.
 blocs:
   demarrer:
-    - titre: Fondations
-      url: '@@/fondations/couleurs.html'
-      description: >-
-        Les jetons de design et leurs règles : couleurs, typographie, formes,
-        mouvement, icônes.
-    - titre: Composants
-      url: '@@/composants/index.html'
-      description: >-
-        Alertes, citation, fil d’Ariane, urgence, clavardage et le reste, par
-        famille.
-    - titre: Rédaction et messages
-      url: '@@/fondations/redaction.html'
-      description: >-
-        Procédures, rédaction épicène, noms des outils et messages
-        d’interface.
     - titre: Principes et qualité
       url: '@@/demarrer/principes.html'
       description: >-
@@ -33,6 +18,26 @@ blocs:
       description: >-
         Charger les feuilles et les scripts, dans un site Astro, WordPress ou
         statique.
+    - titre: Marque et rédaction
+      url: '@@/fondations/identite.html'
+      description: >-
+        Logos, sceau des bibliothèques et conventions de rédaction : procédures,
+        écriture épicène, messages d’interface.
+    - titre: Fondations
+      url: '@@/fondations/couleurs.html'
+      description: >-
+        Les jetons de design et leurs règles : couleurs, typographie, formes,
+        mouvement, icônes.
+    - titre: Composants
+      url: '@@/composants/index.html'
+      description: >-
+        Navigation, boutons, listes, cartes, messages et le reste, classés par
+        catégorie.
+    - titre: Services des Bibliothèques
+      url: '@@/composants/index.html#services-des-bibliotheques'
+      description: >-
+        Urgence, avis, clavardage, rétroaction, consentement et horaire, prêts à
+        ajouter à un site.
 ---
 
 ::cartes[demarrer]
