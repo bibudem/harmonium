@@ -1,6 +1,6 @@
 {
   "name": "harmonium",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Harmonium : système de design des sites des Bibliothèques de l’UdeM (jetons, composants CSS, scripts facultatifs et composants Astro).",
   "type": "module",
   "private": true,
